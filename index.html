@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Jober</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 🏠 ГЛАВНЫЙ ЭКРАН -->
+<div id="homeScreen">
+  <h1>👋 Jober</h1>
+
+  <button class="big-btn" onclick="openScreen('jobsScreen')">
+    💼 Вакансии
+  </button>
+
+  <button class="big-btn" onclick="openScreen('newsScreen')">
+    📰 Новости
+  </button>
+</div>
+
+<!-- 💼 СПИСОК ВАКАНСИЙ -->
+<div id="jobsScreen" class="hidden">
+  <button class="back" onclick="openScreen('homeScreen')">← Назад</button>
+
+  <h2>Вакансии</h2>
+  <div id="jobs"></div>
+
+  <button onclick="openScreen('createScreen')">➕ Создать вакансию</button>
+</div>
+
+<!-- ➕ СОЗДАНИЕ ВАКАНСИИ -->
+<div id="createScreen" class="hidden">
+  <button class="back" onclick="openScreen('jobsScreen')">← Назад</button>
+
+  <h2>Создать вакансию</h2>
+
+  <input id="title" placeholder="Название">
+  <input id="salary" placeholder="Зарплата">
+  <input id="contacts" placeholder="Контакты (телега/телефон)">
+  <input type="file" id="image">
+  <textarea id="desc" placeholder="Описание"></textarea>
+
+  <button onclick="addJob()">Сохранить</button>
+</div>
+
+<!-- 📄 СТРАНИЦА ВАКАНСИИ -->
+<div id="jobScreen" class="hidden">
+
+  <button class="back" onclick="openScreen('jobsScreen')">
+    ← Назад
+  </button>
+
+  <div class="job-card">
+
+    <div class="img-box">
+      <img id="jobImage" class="job-img">
+    </div>
+
+    <h2 id="jobTitle"></h2>
+
+    <p id="jobSalary"></p>
+
+    <p id="jobDesc"></p>
+
+    <div id="jobContacts" class="contacts"></div>
+
+    <button onclick="apply()">Откликнуться</button>
+
+  </div>
+
+<!-- 📰 НОВОСТИ -->
+<div id="newsScreen" class="hidden">
+  <button class="back" onclick="openScreen('homeScreen')">← Назад</button>
+
+  <h2>Новости</h2>
+  <p>Пока пусто 🙂</p>
+</div>
+
+<script src="app.js"></script>
+<div class="bottom-nav">
+
+  <button onclick="openScreen('homeScreen')">
+    🏠
+    <span>Главная</span>
+  </button>
+
+  <button onclick="openScreen('jobsScreen')">
+    💼
+    <span>Вакансии</span>
+  </button>
+
+  <button onclick="openScreen('newsScreen')">
+    📰
+    <span>Новости</span>
+  </button>
+
+</div>
+</body>
+</html>
