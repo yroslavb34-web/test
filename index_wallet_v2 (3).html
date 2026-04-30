@@ -1,0 +1,3429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Jobic</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d0d1a">
+<link rel="apple-touch-icon" href="https://em-content.zobj.net/source/apple/391/briefcase_1f4bc.png">
+<meta name="apple-mobile-web-app-title" content="Jobic">
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Onest:wght@300;400;500;600&display=swap');
+
+  /* ═══════ THEME VARIABLES ═══════ */
+  :root {
+    --bg: #0d0d1a;
+    --bg2: #12122a;
+    --surface: rgba(255,255,255,0.06);
+    --surface2: rgba(255,255,255,0.1);
+    --border: rgba(255,255,255,0.1);
+    --border2: rgba(255,255,255,0.18);
+    --text: #ffffff;
+    --text2: rgba(255,255,255,0.55);
+    --text3: rgba(255,255,255,0.3);
+    --accent: #7c5cff;
+    --accent2: #4da3ff;
+    --accent3: #ff5c8d;
+    --green: #4dff9a;
+    --red: #ff5c5c;
+    --orange: #ffaa5c;
+    --radius: 20px;
+    --radius-sm: 12px;
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Onest', sans-serif;
+    --sat: env(safe-area-inset-top, 59px);
+    --sab: env(safe-area-inset-bottom, 34px);
+    --nav-h: calc(60px + var(--sab));
+    --shadow: 0 8px 32px rgba(0,0,0,0.3);
+    /* card bg for light theme */
+    --card-bg: rgba(255,255,255,0.06);
+  }
+
+  [data-theme="light"] {
+    --bg: #f0f0f8;
+    --bg2: #e4e4f0;
+    --surface: rgba(255,255,255,0.85);
+    --surface2: rgba(255,255,255,0.95);
+    --border: rgba(0,0,0,0.09);
+    --border2: rgba(0,0,0,0.15);
+    --text: #1a1a2e;
+    --text2: rgba(26,26,46,0.6);
+    --text3: rgba(26,26,46,0.35);
+    --card-bg: rgba(255,255,255,0.9);
+    --shadow: 0 8px 32px rgba(124,92,255,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    height: 100%; height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow: hidden;
+    overscroll-behavior: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  #app { height: 100dvh; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+  .bg-mesh { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .bg-mesh::before {
+    content: ''; position: absolute;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(124,92,255,0.22) 0%, transparent 70%);
+    top: -80px; left: -80px; border-radius: 50%;
+  }
+  .bg-mesh::after {
+    content: ''; position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(77,163,255,0.15) 0%, transparent 70%);
+    bottom: 100px; right: -60px; border-radius: 50%;
+  }
+  [data-theme="light"] .bg-mesh::before { background: radial-gradient(circle, rgba(124,92,255,0.12) 0%, transparent 70%); }
+  [data-theme="light"] .bg-mesh::after { background: radial-gradient(circle, rgba(77,163,255,0.08) 0%, transparent 70%); }
+
+  /* ═══════ SCREENS ═══════ */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    z-index: 1;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; transform: translateX(30px); }
+  .screen.slide-left { transform: translateX(-30px); opacity: 0; pointer-events: none; }
+
+  .scroll-area {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    padding: 0 16px calc(var(--nav-h) + 16px);
+    position: relative; z-index: 1;
+  }
+  .scroll-area::-webkit-scrollbar { display: none; }
+
+  .tg-safe-top { height: var(--sat); flex-shrink: 0; }
+
+  /* ═══════ HEADER ═══════ */
+  .header { padding: 12px 20px 10px; position: relative; z-index: 1; flex-shrink: 0; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; }
+  .greeting { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+  .logo { font-family: var(--font-display); font-size: 32px; font-weight: 900; letter-spacing: -1.5px; background: linear-gradient(135deg, var(--text) 0%, var(--text2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .tagline { font-size: 13px; color: var(--text3); margin-top: 3px; font-weight: 400; }
+
+  /* Theme toggle */
+  .theme-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .theme-btn:active { transform: scale(0.9); }
+
+  /* ═══════ SEARCH ═══════ */
+  .search-wrap { padding: 0 0 12px; }
+  .search-box { display: flex; align-items: center; gap: 10px; padding: 13px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .search-icon { font-size: 15px; flex-shrink: 0; }
+  .search-input { background: none; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 14px; width: 100%; font-weight: 400; }
+  .search-input::placeholder { color: var(--text3); }
+
+  /* ═══════ FILTERS ═══════ */
+  .filter-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; margin-bottom: 8px; }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .pill { flex-shrink: 0; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; font-family: var(--font-body); cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.2s; }
+  .pill.active { background: rgba(124,92,255,0.25); border-color: var(--accent); color: var(--text); }
+
+  /* Salary filter */
+  .salary-filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .salary-filter-label { font-size: 11px; color: var(--text3); font-weight: 500; white-space: nowrap; }
+  .salary-range { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+  .salary-filter-val { font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; font-family: var(--font-display); min-width: 70px; text-align: right; }
+
+  /* ═══════ LABELS ═══════ */
+  .sec-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: var(--font-display); }
+
+  /* ═══════ FEATURED CARD ═══════ */
+  .featured-card { border-radius: var(--radius); padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.15s; }
+  .featured-card:active { transform: scale(0.97); }
+  .feat-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124,92,255,0.4) 0%, rgba(77,163,255,0.3) 100%); border-radius: var(--radius); }
+  .feat-border { position: absolute; inset: 0; border-radius: var(--radius); border: 1px solid rgba(124,92,255,0.4); }
+  .feat-content { position: relative; z-index: 1; }
+  .feat-eyebrow { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: var(--font-display); }
+  .feat-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .feat-company { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+  .feat-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .feat-salary { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+  .feat-salary span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.4); }
+  .feat-btn { padding: 10px 18px; border-radius: 14px; background: rgba(255,255,255,0.95); color: #1a0a3a; font-size: 13px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-body); }
+
+  /* ═══════ JOB CARD ═══════ */
+  .job-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+  .job-card:active { transform: scale(0.97); background: var(--surface2); }
+  .card-accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--radius) var(--radius) 0 0; }
+  .card-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .company-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid var(--border); }
+  .card-meta { flex: 1; min-width: 0; }
+  .card-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-company { font-size: 13px; color: var(--text2); }
+  .badge { padding: 4px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; flex-shrink: 0; font-family: var(--font-display); }
+  .badge-hot { background: rgba(255,92,141,0.2); color: var(--accent3); border: 1px solid rgba(255,92,141,0.3); }
+  .badge-new { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
+  .badge-top { background: rgba(255,200,0,0.15); color: #ffd700; border: 1px solid rgba(255,200,0,0.3); }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag { padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; color: var(--text3); font-weight: 500; }
+  [data-theme="light"] .tag { background: rgba(124,92,255,0.06); }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .salary { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .salary span { font-size: 11px; font-weight: 400; color: var(--text3); }
+  .card-actions { display: flex; gap: 8px; align-items: center; }
+  .fav-btn { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text3); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .fav-btn.active { background: rgba(255,92,141,0.15); border-color: rgba(255,92,141,0.3); color: var(--accent3); }
+  .more-btn { padding: 9px 16px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); min-height: 38px; }
+
+  /* ═══════ BOTTOM NAV ═══════ */
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-around; align-items: flex-start; padding: 10px 4px 0; padding-bottom: var(--sab); height: var(--nav-h); background: rgba(13,13,26,0.92); border-top: 1px solid var(--border); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); transition: background 0.3s; }
+  [data-theme="light"] .bottom-nav { background: rgba(240,240,248,0.92); }
+  .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 16px; border-radius: 14px; transition: all 0.2s; border: none; background: none; min-width: 44px; min-height: 44px; justify-content: center; }
+  .nav-btn.active { background: rgba(124,92,255,0.15); }
+  .nav-icon { font-size: 22px; line-height: 1; }
+  .nav-label { font-size: 9px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-display); }
+  .nav-btn.active .nav-label { color: var(--accent); }
+
+  /* ═══════ DETAIL SCREEN ═══════ */
+  .detail-header-bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px 8px; flex-shrink: 0; position: relative; z-index: 1; }
+  .back-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .detail-bar-title { font-size: 14px; font-weight: 600; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .detail-fav-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text3); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .detail-fav-btn.active { background: rgba(255,92,141,0.15); border-color: rgba(255,92,141,0.3); color: var(--accent3); }
+  .detail-hero { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; position: relative; overflow: hidden; }
+  .detail-hero-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .detail-logo { width: 68px; height: 68px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 34px; border: 1px solid var(--border); margin-bottom: 14px; }
+  .detail-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+  .detail-company { font-size: 14px; color: var(--text2); margin-bottom: 14px; }
+  .info-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chip { display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); font-size: 11px; color: var(--text2); }
+  .detail-salary { font-family: var(--font-display); font-size: 30px; font-weight: 900; color: var(--text); letter-spacing: -1.5px; }
+  .detail-salary span { font-size: 14px; font-weight: 400; color: var(--text3); }
+  .desc-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .desc-heading { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: var(--font-display); }
+  .desc-body { font-size: 15px; color: var(--text2); line-height: 1.75; font-weight: 300; }
+  .desc-body li { margin-bottom: 8px; padding-left: 4px; }
+  .apply-big { width: 100%; padding: 18px; border-radius: var(--radius); background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 17px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; font-family: var(--font-display); letter-spacing: -0.3px; transition: opacity 0.2s; min-height: 56px; }
+  .apply-big:active { opacity: 0.85; }
+  .apply-big:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ═══════ CREATE SCREEN ═══════ */
+  .create-header { padding: 16px 20px 12px; flex-shrink: 0; position: relative; z-index: 1; }
+  .create-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+  .create-sub { font-size: 13px; color: var(--text3); }
+
+  .form-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .form-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; display: block; font-family: var(--font-display); }
+  .form-input { width: 100%; padding: 15px 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 16px; font-family: var(--font-body); outline: none; margin-bottom: 10px; transition: border-color 0.2s; min-height: 50px; }
+  [data-theme="light"] .form-input { background: rgba(0,0,0,0.03); }
+  .form-input:last-child { margin-bottom: 0; }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--text3); }
+
+  .plan-option { display: flex; align-items: center; gap: 12px; padding: 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; margin-bottom: 8px; transition: all 0.2s; }
+  .plan-option:last-child { margin-bottom: 0; }
+  .plan-option.sel { background: rgba(124,92,255,0.12); border-color: rgba(124,92,255,0.45); }
+  .plan-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .plan-info { flex: 1; }
+  .plan-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .plan-desc { font-size: 11px; color: var(--text3); }
+  .plan-price { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); }
+  .radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border2); background: transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .radio.on { background: var(--accent); border-color: var(--accent); }
+  .radio.on::after { content: ''; width: 6px; height: 6px; background: #fff; border-radius: 50%; }
+
+  /* ═══════ PROFILE ═══════ */
+  .profile-avatar { width: 72px; height: 72px; border-radius: 22px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 14px; }
+  .profile-name { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+  .profile-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .stat-box { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+  .stat-num { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+  .stat-name { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; transition: background 0.2s; }
+  .menu-item:active { background: var(--surface2); }
+  .menu-item-icon { font-size: 18px; }
+  .menu-item-text { flex: 1; font-size: 14px; color: var(--text); }
+  .menu-item-arrow { color: var(--text3); font-size: 12px; }
+  .menu-item.admin-btn { border-color: rgba(124,92,255,0.4); background: rgba(124,92,255,0.08); }
+
+  /* ═══════ FAVORITES SCREEN ═══════ */
+  .fav-empty { text-align: center; padding: 60px 20px; }
+  .fav-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .fav-empty-text { font-size: 15px; color: var(--text3); }
+
+  /* ═══════ TOAST ═══════ */
+  .toast { position: fixed; top: calc(var(--sat) + 8px); left: 50%; transform: translateX(-50%) translateY(calc(-1 * var(--sat) - 80px)); background: rgba(77,255,154,0.15); border: 1px solid rgba(77,255,154,0.3); color: var(--green); padding: 13px 22px; border-radius: 16px; font-size: 14px; font-weight: 600; z-index: 999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; font-family: var(--font-body); }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: rgba(255,92,92,0.15); border-color: rgba(255,92,92,0.3); color: var(--red); }
+
+  /* ═══════ NEWS ═══════ */
+  .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); }
+  .news-card:active { transform: scale(0.98); }
+  .news-tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; margin-bottom: 8px; font-family: var(--font-display); letter-spacing: 0.04em; }
+  .news-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+  .news-body { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; font-weight: 300; }
+  .news-meta { font-size: 11px; color: var(--text3); }
+
+  /* ═══════ MODAL ═══════ */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal-box { background: #1a1a2e; border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 340px; }
+  [data-theme="light"] .modal-box { background: #fff; }
+  .modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.3px; }
+  .modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
+  .pin-input { width: 100%; padding: 16px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 24px; font-family: var(--font-display); letter-spacing: 8px; text-align: center; outline: none; margin-bottom: 12px; }
+  [data-theme="light"] .pin-input { background: rgba(0,0,0,0.04); }
+  .pin-input:focus { border-color: var(--accent); }
+  .modal-btn { width: 100%; padding: 15px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; font-size: 15px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); margin-bottom: 8px; }
+  .modal-btn-cancel { width: 100%; padding: 13px; border-radius: var(--radius-sm); background: transparent; color: var(--text3); font-size: 14px; font-weight: 500; border: 1px solid var(--border); cursor: pointer; font-family: var(--font-body); }
+
+  /* ═══════ ADMIN ═══════ */
+  .admin-header { padding: 16px 20px 12px; flex-shrink: 0; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; }
+  .admin-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; flex: 1; }
+  .admin-badge { padding: 4px 10px; border-radius: 20px; background: rgba(124,92,255,0.2); border: 1px solid rgba(124,92,255,0.4); color: #a08cff; font-size: 10px; font-weight: 700; font-family: var(--font-display); letter-spacing: 0.06em; }
+  .admin-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .admin-card-title { font-size: 12px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; font-family: var(--font-display); }
+  .admin-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .admin-stat { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; text-align: center; }
+  [data-theme="light"] .admin-stat { background: rgba(0,0,0,0.03); }
+  .admin-stat-num { font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+  .admin-stat-label { font-size: 9px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .job-admin-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .job-admin-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .job-admin-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--border); }
+  .job-admin-info { flex: 1; min-width: 0; }
+  .job-admin-title { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .job-admin-meta { font-size: 11px; color: var(--text3); }
+  .job-admin-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .icon-btn.pin-active { background: rgba(255,200,0,0.15); border-color: rgba(255,200,0,0.3); }
+  .icon-btn.del-btn { background: rgba(255,92,92,0.1); border-color: rgba(255,92,92,0.2); }
+  .admin-create-note { background: rgba(77,255,154,0.07); border: 1px solid rgba(77,255,154,0.2); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .admin-create-note span { font-size: 13px; color: rgba(77,255,154,0.85); font-weight: 500; }
+
+  /* ═══════ APPLIES ═══════ */
+  .apply-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; }
+  .apply-item-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .apply-item-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .apply-item-date { font-size: 11px; color: var(--text3); }
+  .apply-item-job { font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+  .contact-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; background: rgba(77,163,255,0.12); border: 1px solid rgba(77,163,255,0.25); color: #4da3ff; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+
+  /* ═══════ LOADING / EMPTY ═══════ */
+  .loading-wrap { display: flex; align-items: center; justify-content: center; padding: 60px 0; flex-direction: column; gap: 12px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; color: var(--text3); }
+  .empty-state { text-align: center; padding: 40px 0; color: var(--text3); font-size: 14px; }
+  .empty-state .e-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.5; }
+
+  /* Notification badge on nav */
+  .nav-badge { position: absolute; top: 2px; right: 10px; width: 8px; height: 8px; background: var(--accent3); border-radius: 50%; border: 2px solid var(--bg); }
+  .nav-btn { position: relative; }
+
+  /* ═══════ VIEWS COUNTER ═══════ */
+  .views-counter { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text3); font-weight: 500; }
+  .views-counter svg { width: 12px; height: 12px; opacity: 0.6; flex-shrink: 0; }
+
+  /* ═══════ ADMIN VIEWS BOOST ═══════ */
+  .boost-btn { padding: 6px 12px; border-radius: 8px; background: rgba(255,200,0,0.12); border: 1px solid rgba(255,200,0,0.25); color: #ffd700; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+  .boost-btn:active { opacity: 0.8; }
+  .boost-input { width: 70px; padding: 5px 8px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; text-align: center; }
+
+  /* ═══════ SKELETON LOADING ═══════ */
+  @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+  .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; border-radius: 8px; }
+  .skeleton-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .sk-line { height: 12px; margin-bottom: 8px; }
+  .sk-line.tall { height: 18px; }
+  .sk-line.short { width: 55%; }
+  .sk-line.tiny { width: 35%; height: 10px; }
+  .sk-icon { width: 48px; height: 48px; border-radius: 14px; flex-shrink: 0; }
+  .sk-row { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .sk-meta { flex: 1; }
+
+  /* ═══════ APPLY COUNT BADGE ═══════ */
+  .apply-count { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; background: rgba(124,92,255,0.12); border: 1px solid rgba(124,92,255,0.25); color: var(--accent); font-size: 10px; font-weight: 700; font-family: var(--font-display); }
+
+  /* ═══════ ADMIN APPLY COUNT BOOST ═══════ */
+  .boost-applies-btn { padding: 6px 12px; border-radius: 8px; background: rgba(124,92,255,0.12); border: 1px solid rgba(124,92,255,0.25); color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+
+  /* ═══════ FAV NAV BADGE ═══════ */
+  .nav-fav-badge { position: absolute; top: 4px; right: 8px; min-width: 16px; height: 16px; padding: 0 4px; background: var(--accent3); border-radius: 8px; border: 2px solid var(--bg); color: #fff; font-size: 9px; font-weight: 700; font-family: var(--font-display); display: flex; align-items: center; justify-content: center; line-height: 1; opacity: 0; transform: scale(0.5); transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; }
+  .nav-fav-badge.visible { opacity: 1; transform: scale(1); }
+
+  /* ═══════ SHARE BUTTON ═══════ */
+  .share-btn { width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text3); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+  .share-btn:active { transform: scale(0.9); }
+
+  /* ═══════ SEARCH HISTORY ═══════ */
+  .search-history { padding: 8px 0 4px; }
+  .search-history-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-display); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+  .search-history-clear { font-size: 10px; color: var(--accent); font-weight: 500; cursor: pointer; text-transform: none; letter-spacing: 0; }
+  .search-history-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .search-history-chip { padding: 5px 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .search-history-chip:active { background: var(--surface2); }
+
+  /* ═══════ FEAT-BTN (stop propagation handled in JS) ═══════ */
+  .feat-apply-wrap { display: flex; gap: 8px; }
+
+  /* ═══════ SALARY VALIDATION ═══════ */
+  .form-input.invalid { border-color: var(--red) !important; }
+  .salary-hint { font-size: 11px; color: var(--red); margin-top: -6px; margin-bottom: 8px; display: none; }
+  .salary-hint.show { display: block; }
+
+  /* ═══════ SALARY INPUT ROW ═══════ */
+  .salary-row { display: flex; gap: 8px; align-items: center; }
+  .salary-row .form-input { flex: 1; }
+  .salary-currency { font-size: 14px; font-weight: 700; color: var(--text2); white-space: nowrap; padding: 0 4px; }
+
+  /* ═══════ SELECT DROPDOWN ═══════ */
+  .form-select { width: 100%; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-size: 14px; font-family: var(--font-body); outline: none; margin-bottom: 10px; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  [data-theme="light"] .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(0,0,0,0.4)' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+
+  /* ═══════ CAROUSEL ═══════ */
+  .carousel-wrap { position: relative; overflow: hidden; border-radius: var(--radius); margin-bottom: 4px; }
+  .carousel-track { display: flex; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+  .carousel-track .featured-card { flex-shrink: 0; width: 100%; }
+  .carousel-dots { display: flex; justify-content: center; gap: 6px; padding: 8px 0 4px; }
+  .carousel-dot { width: 6px; height: 6px; border-radius: 3px; background: var(--border2); transition: all 0.3s; cursor: pointer; }
+  .carousel-dot.active { width: 18px; background: var(--accent); }
+
+  /* ═══════ PREMIUM SECTION ═══════ */
+  .premium-section { margin-bottom: 8px; }
+  .premium-card { background: linear-gradient(135deg, rgba(255,200,0,0.08), rgba(255,140,0,0.05)); border: 1px solid rgba(255,200,0,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.18s; }
+  .premium-card:active { transform: scale(0.98); }
+  .premium-card-glow { position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,200,0,0.15), transparent 70%); pointer-events: none; }
+  .premium-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; background: linear-gradient(90deg,#ffcc00,#ff8800); color: #000; font-size: 10px; font-weight: 800; font-family: var(--font-display); margin-bottom: 8px; }
+  .premium-title { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.3px; margin-bottom: 4px; }
+  .premium-company { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+  .premium-salary { font-size: 16px; font-weight: 800; color: #ffcc00; font-family: var(--font-display); }
+
+  /* ═══════ NEWS ADMIN ═══════ */
+  .news-admin-btn { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: var(--radius-sm); background: rgba(77,255,154,0.07); border: 1px solid rgba(77,255,154,0.2); color: rgba(77,255,154,0.9); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-family: var(--font-body); width: 100%; text-align: left; }
+  .news-pinned-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 8px; background: rgba(255,200,0,0.15); color: #ffd700; font-size: 10px; font-weight: 700; margin-left: 6px; }
+  .news-admin-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; }
+  .news-admin-item-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .news-admin-item-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+  /* ═══════ NOTIFICATIONS SCREEN ═══════ */
+  .notif-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: all 0.15s; }
+  .notif-item:active { background: var(--surface2); }
+  .notif-item.unread { border-left: 3px solid var(--accent); }
+  .notif-icon { font-size: 24px; flex-shrink: 0; width: 36px; text-align: center; }
+  .notif-body { flex: 1; }
+  .notif-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .notif-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .notif-time { font-size: 10px; color: var(--text3); margin-top: 4px; }
+  .notif-cat-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); font-size: 12px; cursor: pointer; transition: all 0.15s; margin: 4px 4px 4px 0; }
+  .notif-cat-chip.active { background: rgba(124,92,255,0.15); border-color: rgba(124,92,255,0.35); color: var(--accent); }
+
+  /* ═══════ PRIVACY SCREEN ═══════ */
+  .privacy-section { margin-bottom: 20px; }
+  .privacy-heading { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-display); margin-bottom: 8px; }
+  .privacy-text { font-size: 13px; color: var(--text2); line-height: 1.7; }
+
+  /* ═══════ SUPPORT SCREEN ═══════ */
+  .support-hero { text-align: center; padding: 24px 0 16px; }
+  .support-hero-icon { font-size: 52px; margin-bottom: 12px; }
+  .support-hero-title { font-size: 20px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.5px; margin-bottom: 8px; }
+  .support-hero-sub { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .support-tg-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #229ED9, #1a7bbf); color: #fff; font-size: 15px; font-weight: 700; font-family: var(--font-display); cursor: pointer; border: none; width: 100%; margin: 16px 0 10px; }
+  .support-issue-label { font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+
+  /* ═══════ ADMIN NEWS MODAL ═══════ */
+  .news-modal-form { display: flex; flex-direction: column; gap: 8px; }
+
+  /* ═══════ PWA INSTALL BANNER ═══════ */
+  .pwa-banner {
+    position: fixed; bottom: calc(var(--nav-h) + 12px); left: 12px; right: 12px;
+    z-index: 200; background: linear-gradient(135deg, rgba(124,92,255,0.95), rgba(77,163,255,0.95));
+    border-radius: 20px; padding: 16px; display: flex; gap: 12px; align-items: center;
+    box-shadow: 0 8px 32px rgba(124,92,255,0.4); backdrop-filter: blur(20px);
+    transform: translateY(120%); opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .pwa-banner { display: none; }
+  .pwa-banner.show { display: flex; transform: translateY(0); opacity: 1; }
+  .pwa-banner-icon { font-size: 36px; flex-shrink: 0; }
+  .pwa-banner-text { flex: 1; }
+  .pwa-banner-title { font-size: 14px; font-weight: 700; color: #fff; font-family: var(--font-display); margin-bottom: 3px; letter-spacing: -0.3px; }
+  .pwa-banner-sub { font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1.4; }
+  .pwa-banner-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+  .pwa-install-btn { padding: 8px 14px; border-radius: 12px; background: #fff; color: #5c3dff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); white-space: nowrap; }
+  .pwa-close-btn { padding: 6px 14px; border-radius: 12px; background: rgba(255,255,255,0.15); color: #fff; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; font-family: var(--font-body); text-align: center; }
+
+  /* iOS инструкция */
+  .pwa-ios-modal { position: fixed; inset: 0; z-index: 300; display: flex; align-items: flex-end; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .pwa-ios-modal.show { opacity: 1; pointer-events: all; }
+  .pwa-ios-box { background: var(--bg2); border-radius: 24px 24px 0 0; padding: 24px 20px 40px; width: 100%; border: 1px solid var(--border); }
+  .pwa-ios-title { font-size: 18px; font-weight: 700; color: var(--text); font-family: var(--font-display); margin-bottom: 6px; letter-spacing: -0.5px; }
+  .pwa-ios-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .pwa-ios-step { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .pwa-ios-step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: var(--font-display); }
+  .pwa-ios-step-text { font-size: 13px; color: var(--text2); line-height: 1.4; }
+  .pwa-ios-step-text b { color: var(--text); }
+  .pwa-ios-close { width: 100%; padding: 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; font-family: var(--font-body); }
+
+  /* ── WALLET SCREEN ── */
+  .wallet-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+  .wallet-tabs::-webkit-scrollbar{display:none}
+  .wallet-tab{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:11px;font-weight:600;font-family:var(--font-display);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all 0.2s;letter-spacing:0.02em}
+  .wallet-tab.wt-active{background:rgba(124,92,255,0.25);border-color:var(--accent);color:var(--text)}
+  .wpane{display:none}.wpane.wt-active{display:block}
+  .wlt-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+  .wlt-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,92,255,0.14) 0%,rgba(77,163,255,0.09) 100%);border-radius:var(--radius)}
+  .wlt-card-inner{position:relative;z-index:1}
+  .wlt-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-display);margin-bottom:6px}
+  .wlt-amount{font-family:var(--font-display);font-size:34px;font-weight:900;letter-spacing:-1.5px;background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,0.7) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px}
+  [data-theme="light"] .wlt-amount{background:linear-gradient(135deg,#1a1a2e 0%,rgba(26,26,46,0.7) 100%);-webkit-background-clip:text;background-clip:text}
+  .wlt-amount span{font-size:17px;font-weight:600}
+  .wlt-btn{padding:12px 20px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--font-body);transition:all 0.2s;display:inline-block}
+  .wlt-btn:active{transform:scale(0.97)}
+  .wvac-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+  .wvac-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+  .wvac-item:last-child{border-bottom:none;padding-bottom:0}
+  .wvac-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+  .wvac-sub{font-size:11px;color:var(--text3)}
+  .wtx-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+  .wtx-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+  .wtx-item:last-child{border-bottom:none;padding-bottom:0}
+  .wtx-dot{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;font-weight:700}
+  .wtx-dot.plus{background:rgba(77,255,154,0.15);border:1px solid rgba(77,255,154,0.2);color:var(--green)}
+  .wtx-dot.minus{background:rgba(124,92,255,0.15);border:1px solid rgba(124,92,255,0.2);color:var(--accent)}
+  .wtx-name{font-size:13px;color:var(--text);font-weight:500}
+  .wtx-date{font-size:11px;color:var(--text3);margin-top:1px}
+  .wtx-amount{font-family:var(--font-display);font-size:13px;font-weight:700;margin-left:auto;flex-shrink:0}
+  .wtx-amount.plus{color:var(--green)}.wtx-amount.minus{color:var(--text2)}
+  .wflow-step{display:flex;gap:12px;margin-bottom:0}
+  .wstep-left{display:flex;flex-direction:column;align-items:center}
+  .wstep-num{width:32px;height:32px;border-radius:10px;background:rgba(124,92,255,0.2);border:1px solid rgba(124,92,255,0.4);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--accent);flex-shrink:0}
+  .wstep-num.done{background:rgba(77,255,154,0.15);border-color:rgba(77,255,154,0.3);color:var(--green)}
+  .wstep-line{width:1px;flex:1;min-height:14px;background:var(--border2);margin:4px 0}
+  .wstep-body{flex:1;padding-bottom:16px}
+  .wstep-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;padding-top:5px}
+  .wstep-desc{font-size:12px;color:var(--text3);line-height:1.5}
+  .wreq-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-top:8px}
+  .wreq-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
+  .wreq-lbl{color:var(--text3)}.wreq-val{color:var(--text);font-weight:600}
+  .wreq-hint{font-size:11px;color:var(--orange);margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
+  .wupload-box{background:var(--surface);border:1.5px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;margin-top:8px;text-align:center;cursor:pointer;transition:all 0.2s}
+  .wupload-box:hover,.wupload-box:active{border-color:var(--accent);background:rgba(124,92,255,0.08)}
+  .wupload-icon{font-size:24px;margin-bottom:6px}
+  .wupload-text{font-size:12px;color:var(--text3)}
+  .wnotif-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-top:8px;font-size:12px;color:var(--text2);line-height:1.6}
+  .wnotif-box b{color:var(--accent2)}
+  .wtariff-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+  .wtariff-card:active{transform:scale(0.97)}
+  .wtariff-card.popular{border-color:rgba(124,92,255,0.6);background:rgba(124,92,255,0.1)}
+  .wtariff-card.popular::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .wtariff-card.wsel{border-color:var(--accent2);background:rgba(77,163,255,0.07)}
+  .wpop-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--font-display);background:rgba(124,92,255,0.25);border:1px solid rgba(124,92,255,0.4);color:var(--accent);margin-bottom:8px;letter-spacing:0.05em}
+  .wtariff-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  .wtariff-name{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+  .wtariff-desc{font-size:11px;color:var(--text3);line-height:1.5}
+  .wtariff-price{font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--text);flex-shrink:0}
+  .wtariff-price .cur{font-size:12px;font-weight:600;color:var(--text2)}
+  .wtariff-feats{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .wfeat-pill{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text2)}
+  .wfeat-pill.acc{background:rgba(77,255,154,0.1);border-color:rgba(77,255,154,0.2);color:var(--green)}
+  .wbtn-select{width:100%;padding:14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--font-body);margin-top:14px;transition:all 0.2s}
+  .wbtn-select:active{transform:scale(0.98)}
+  .wtariff-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5}
+  .wtariff-note a{color:var(--accent2);text-decoration:none}
+  .wsupport-row{text-align:center;margin-top:14px;font-size:12px;color:var(--text3)}
+  .wsupport-row a{color:var(--accent2);text-decoration:none;font-weight:600}
+  /* ── END WALLET CSS ── */
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div id="app">
+
+  <!-- ═══════ HOME ═══════ -->
+  <div class="screen" id="homeScreen">
+    <div class="tg-safe-top"></div>
+    <div class="header">
+      <div class="header-row">
+        <div>
+          <div class="greeting">Добро пожаловать</div>
+          <div class="logo">Jobic<span>.</span></div>
+          <div class="tagline">Найди работу своей мечты</div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <div class="search-wrap">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="searchInput" placeholder="Профессия, компания..." oninput="onSearchInput(this.value)" onblur="onSearchBlur()" onfocus="showSearchHistory()" />
+        </div>
+        <div id="searchHistoryWrap" class="search-history" style="display:none;"></div>
+      </div>
+      <div class="filter-row" id="filterRow">
+        <div class="pill active" onclick="setFilter('Все', this)">Все</div>
+      </div>
+      <!-- Salary filter -->
+      <div class="salary-filter-row">
+        <span class="salary-filter-label">💰 Мин. зарплата</span>
+        <input type="range" class="salary-range" id="salaryRange" min="0" max="500000" step="10000" value="0" oninput="onSalaryFilter(this.value)">
+        <span class="salary-filter-val" id="salaryVal">Любая</span>
+      </div>
+      <div id="featuredSection"></div>
+      <div id="premiumSection"></div>
+      <div class="sec-label">Свежие вакансии</div>
+      <div id="jobList"><div class="loading-wrap"><div class="spinner"></div><div class="loading-text">Загружаем вакансии...</div></div></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
+      <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-fav-badge" id="favBadge1"></span><span class="nav-label">Избранное</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ FAVORITES ═══════ -->
+  <div class="screen hidden" id="favScreen">
+    <div class="tg-safe-top"></div>
+    <div class="header">
+      <div class="header-row">
+        <div>
+          <div class="logo" style="font-size:22px;">Избранное<span>.</span></div>
+          <div class="tagline">Сохранённые вакансии</div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+    <div class="scroll-area" id="favList">
+      <div class="fav-empty"><div class="fav-empty-icon">❤️</div><div class="fav-empty-text">Нет избранных вакансий.<br>Нажми ♡ на карточке.</div></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
+      <button class="nav-btn active" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ DETAIL ═══════ -->
+  <div class="screen hidden" id="detailScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title" id="detailBarTitle">Вакансия</div>
+      <button class="share-btn" onclick="shareJob()" title="Поделиться">⬆️</button>
+      <button class="detail-fav-btn" id="detailFavBtn" onclick="toggleFavCurrent()">♡</button>
+    </div>
+    <div class="scroll-area">
+      <div class="detail-hero">
+        <div class="detail-hero-accent" id="detailAccent"></div>
+        <div class="detail-logo" id="detailLogo"></div>
+        <div class="detail-title" id="detailTitle"></div>
+        <div class="detail-company" id="detailCompany"></div>
+        <div class="info-chips" id="detailChips"></div>
+        <div class="detail-salary" id="detailSalary"></div>
+      </div>
+      <div class="desc-block"><div class="desc-heading">О вакансии</div><div class="desc-body" id="detailAbout"></div></div>
+      <div class="desc-block"><div class="desc-heading">Требования</div><ul class="desc-body" id="detailRequirements" style="padding-left:16px;"></ul></div>
+      <div class="desc-block"><div class="desc-heading">Условия</div><ul class="desc-body" id="detailConditions" style="padding-left:16px;"></ul></div>
+      <div class="desc-block"><div class="desc-heading">Контакты</div><div class="desc-body" id="detailContact"></div></div>
+      <button class="apply-big" id="applyBtn" onclick="applyJob()">Откликнуться</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px 8px;">
+        <span class="apply-count" id="detailApplyCount">📩 0 откликов</span>
+        <button class="share-btn" onclick="shareJob()" style="width:auto;padding:0 14px;font-size:13px;color:var(--text2);border-radius:10px;height:36px;gap:6px;display:flex;align-items:center;">⬆️ Поделиться</button>
+      </div>
+    </div>
+    <!-- No bottom nav on detail — use back button -->
+  </div>
+
+  <!-- ═══════ CREATE ═══════ -->
+  <div class="screen hidden" id="createScreen">
+    <div class="tg-safe-top"></div>
+    <div class="create-header">
+      <div class="create-title" id="createScreenTitle">Разместить вакансию</div>
+      <div class="create-sub" id="createScreenSub">Заполните информацию о позиции</div>
+    </div>
+    <div class="scroll-area">
+      <div id="adminCreateNote"></div>
+      <div class="form-block">
+        <label class="form-label">Информация о вакансии</label>
+        <input class="form-input" id="fTitle" placeholder="Название должности">
+        <input class="form-input" id="fCompany" placeholder="Название компании">
+        <select class="form-select" id="fCity"><option value="">— Выберите город —</option></select>
+        <div class="salary-row">
+          <input class="form-input" id="fSalary" placeholder="Зарплата" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');formatSalaryDisplay(this)" style="margin-bottom:0;">
+          <span class="salary-currency">₽/мес</span>
+        </div>
+        <div class="salary-hint" id="salaryHint">Укажите корректную сумму</div>
+        <select class="form-select" id="fCategory"><option value="">— Выберите категорию —</option></select>
+        <input class="form-input" id="fIcon" placeholder="Иконка компании (эмодзи, напр. 🏢)">
+      </div>
+      <div class="form-block">
+        <label class="form-label">Описание и требования</label>
+        <textarea class="form-input" id="fDesc" rows="3" placeholder="Опишите вакансию..." style="resize:none;line-height:1.5;"></textarea>
+        <textarea class="form-input" id="fReqs" rows="3" placeholder="Требования (каждое с новой строки)" style="resize:none;line-height:1.5;"></textarea>
+        <textarea class="form-input" id="fConds" rows="3" placeholder="Условия (каждое с новой строки)" style="resize:none;line-height:1.5;"></textarea>
+        <input class="form-input" id="fTags" placeholder="Теги через запятую (React, Python, Удалённо)">
+      </div>
+      <div class="form-block">
+        <label class="form-label">Контакты (куда придут отклики)</label>
+        <input class="form-input" id="fContact" placeholder="@username или телефон">
+      </div>
+      <div id="planSection">
+        <div class="form-block">
+          <label class="form-label">Тарифный план</label>
+          <div class="plan-option sel" onclick="selPlan(this)">
+            <div class="plan-icon">⚡</div>
+            <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
+            <div class="plan-price">299 ₽</div>
+            <div class="radio on"></div>
+          </div>
+          <div class="plan-option" onclick="selPlan(this)">
+            <div class="plan-icon">🚀</div>
+            <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи</div></div>
+            <div class="plan-price">799 ₽</div>
+            <div class="radio"></div>
+          </div>
+          <div class="plan-option" onclick="selPlan(this)">
+            <div class="plan-icon">👑</div>
+            <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured + email</div></div>
+            <div class="plan-price">1 990 ₽</div>
+            <div class="radio"></div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" id="editJobId" value="">
+      <button class="apply-big" id="submitBtn" onclick="submitJob()">Оплатить и разместить</button>
+      <div style="height:8px;"></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
+      <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
+      <button class="nav-btn active" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ NEWS ═══════ -->
+  <div class="screen hidden" id="newsScreen">
+    <div class="tg-safe-top"></div>
+    <div class="header">
+      <div class="header-row">
+        <div>
+          <div class="logo" style="font-size:22px;">Новости<span>.</span></div>
+          <div class="tagline">Рынок труда и карьера</div>
+        </div>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+    <div class="scroll-area" id="newsList"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
+      <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn active" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ PROFILE ═══════ -->
+  <div class="screen hidden" id="profileScreen">
+    <div class="tg-safe-top"></div>
+    <div class="header">
+      <div class="header-row">
+        <div class="logo" style="font-size:22px;">Профиль<span>.</span></div>
+        <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      </div>
+    </div>
+    <div class="scroll-area">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name" id="profileName">Пользователь</div>
+      <div class="profile-sub" id="profileSub">Участник Jobic</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-num" id="statApplied">0</div><div class="stat-name">Откликов</div></div>
+        <div class="stat-box"><div class="stat-num" id="statFavs">0</div><div class="stat-name">Избранных</div></div>
+        <div class="stat-box"><div class="stat-num" id="statPosted">0</div><div class="stat-name">Размещено</div></div>
+      </div>
+      <div class="sec-label">Меню</div>
+      <div class="menu-item" style="border-color:rgba(77,255,154,0.3);background:rgba(77,255,154,0.05);" onclick="pushTo('walletScreen')"><span class="menu-item-icon">💰</span><span class="menu-item-text">Кошелёк <span id="walletBalanceBadge" style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(77,255,154,0.15);color:var(--green);border:1px solid rgba(77,255,154,0.3);font-family:var(--font-display)">0 ₽</span></span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="openAppliedScreen()"><span class="menu-item-icon">💼</span><span class="menu-item-text">Мои отклики</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="openMyJobApplies()"><span class="menu-item-icon">📩</span><span class="menu-item-text">Отклики на мои вакансии</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="navTo('favScreen', null)"><span class="menu-item-icon">❤️</span><span class="menu-item-text">Избранные вакансии</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="pushTo('notificationsScreen')"><span class="menu-item-icon">🔔</span><span class="menu-item-text">Уведомления</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="pushTo('privacyScreen')"><span class="menu-item-icon">🛡️</span><span class="menu-item-text">Конфиденциальность</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="pushTo('supportScreen')"><span class="menu-item-icon">💬</span><span class="menu-item-text">Поддержка</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" onclick="pwaTriggerInstall()" style="border-color:rgba(124,92,255,0.4);background:rgba(124,92,255,0.08);"><span class="menu-item-icon">📲</span><span class="menu-item-text">Установить как приложение</span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item"><span class="menu-item-icon">ℹ️</span><span class="menu-item-text">О приложении</span><span class="menu-item-arrow">›</span></div>
+      <div style="height:12px;"></div>
+      <div class="menu-item admin-btn" onclick="openAdminLogin()"><span class="menu-item-icon">🔐</span><span class="menu-item-text" id="adminMenuText">Войти как администратор</span><span class="menu-item-arrow">›</span></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
+      <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
+      <button class="nav-btn active" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN PANEL ═══════ -->
+  <div class="screen hidden" id="adminScreen">
+    <div class="tg-safe-top"></div>
+    <div class="admin-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="admin-title">Панель</div>
+      <div class="admin-badge">ADMIN</div>
+    </div>
+    <div class="scroll-area">
+      <div class="admin-card">
+        <div class="admin-card-title">Статистика</div>
+        <div class="admin-stat-row" style="grid-template-columns:repeat(4,1fr);">
+          <div class="admin-stat"><div class="admin-stat-num" id="aStatJobs">0</div><div class="admin-stat-label">Вакансий</div></div>
+          <div class="admin-stat"><div class="admin-stat-num" id="aStatApplies">0</div><div class="admin-stat-label">Откликов</div></div>
+          <div class="admin-stat"><div class="admin-stat-num" id="aStatPinned">0</div><div class="admin-stat-label">В топе</div></div>
+          <div class="admin-stat"><div class="admin-stat-num" id="aStatViews">0</div><div class="admin-stat-label">Просмотров</div></div>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Действия</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;" onclick="openAdminCreate()">➕ Добавить</button>
+          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;" onclick="pushTo('adminAppliesScreen')">📩 Отклики</button>
+          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;grid-column:span 2;" onclick="pushTo('adminNewsScreen');renderAdminNews()">📰 Управление новостями</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">💳 Заявки на оплату</div>
+        <div id="adminPaymentRequests"><div class="loading-text" style="color:var(--text3);font-size:13px;">Загрузка...</div></div>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">👥 Выдать баланс пользователю</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input class="form-input" id="adminBalanceUser" placeholder="@username" style="flex:1;margin:0;min-height:44px;">
+          <input class="form-input" id="adminBalanceAmt" type="number" placeholder="Сумма ₽" style="width:110px;margin:0;min-height:44px;">
+        </div>
+        <button class="modal-btn" style="margin-bottom:0;" onclick="adminGiveBalance()">Выдать баланс</button>
+      </div>
+      <div class="admin-card">
+        <div class="admin-card-title">Все вакансии</div>
+        <div id="adminJobList"><div class="loading-text" style="color:var(--text3);font-size:13px;">Загрузка...</div></div>
+      </div>
+      <button class="modal-btn-cancel" style="margin-top:4px;" onclick="logoutAdmin()">🚪 Выйти из панели</button>
+      <div style="height:8px;"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN APPLIES ═══════ -->
+  <div class="screen hidden" id="adminAppliesScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Отклики соискателей</div>
+    </div>
+    <div class="scroll-area" id="adminAppliesList">
+      <div class="loading-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ MY APPLIES ═══════ -->
+  <div class="screen hidden" id="appliedScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Мои отклики</div>
+    </div>
+    <div class="scroll-area" id="myAppliesList">
+      <div class="empty-state"><div class="e-icon">📭</div>Ещё нет откликов</div>
+    </div>
+  </div>
+
+  <!-- ═══════ ОТКЛИКИ НА МОИ ВАКАНСИИ ═══════ -->
+  <div class="screen hidden" id="myJobAppliesScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Отклики на мои вакансии</div>
+    </div>
+    <div class="scroll-area" id="myJobAppliesList">
+      <div class="loading-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ NOTIFICATIONS ═══════ -->
+  <div class="screen hidden" id="notificationsScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Уведомления</div>
+      <button style="background:none;border:none;color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;padding:0 4px;" onclick="markAllRead()">Все прочитано</button>
+    </div>
+    <div class="scroll-area">
+      <div style="padding: 8px 0 4px;">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;">Следить за категориями:</div>
+        <div id="notifCatChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
+      </div>
+      <div id="notifList"><div class="empty-state"><div class="e-icon">🔔</div>Новых уведомлений нет</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ PRIVACY ═══════ -->
+  <div class="screen hidden" id="privacyScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Конфиденциальность</div>
+    </div>
+    <div class="scroll-area" style="padding-top:8px;">
+      <div class="privacy-section">
+        <div class="privacy-heading">Какие данные мы собираем</div>
+        <div class="privacy-text">Jobic собирает только те данные, которые вы предоставляете добровольно: ваш Telegram username, имя и контактную информацию при отклике на вакансию. Мы не собираем и не храним пароли, финансовые данные или местоположение.</div>
+      </div>
+      <div class="privacy-section">
+        <div class="privacy-heading">Как используются данные</div>
+        <div class="privacy-text">Ваши данные используются исключительно для связи работодателя с соискателем. Мы не передаём ваши данные третьим лицам, не продаём их рекламодателям и не используем в маркетинговых целях.</div>
+      </div>
+      <div class="privacy-section">
+        <div class="privacy-heading">Хранение данных</div>
+        <div class="privacy-text">Все данные хранятся на защищённых серверах Supabase (ЕС). Отклики хранятся в течение 90 дней, после чего автоматически удаляются. Вы можете запросить удаление своих данных в любой момент через поддержку.</div>
+      </div>
+      <div class="privacy-section">
+        <div class="privacy-heading">Telegram Mini App</div>
+        <div class="privacy-text">Приложение работает через Telegram WebApp API. Telegram предоставляет нам только публичные данные вашего профиля (имя, username). Мы не имеем доступа к вашим сообщениям или другим приватным данным.</div>
+      </div>
+      <div class="privacy-section">
+        <div class="privacy-heading">Удаление данных</div>
+        <div class="privacy-text">Вы можете запросить полное удаление всех ваших данных, написав в поддержку @sapgos. Запрос будет обработан в течение 3 рабочих дней.</div>
+      </div>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ SUPPORT ═══════ -->
+  <div class="screen hidden" id="supportScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Поддержка</div>
+    </div>
+    <div class="scroll-area">
+      <div class="support-hero">
+        <div class="support-hero-icon">💬</div>
+        <div class="support-hero-title">Нужна помощь?</div>
+        <div class="support-hero-sub">Наша команда поддержки готова помочь вам с любым вопросом. Среднее время ответа — 30 минут.</div>
+      </div>
+      <div class="support-issue-label">Опишите проблему (необязательно)</div>
+      <textarea class="form-input" id="supportMessage" rows="4" placeholder="Например: не могу разместить вакансию, не приходит код..." style="resize:none;line-height:1.5;margin-bottom:12px;"></textarea>
+      <button class="support-tg-btn" onclick="openSupport()">
+        ✈️ Написать в Telegram
+      </button>
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:16px;">Откроется чат с @sapgos в Telegram</div>
+      <div class="desc-block" style="margin-top:8px;">
+        <div class="desc-heading">Частые вопросы</div>
+        <div class="desc-body">
+          <div style="margin-bottom:12px;"><div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px;">Как разместить вакансию бесплатно?</div><div style="font-size:12px;color:var(--text2);">Бесплатное размещение доступно только администраторам. Обычные пользователи могут выбрать один из платных тарифов.</div></div>
+          <div style="margin-bottom:12px;"><div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px;">Как долго висит вакансия?</div><div style="font-size:12px;color:var(--text2);">Стандарт — 7 дней, Продвижение — 14 дней, Премиум — 30 дней.</div></div>
+          <div><div style="font-weight:600;color:var(--text);font-size:13px;margin-bottom:4px;">Как удалить мои данные?</div><div style="font-size:12px;color:var(--text2);">Напишите нам в поддержку и мы удалим все ваши данные в течение 3 дней.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════ WALLET SCREEN ═══════ -->
+  <div class="screen hidden" id="walletScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">💰 Кошелёк</div>
+    </div>
+    <div class="scroll-area">
+      <div class="wallet-tabs">
+        <button class="wallet-tab wt-active" onclick="walletTab('main',this)">💰 Кошелёк</button>
+        <button class="wallet-tab" onclick="walletTab('flow',this)">📋 Как оплатить</button>
+        <button class="wallet-tab" onclick="walletTab('tariffs',this)">🚀 Тарифы</button>
+      </div>
+      <div class="wpane wt-active" id="wp-main">
+        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="walletTab('tariffs', document.querySelectorAll('.wallet-tab')[2])">Пополнить баланс</button></div></div>
+        <div class="sec-label" style="margin-top:14px">Активные вакансии</div>
+        <div class="wvac-card" id="walletVacancies"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">Нет активных вакансий</div></div>
+        <div class="sec-label" style="margin-top:2px">История транзакций</div>
+        <div class="wtx-card" id="walletTransactions"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">История пуста</div></div>
+        <div class="wsupport-row">Вопросы по оплате: <a href="https://t.me/sapgos">@sapgos</a></div>
+      </div>
+      <div class="wpane" id="wp-flow">
+        <div class="sec-label">Как пополнить баланс</div>
+        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">1</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Выберите тариф</div><div class="wstep-desc">Перейдите во вкладку «Тарифы» и выберите подходящий пакет размещения</div></div></div>
+        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">2</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Переведите оплату</div><div class="wstep-desc">Сделайте перевод по реквизитам ЮМани</div><div class="wreq-box"><div class="wreq-row"><span class="wreq-lbl">Номер телефона</span><span class="wreq-val">+7 977 820 97 44</span></div><div class="wreq-row"><span class="wreq-lbl">Банк</span><span class="wreq-val">ЮМани</span></div><div class="wreq-row"><span class="wreq-lbl">Получатель</span><span class="wreq-val">Ярослав.Б</span></div><div class="wreq-hint">⚠️ В комментарии к переводу укажите ваш @username в Telegram</div></div></div></div>
+        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">3</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Прикрепите скриншот чека</div><div class="wstep-desc">Сделайте скрин подтверждения оплаты и загрузите его</div><div class="wupload-box" id="walletUploadBox" onclick="walletUploadScreenshot()"><div class="wupload-icon">📎</div><div class="wupload-text" id="walletUploadText">Нажмите, чтобы прикрепить скриншот</div></div><input type="file" id="walletFileInput" accept="image/*" style="display:none" onchange="walletHandleFile(event)"><button id="walletPaidBtn" onclick="walletConfirmPayment()" style="display:none;width:100%;margin-top:14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#4dff9a,#00c97a);color:#000;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);letter-spacing:-0.3px;">✅ Я оплатил — уведомить администратора</button></div></div>
+        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">4</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Уведомление уходит автоматически</div><div class="wstep-desc">Администратор @sapgos получит сообщение со скриншотом через бота</div><div class="wnotif-box">🔔 Новая оплата<br>👤 <b id="wNotifUser">@username</b> · Тариф: <span id="wNotifTariff">Стандарт</span><br>💳 Сумма: <span id="wNotifSum">1 500 ₽</span><br>📎 [скриншот прикреплён]</div></div></div>
+        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num done">✓</div></div><div class="wstep-body"><div class="wstep-title">Баланс зачислен</div><div class="wstep-desc">Администратор проверяет перевод и вручную начисляет баланс. Обычно в течение нескольких часов.</div></div></div>
+        <div class="wsupport-row" style="margin-top:8px">Вопросы: <a href="https://t.me/sapgos">@sapgos</a></div>
+      </div>
+      <div class="wpane" id="wp-tariffs">
+        <div class="sec-label">Выберите тариф</div>
+        <div class="wtariff-card" onclick="walletSelTariff(this,'Старт','900')"><div class="wtariff-row"><div><div class="wtariff-name">Старт</div><div class="wtariff-desc">1 вакансия · 30 дней</div></div><div class="wtariff-price">900 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">1 вакансия</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill">Стандартный вид</span></div></div>
+        <div class="wtariff-card popular" onclick="walletSelTariff(this,'Стандарт','1 500')"><div class="wpop-badge">⚡ ПОПУЛЯРНЫЙ</div><div class="wtariff-row"><div><div class="wtariff-name">Стандарт</div><div class="wtariff-desc">3 вакансии · 30 дней</div></div><div class="wtariff-price">1 500 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">3 вакансии</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Выделение</span></div></div>
+        <div class="wtariff-card" onclick="walletSelTariff(this,'Про','5 000')"><div class="wtariff-row"><div><div class="wtariff-name">Про</div><div class="wtariff-desc">10 вакансий · 30 дней · Закреп</div></div><div class="wtariff-price">5 000 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">10 вакансий</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Закреп</span><span class="wfeat-pill acc">Выделение</span><span class="wfeat-pill acc">Значок PRO</span></div></div>
+        <button class="wbtn-select" onclick="walletTab('flow', document.querySelectorAll('.wallet-tab')[1])">Оплатить → Реквизиты</button>
+        <div class="wtariff-note">После оплаты баланс начисляется вручную администратором.<br>Поддержка: <a href="https://t.me/sapgos">@sapgos</a></div>
+      </div>
+    </div>
+  </div>
+  <!-- ═══════ END WALLET SCREEN ═══════ -->
+  <!-- ═══════ ADMIN NEWS ═══════ -->
+  <div class="screen hidden" id="adminNewsScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">Управление новостями</div>
+    </div>
+    <div class="scroll-area">
+      <button class="news-admin-btn" onclick="openNewsModal()">➕ Добавить новость</button>
+      <div id="adminNewsList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ TOAST ═══════ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══════ TG AUTH MODAL ═══════ -->
+  <div class="modal-overlay" id="tgAuthModal">
+    <div class="modal-sheet" style="padding:28px 24px 32px;">
+      <!-- Шаг 1: ввод username -->
+      <div id="authStep1">
+        <div style="text-align:center;font-size:48px;margin-bottom:12px;">✈️</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:8px;text-align:center;">Войти через Telegram</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;text-align:center;">Введите ваш Telegram username — мы пришлём код подтверждения</div>
+        <div style="position:relative;margin-bottom:12px;">
+          <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:15px;">@</span>
+          <input id="authUsername" type="text" placeholder="username" autocomplete="off" autocorrect="off" autocapitalize="off"
+            style="width:100%;padding:14px 14px 14px 30px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:15px;font-family:var(--font-body);box-sizing:border-box;outline:none;"
+            onkeydown="if(event.key==='Enter')sendAuthCode()">
+        </div>
+        <div id="authStep1Error" style="font-size:12px;color:var(--red);margin-bottom:10px;min-height:18px;text-align:center;"></div>
+        <button onclick="sendAuthCode()" id="authSendBtn"
+          style="width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#229ED9,#1a7bbf);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);margin-bottom:10px;min-height:52px;">
+          Получить код
+        </button>
+        <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:12px;">Бот @JOBlK_bot пришлёт вам код в Telegram</div>
+        <button class="modal-btn-cancel" onclick="closeModal('tgAuthModal')">Отмена</button>
+      </div>
+
+      <!-- Шаг 2: ввод кода -->
+      <div id="authStep2" style="display:none;">
+        <div style="text-align:center;font-size:48px;margin-bottom:12px;">🔐</div>
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:8px;text-align:center;">Введите код</div>
+        <div id="authStep2Hint" style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;text-align:center;">Мы отправили 6-значный код в Telegram</div>
+        <input id="authCode" type="number" placeholder="000000" maxlength="6"
+          style="width:100%;padding:16px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:28px;font-family:var(--font-display);box-sizing:border-box;outline:none;text-align:center;letter-spacing:8px;margin-bottom:12px;"
+          onkeydown="if(event.key==='Enter')verifyAuthCode()">
+        <div id="authStep2Error" style="font-size:12px;color:var(--red);margin-bottom:10px;min-height:18px;text-align:center;"></div>
+        <button onclick="verifyAuthCode()" id="authVerifyBtn"
+          style="width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#7c5cff,#4da3ff);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);margin-bottom:10px;min-height:52px;">
+          Войти
+        </button>
+        <button onclick="backToStep1()" style="width:100%;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border);color:var(--text2);font-size:14px;cursor:pointer;font-family:var(--font-body);">
+          ← Назад
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Admin Login -->
+  <div class="modal-overlay" id="adminLoginModal">
+    <div class="modal-box">
+      <div class="modal-title">🔐 Вход для администратора</div>
+      <div class="modal-sub">Введите пин-код для доступа к панели</div>
+      <input class="pin-input" id="pinInput" type="password" maxlength="6" placeholder="••••••" inputmode="numeric">
+      <button class="modal-btn" onclick="checkPin()">Войти</button>
+      <button class="modal-btn-cancel" onclick="closeModal('adminLoginModal')">Отмена</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Apply confirm -->
+  <div class="modal-overlay" id="applyModal">
+    <div class="modal-box">
+      <div class="modal-title">📩 Откликнуться</div>
+      <div class="modal-sub">Работодатель получит уведомление с вашим контактом</div>
+      <input class="form-input" id="applyName" placeholder="Ваше имя" style="margin-bottom:10px;">
+      <input class="form-input" id="applyContact" placeholder="@username или телефон" style="margin-bottom:14px;">
+      <button class="modal-btn" onclick="confirmApply()">Отправить отклик</button>
+      <button class="modal-btn-cancel" onclick="closeModal('applyModal')">Отмена</button>
+    </div>
+  </div>
+
+  <!-- MODAL: News Create/Edit -->
+  <div class="modal-overlay" id="newsModal">
+    <div class="modal-box" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-title" id="newsModalTitle">📰 Новая новость</div>
+      <input type="hidden" id="editNewsId" value="">
+      <div class="news-modal-form">
+        <input class="form-input" id="nTitle" placeholder="Заголовок новости" style="margin-bottom:0;">
+        <textarea class="form-input" id="nBody" rows="3" placeholder="Текст новости..." style="resize:none;line-height:1.5;margin-bottom:0;"></textarea>
+        <input class="form-input" id="nTag" placeholder="Тег (напр. 📈 Рынок)" style="margin-bottom:0;">
+        <input class="form-input" id="nTagColor" placeholder="Цвет тега (напр. #4dff9a)" style="margin-bottom:0;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer;">
+          <input type="checkbox" id="nPinned" style="width:18px;height:18px;"> Закрепить новость 📌
+        </label>
+      </div>
+      <button class="modal-btn" style="margin-top:14px;" onclick="saveNews()">Сохранить</button>
+      <button class="modal-btn-cancel" onclick="closeModal('newsModal')">Отмена</button>
+    </div>
+  </div>
+
+
+  <!-- PWA INSTALL BANNER -->
+  <div class="pwa-banner" id="pwaBanner" style="display:none;">
+    <div class="pwa-banner-icon">📲</div>
+    <div class="pwa-banner-text">
+      <div class="pwa-banner-title">Установите Jobic</div>
+      <div class="pwa-banner-sub">Работает как приложение — быстро и удобно без браузера</div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button class="pwa-install-btn" onclick="pwaTriggerInstall()">Установить</button>
+      <button class="pwa-close-btn" onclick="pwaDismiss()">Не сейчас</button>
+    </div>
+  </div>
+
+  <!-- iOS инструкция -->
+  <div class="pwa-ios-modal" id="pwaIosModal">
+    <div class="pwa-ios-box">
+      <div class="pwa-ios-title">📲 Добавить на экран</div>
+      <div class="pwa-ios-sub">Установите Jobic как приложение за 2 шага:</div>
+      <div class="pwa-ios-step">
+        <div class="pwa-ios-step-num">1</div>
+        <div class="pwa-ios-step-text">Нажмите кнопку <b>«Поделиться»</b> ⬆️ внизу Safari</div>
+      </div>
+      <div class="pwa-ios-step">
+        <div class="pwa-ios-step-num">2</div>
+        <div class="pwa-ios-step-text">Выберите <b>«На экран домой»</b> и нажмите <b>«Добавить»</b></div>
+      </div>
+      <button class="pwa-ios-close" onclick="pwaCloseIos()">Понятно ✓</button>
+    </div>
+  </div>
+
+</div>
+<script>
+// ═══════════════════════════════════════════════
+// TELEGRAM
+// ═══════════════════════════════════════════════
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready(); tg.expand();
+  tg.setHeaderColor('#0d0d1a');
+  tg.setBackgroundColor('#0d0d1a');
+  if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
+  const u = tg.initDataUnsafe?.user;
+  if (u && u.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
+  if (u) {
+    document.getElementById('profileName').textContent =
+      [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
+  }
+}
+
+// iOS keyboard fix
+let lastScrollY = 0;
+document.addEventListener('focusin', e => {
+  if (e.target.matches('input, textarea')) {
+    lastScrollY = window.scrollY;
+    setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 350);
+  }
+});
+document.addEventListener('focusout', () => setTimeout(() => window.scrollTo(0, lastScrollY), 100));
+
+// ═══════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════
+let darkMode = true;
+function toggleTheme() {
+  darkMode = !darkMode;
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+  document.querySelectorAll('.theme-btn').forEach(b => b.textContent = darkMode ? '🌙' : '☀️');
+  if (tg) {
+    const c = darkMode ? '#0d0d1a' : '#f0f0f8';
+    tg.setHeaderColor(c);
+    tg.setBackgroundColor(c);
+  }
+  showToast(darkMode ? '🌙 Тёмная тема' : '☀️ Светлая тема');
+}
+
+// ═══════════════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════════════
+const SUPABASE_URL  = 'https://vznzoismzrtipowpfigu.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bnpvaXNtenJ0aXBvd3BmaWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTU3NzYsImV4cCI6MjA5Mjg5MTc3Nn0._qyN2g_nThgNtDv42kRsByk_D4TIDVTadWfvmbQdU68';
+
+const ADMIN_PIN = '1234'; // ← Смените на свой пин
+
+async function sbFetch(path, options = {}) {
+  const res = await fetch(SUPABASE_URL + path, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || '',
+      ...(options.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('Supabase error:', err);
+    throw new Error(err);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
+}
+
+// ─── JOBS ────────────────────────────────────────
+let _jobsCache = null, _jobsCacheAt = 0;
+const JOBS_TTL = 30000; // 30 секунд
+
+async function loadJobs(force = false) {
+  if (!force && _jobsCache && (Date.now() - _jobsCacheAt < JOBS_TTL)) return _jobsCache;
+  try {
+    const rows = await sbFetch('/rest/v1/jobs?order=created_at.desc&select=*');
+    if (!rows || !rows.length) { _jobsCache = getDefaultJobs(); _jobsCacheAt = Date.now(); return _jobsCache; }
+    const seen = new Set(); _jobsCache = rows.map(dbRowToJob).filter(j => { if(seen.has(j.id)) return false; seen.add(j.id); return true; });
+    _jobsCacheAt = Date.now();
+    return _jobsCache;
+  } catch(e) {
+    console.error('loadJobs error:', e);
+    return _jobsCache || getDefaultJobs();
+  }
+}
+
+async function saveJobs(jobs) {
+  // saveJobs вызывается после изменения одной вакансии.
+  // Мы используем upsert всего массива.
+  try {
+    const rows = jobs.map(jobToDbRow);
+    await sbFetch('/rest/v1/jobs', {
+      method: 'POST',
+      prefer: 'resolution=merge-duplicates',
+      headers: { 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify(rows)
+    });
+  } catch(e) { console.error('saveJobs error:', e); }
+}
+
+async function insertJob(job) {
+  const row = jobToDbRow(job);
+  delete row.id;
+  const result = await sbFetch('/rest/v1/jobs', {
+    method: 'POST',
+    headers: { 'Prefer': 'return=representation' },
+    body: JSON.stringify(row)
+  });
+  _jobsCache = null;
+  return result && result[0] ? dbRowToJob(result[0]) : job;
+}
+
+async function updateJob(job) {
+  const row = jobToDbRow(job);
+  delete row.id;
+  await sbFetch(`/rest/v1/jobs?id=eq.${job.id}`, {
+    method: 'PATCH',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify(row)
+  });
+  _jobsCache = null;
+}
+
+async function deleteJobDb(id) {
+  await sbFetch(`/rest/v1/jobs?id=eq.${id}`, { method: 'DELETE' });
+}
+
+async function patchJobField(id, fields) {
+  await sbFetch(`/rest/v1/jobs?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify(fields)
+  });
+}
+
+// ─── VIEWS ────────────────────────────────────────
+function formatViews(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1).replace('.0','') + 'K';
+  return String(n);
+}
+
+async function incrementViews(id) {
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return;
+  const newViews = (j.views || 0) + 1;
+  j.views = newViews;
+  try {
+    await sbFetch(`/rest/v1/jobs?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ views: newViews })
+    });
+  } catch(e) { /* silent */ }
+  // Update views chip in detail screen if still open
+  const chip = document.querySelector('#detailChips .chip:last-child');
+  if (chip) chip.textContent = `👁 ${formatViews(newViews)} просмотров`;
+}
+
+async function boostViews(id) {
+  const inputEl = document.getElementById(`boost_input_${id}`);
+  if (!inputEl) return;
+  const amount = parseInt(inputEl.value) || 0;
+  if (amount <= 0 || amount > 100000) { showToast('⚠️ Введите число от 1 до 100 000', true); return; }
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return;
+  const newViews = (j.views || 0) + amount;
+  j.views = newViews;
+  try {
+    await sbFetch(`/rest/v1/jobs?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ views: newViews })
+    });
+    inputEl.value = '';
+    showToast(`👁 +${amount} просмотров → ${formatViews(newViews)} всего`);
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    filterJobs();
+    renderAdminPanel();
+  } catch(e) { showToast('❌ Ошибка при накрутке', true); }
+}
+
+// ─── APPLIES ─────────────────────────────────────
+async function loadApplies() {
+  try {
+    const rows = await sbFetch('/rest/v1/applies?order=created_at.desc&select=*');
+    return (rows || []).map(r => ({
+      id: r.id,
+      jobId: r.job_id,
+      jobTitle: r.job_title,
+      company: r.company,
+      name: r.name,
+      contact: r.contact,
+      date: r.date,
+      creator_id: r.creator_id || null,
+      ts: new Date(r.created_at).getTime()
+    }));
+  } catch(e) { console.error('loadApplies error:', e); return []; }
+}
+
+async function insertApply(apply) {
+  await sbFetch('/rest/v1/applies', {
+    method: 'POST',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      job_id: String(apply.jobId),
+      job_title: apply.jobTitle,
+      company: apply.company,
+      name: apply.name,
+      contact: apply.contact,
+      date: apply.date,
+      creator_id: apply.creator_id || null
+    })
+  });
+}
+
+// ─── CONVERTERS ───────────────────────────────────
+function dbRowToJob(r) {
+  return {
+    id: r.id,
+    title: r.title || '',
+    company: r.company || '',
+    city: r.city || '',
+    salary: r.salary || '',
+    salaryNum: r.salaryNum || 0,
+    category: r.category || 'Общее',
+    about: r.about || '',
+    requirements: tryParseArr(r.requirements),
+    conditions: tryParseArr(r.conditions),
+    contact: r.contact || '',
+    pinned: r.pinned || false,
+    badge: r.badge || null,
+    icon: r.icon || '🏢',
+    iconBg: r.iconBg || 'rgba(124,92,255,0.15)',
+    accent: r.accent || 'linear-gradient(90deg,#7c5cff,#4da3ff)',
+    tags: tryParseArr(r.tags),
+    createdAt: r.created_at ? new Date(r.created_at).getTime() : Date.now(),
+    creator_id: r.creator_id || null,
+    views: r.views || 0,
+    applies_count: r.applies_count || 0,
+    plan: r.plan || 'standard'
+  };
+}
+
+function jobToDbRow(j) {
+  return {
+    id: j.id,
+    title: j.title,
+    company: j.company,
+    city: j.city || '',
+    salary: j.salary || '',
+    salaryNum: j.salaryNum || 0,
+    category: j.category || 'Общее',
+    about: j.about || '',
+    requirements: JSON.stringify(Array.isArray(j.requirements) ? j.requirements : []),
+    conditions: JSON.stringify(Array.isArray(j.conditions) ? j.conditions : []),
+    contact: j.contact || '',
+    pinned: j.pinned || false,
+    badge: j.badge || null,
+    icon: j.icon || '🏢',
+    iconBg: j.iconBg || 'rgba(124,92,255,0.15)',
+    accent: j.accent || 'linear-gradient(90deg,#7c5cff,#4da3ff)',
+    tags: JSON.stringify(Array.isArray(j.tags) ? j.tags : []),
+    creator_id: j.creator_id || null,
+    views: j.views || 0,
+    applies_count: j.applies_count || 0,
+    plan: j.plan || 'standard'
+  };
+}
+
+function tryParseArr(val) {
+  if (Array.isArray(val)) return val;
+  if (!val) return [];
+  try { const p = JSON.parse(val); return Array.isArray(p) ? p : []; }
+  catch { return String(val).split('\n').map(s=>s.trim()).filter(Boolean); }
+}
+
+// ═══════════════════════════════════════════════
+// DEFAULT DATA
+// ═══════════════════════════════════════════════
+function getDefaultJobs() {
+  return [
+    { id:1, title:'Senior iOS Developer', company:'Яндекс', city:'Москва (удалённо)', salary:'250 000', salaryNum:250000, category:'IT', badge:null, icon:'🟡', iconBg:'rgba(255,200,0,0.15)', accent:'linear-gradient(90deg,#ffcc00,#ff8800)', tags:['Swift','SwiftUI','MVVM','Удалённо'], about:'Ищем опытного iOS разработчика в команду мобильного приложения Яндекс.Еда.', requirements:['Swift 5+ / SwiftUI','Опыт от 3 лет','Архитектуры MVVM, TCA','Опыт с REST API'], conditions:['Удалённая работа','ДМС с первого дня','Гибкий рабочий день'], contact:'@yandex_hr', pinned:true, createdAt:Date.now()-86400000*3 },
+    { id:2, title:'Product Designer', company:'Ozon', city:'Санкт-Петербург', salary:'120 000', salaryNum:120000, category:'Дизайн', badge:'new', icon:'🔵', iconBg:'rgba(77,163,255,0.15)', accent:'linear-gradient(90deg,#4da3ff,#7c5cff)', tags:['Figma','UI/UX','Design System'], about:'Ищем Product Designer в команду маркетплейса.', requirements:['Портфолио с кейсами','Figma на уровне эксперта'], conditions:['Офис в СПб','ДМС','Скидки на Ozon'], contact:'@ozon_jobs', pinned:false, createdAt:Date.now()-86400000*2 },
+    { id:3, title:'Frontend Developer', company:'Wildberries', city:'Москва', salary:'180 000', salaryNum:180000, category:'IT', badge:'hot', icon:'🟣', iconBg:'rgba(180,80,255,0.15)', accent:'linear-gradient(90deg,#ff5c5c,#ff8a50)', tags:['React','TypeScript','Офис'], about:'Frontend разработчик в команду развития сайта.', requirements:['React + TypeScript 2+ года','Знание webpack/vite'], conditions:['Офис в Москве','Бесплатное питание'], contact:'@wb_hr', pinned:false, createdAt:Date.now()-86400000 },
+    { id:4, title:'Marketing Manager', company:'Авито', city:'Москва (гибрид)', salary:'140 000', salaryNum:140000, category:'Маркетинг', badge:'new', icon:'🟢', iconBg:'rgba(77,255,154,0.1)', accent:'linear-gradient(90deg,#4dff9a,#4da3ff)', tags:['Digital','SEO','Гибрид'], about:'Marketing Manager в команду роста.', requirements:['Опыт в digital-маркетинге 3+ лет'], conditions:['Гибридный формат','ДМС + стоматология'], contact:'@avito_hr', pinned:false, createdAt:Date.now()-7200000 },
+    { id:5, title:'Data Analyst', company:'Тинькофф', city:'Удалённо', salary:'160 000', salaryNum:160000, category:'Финансы', badge:null, icon:'🟠', iconBg:'rgba(255,170,92,0.15)', accent:'linear-gradient(90deg,#ffaa5c,#ff5c8d)', tags:['Python','SQL','Tableau','Удалённо'], about:'Аналитик данных в команду рисков.', requirements:['Python (pandas)','SQL на уровне эксперта'], conditions:['Полностью удалённо','Гибкий график'], contact:'@tinkoff_jobs', pinned:false, createdAt:Date.now()-3600000 },
+  ];
+}
+
+// ═══════════════════════════════════════════════
+// CATEGORIES & CITIES (динамические из Supabase)
+// ═══════════════════════════════════════════════
+let CATEGORIES = ['IT','Маркетинг','Дизайн','Финансы','Управление'];
+let CITIES = ['Москва','Санкт-Петербург','Удалённо','Новосибирск','Екатеринбург','Казань'];
+
+async function loadCategories() {
+  try {
+    const rows = await sbFetch('/rest/v1/categories?order=name.asc&select=*');
+    if (rows && rows.length) CATEGORIES = rows.map(r => r.name);
+  } catch(e) { /* use defaults */ }
+  renderFilterPills();
+  populateCategorySelect();
+}
+
+async function loadCities() {
+  try {
+    const rows = await sbFetch('/rest/v1/cities?order=name.asc&select=*');
+    if (rows && rows.length) CITIES = rows.map(r => r.name);
+  } catch(e) { /* use defaults */ }
+  populateCitySelect();
+}
+
+function renderFilterPills() {
+  const row = document.getElementById('filterRow');
+  if (!row) return;
+  row.innerHTML = `<div class="pill active" onclick="setFilter('Все', this)">Все</div>`
+    + CATEGORIES.map(c => `<div class="pill" onclick="setFilter('${esc(c)}', this)">${esc(c)}</div>`).join('');
+}
+
+function populateCategorySelect() {
+  const sel = document.getElementById('fCategory');
+  if (!sel) return;
+  sel.innerHTML = `<option value="">— Выберите категорию —</option>`
+    + CATEGORIES.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+function populateCitySelect() {
+  const sel = document.getElementById('fCity');
+  if (!sel) return;
+  sel.innerHTML = `<option value="">— Выберите город —</option>`
+    + CITIES.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+
+// Форматирование зарплаты при вводе (только цифры)
+function formatSalaryDisplay(el) {
+  const raw = el.value.replace(/\D/g,'');
+  el.value = raw; // храним только цифры в value
+  const hint = document.getElementById('salaryHint');
+  const num = parseInt(raw) || 0;
+  if (raw && (num < 100 || num > 100000000)) {
+    el.classList.add('invalid');
+    if (hint) hint.classList.add('show');
+  } else {
+    el.classList.remove('invalid');
+    if (hint) hint.classList.remove('show');
+  }
+}
+
+// Получить отформатированное значение зарплаты
+function getSalaryFormatted() {
+  const raw = document.getElementById('fSalary').value.replace(/\D/g,'');
+  if (!raw) return '';
+  const num = parseInt(raw);
+  return num.toLocaleString('ru-RU');
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN: CATEGORIES & CITIES MANAGEMENT
+// ═══════════════════════════════════════════════
+async function addCategory(name) {
+  if (!name) return;
+  try {
+    await sbFetch('/rest/v1/categories', {
+      method: 'POST', headers: {'Prefer':'return=minimal'},
+      body: JSON.stringify({ name })
+    });
+    await loadCategories();
+    showToast('✅ Категория добавлена');
+  } catch(e) { showToast('❌ Ошибка', true); }
+}
+
+async function addCity(name) {
+  if (!name) return;
+  try {
+    await sbFetch('/rest/v1/cities', {
+      method: 'POST', headers: {'Prefer':'return=minimal'},
+      body: JSON.stringify({ name })
+    });
+    await loadCities();
+    showToast('✅ Город добавлен');
+  } catch(e) { showToast('❌ Ошибка', true); }
+}
+
+// ═══════════════════════════════════════════════
+// NEWS (динамические из Supabase)
+// ═══════════════════════════════════════════════
+let NEWS_DATA = [];
+
+const NEWS_FALLBACK = [
+  { id:'f1', tag:'📈 Рынок', tag_color:'rgba(77,255,154,0.15)', tag_text_color:'#4dff9a', title:'IT-рынок труда вырос на 23% в 2024 году', body:'Количество вакансий для разработчиков продолжает расти. Особенно востребованы Go, Python и iOS-специалисты.', date:'26 апр 2025', pinned:false },
+  { id:'f2', tag:'💡 Советы', tag_color:'rgba(124,92,255,0.15)', tag_text_color:'#a08cff', title:'Как получить оффер с первого собеседования', body:'Разбираем стратегию подготовки: от исследования компании до переговоров о зарплате.', date:'24 апр 2025', pinned:false },
+  { id:'f3', tag:'💼 Удалёнка', tag_color:'rgba(77,163,255,0.15)', tag_text_color:'#4da3ff', title:'Топ-10 компаний с полностью удалённой работой в России', body:'Составили рейтинг работодателей, которые предлагают честную удалёнку.', date:'22 апр 2025', pinned:false },
+];
+
+async function loadNews() {
+  try {
+    const rows = await sbFetch('/rest/v1/news?order=pinned.desc,created_at.desc&select=*');
+    if (rows && rows.length) { NEWS_DATA = rows; return; }
+  } catch(e) {}
+  NEWS_DATA = NEWS_FALLBACK;
+}
+
+function renderNews() {
+  const list = document.getElementById('newsList');
+  if (!list) return;
+  const items = NEWS_DATA.length ? NEWS_DATA : NEWS_FALLBACK;
+  list.innerHTML = items.map(n => `
+    <div class="news-card" ${n.pinned ? 'style="border-color:rgba(255,200,0,0.3)"' : ''}>
+      <div class="news-tag" style="background:${n.tag_color||'rgba(124,92,255,0.15)'};color:${n.tag_text_color||'#a08cff'}">${esc(n.tag)}${n.pinned ? '<span class="news-pinned-badge">📌</span>' : ''}</div>
+      <div class="news-title">${esc(n.title)}</div>
+      <div class="news-body">${esc(n.body)}</div>
+      <div class="news-meta">${esc(n.date||n.created_at?.slice(0,10)||'')}</div>
+    </div>`).join('');
+}
+
+// Admin: render news list
+async function renderAdminNews() {
+  const list = document.getElementById('adminNewsList');
+  if (!list) return;
+  await loadNews();
+  if (!NEWS_DATA.length) { list.innerHTML = '<div class="empty-state">Нет новостей</div>'; return; }
+  list.innerHTML = NEWS_DATA.map(n => `
+    <div class="news-admin-item">
+      <div class="news-admin-item-title">${n.pinned ? '📌 ' : ''}${esc(n.title)}</div>
+      <div style="font-size:11px;color:var(--text3);">${esc(n.tag)} · ${esc(n.date||'')}</div>
+      <div class="news-admin-item-actions">
+        <button class="icon-btn" onclick="openEditNews('${n.id}')">✏️</button>
+        <button class="icon-btn" onclick="toggleNewsPin('${n.id}')" title="Закрепить">${n.pinned?'📌':'📍'}</button>
+        <button class="icon-btn del-btn" onclick="deleteNews('${n.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function openNewsModal(id) {
+  document.getElementById('editNewsId').value = id || '';
+  document.getElementById('newsModalTitle').textContent = id ? '✏️ Редактировать новость' : '📰 Новая новость';
+  if (!id) {
+    ['nTitle','nBody','nTag','nTagColor'].forEach(i => { const el=document.getElementById(i); if(el) el.value=''; });
+    document.getElementById('nPinned').checked = false;
+  } else {
+    const n = NEWS_DATA.find(x => String(x.id) === String(id));
+    if (n) {
+      document.getElementById('nTitle').value = n.title || '';
+      document.getElementById('nBody').value = n.body || '';
+      document.getElementById('nTag').value = n.tag || '';
+      document.getElementById('nTagColor').value = n.tag_text_color || '';
+      document.getElementById('nPinned').checked = !!n.pinned;
+    }
+  }
+  openModal('newsModal');
+}
+
+function openEditNews(id) { openNewsModal(id); }
+
+async function saveNews() {
+  const title = document.getElementById('nTitle').value.trim();
+  const body = document.getElementById('nBody').value.trim();
+  if (!title) { showToast('⚠️ Введите заголовок', true); return; }
+  const tag = document.getElementById('nTag').value.trim() || '📰 Новость';
+  const tagColor = document.getElementById('nTagColor').value.trim() || '#a08cff';
+  const pinned = document.getElementById('nPinned').checked;
+  const editId = document.getElementById('editNewsId').value;
+  const payload = {
+    title, body, tag,
+    tag_color: tagColor + '22',
+    tag_text_color: tagColor,
+    pinned,
+    date: new Date().toLocaleDateString('ru-RU', {day:'numeric',month:'short',year:'numeric'})
+  };
+  try {
+    if (editId) {
+      await sbFetch(`/rest/v1/news?id=eq.${editId}`, {
+        method: 'PATCH', headers:{'Prefer':'return=minimal'},
+        body: JSON.stringify(payload)
+      });
+    } else {
+      await sbFetch('/rest/v1/news', {
+        method: 'POST', headers:{'Prefer':'return=minimal'},
+        body: JSON.stringify(payload)
+      });
+    }
+    closeModal('newsModal');
+    await loadNews();
+    renderNews();
+    renderAdminNews();
+    showToast('✅ Новость сохранена');
+  } catch(e) { showToast('❌ Ошибка сохранения', true); }
+}
+
+async function deleteNews(id) {
+  try {
+    await sbFetch(`/rest/v1/news?id=eq.${id}`, { method: 'DELETE' });
+    await loadNews(); renderNews(); renderAdminNews();
+    showToast('🗑 Новость удалена');
+  } catch(e) { showToast('❌ Ошибка', true); }
+}
+
+async function toggleNewsPin(id) {
+  const n = NEWS_DATA.find(x => String(x.id) === String(id));
+  if (!n) return;
+  try {
+    await sbFetch(`/rest/v1/news?id=eq.${id}`, {
+      method: 'PATCH', headers:{'Prefer':'return=minimal'},
+      body: JSON.stringify({ pinned: !n.pinned })
+    });
+    await loadNews(); renderNews(); renderAdminNews();
+    showToast(n.pinned ? '📍 Откреплено' : '📌 Закреплено');
+  } catch(e) { showToast('❌ Ошибка', true); }
+}
+
+// ═══════════════════════════════════════════════
+// PREMIUM VACANCIES
+// ═══════════════════════════════════════════════
+function renderPremiumSection() {
+  const sec = document.getElementById('premiumSection');
+  if (!sec) return;
+  const premiumJobs = JOBS.filter(j => j.plan === 'premium');
+  if (!premiumJobs.length) { sec.innerHTML = ''; return; }
+  sec.innerHTML = `
+    <div class="sec-label">👑 Премиум вакансии</div>
+    <div class="premium-section">
+      ${premiumJobs.map(j => `
+        <div class="premium-card" onclick="openJob('${j.id}')">
+          <div class="premium-card-glow"></div>
+          <div class="premium-badge">👑 PREMIUM</div>
+          <div class="premium-title">${esc(j.title)}</div>
+          <div class="premium-company">${esc(j.company)} · ${esc(j.city)}</div>
+          <div class="premium-salary">${esc(j.salary)} ₽/мес</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// FEATURED CAROUSEL (до 5 вакансий)
+// ═══════════════════════════════════════════════
+let _carouselIdx = 0;
+let _carouselTimer = null;
+let _carouselLen = 0;
+
+function renderFeatured() {
+  const pinned = JOBS.filter(j => j.pinned).slice(0, 5);
+  const sec = document.getElementById('featuredSection');
+  if (!pinned.length) { sec.innerHTML = ''; return; }
+
+  clearInterval(_carouselTimer);
+  _carouselIdx = 0;
+  _carouselLen = pinned.length;
+
+  sec.innerHTML = `
+    <div class="sec-label">⭐ Топ вакансии</div>
+    <div class="carousel-wrap" id="carouselWrap">
+      <div class="carousel-track" id="carouselTrack">
+        ${pinned.map(j => `
+          <div class="featured-card" onclick="openJob('${j.id}')">
+            <div class="feat-bg"></div>
+            <div class="feat-border"></div>
+            <div class="feat-content">
+              <div class="feat-eyebrow">✦ Рекомендуем</div>
+              <div class="feat-title">${esc(j.title)}</div>
+              <div class="feat-company">${esc(j.company)} · ${esc(j.city)}</div>
+              <div class="feat-bottom">
+                <div class="feat-salary">${esc(j.salary)} <span>₽/мес</span></div>
+                <div class="feat-apply-wrap">
+                  <button class="feat-btn" onclick="event.stopPropagation();featuredApply('${j.id}')">Откликнуться</button>
+                </div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    ${pinned.length > 1 ? `<div class="carousel-dots" id="carouselDots">
+      ${pinned.map((_,i) => `<div class="carousel-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('')}
+    </div>` : ''}`;
+
+  // Swipe support
+  if (pinned.length > 1) {
+    const wrap = document.getElementById('carouselWrap');
+    let startX = 0;
+    wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+    wrap.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) dx < 0 ? carouselNext() : carouselPrev();
+    }, {passive:true});
+    // Auto-advance every 4s
+    _carouselTimer = setInterval(carouselNext, 4000);
+  }
+}
+
+function goToSlide(idx) {
+  _carouselIdx = idx;
+  _updateCarousel();
+  clearInterval(_carouselTimer);
+  if (_carouselLen > 1) _carouselTimer = setInterval(carouselNext, 4000);
+}
+
+function carouselNext() {
+  _carouselIdx = (_carouselIdx + 1) % _carouselLen;
+  _updateCarousel();
+}
+
+function carouselPrev() {
+  _carouselIdx = (_carouselIdx - 1 + _carouselLen) % _carouselLen;
+  _updateCarousel();
+}
+
+function _updateCarousel() {
+  const track = document.getElementById('carouselTrack');
+  if (track) track.style.transform = `translateX(-${_carouselIdx * 100}%)`;
+  document.querySelectorAll('.carousel-dot').forEach((d,i) => d.classList.toggle('active', i === _carouselIdx));
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════
+let NOTIFICATIONS = [];
+let watchedCategories = [];
+const NOTIF_WATCH_KEY = 'jobic_watch_cats';
+
+function loadWatchedCategories() {
+  try { const s = localStorage.getItem(NOTIF_WATCH_KEY); if(s) watchedCategories = JSON.parse(s)||[]; } catch(e) {}
+}
+
+function saveWatchedCategories() {
+  try { localStorage.setItem(NOTIF_WATCH_KEY, JSON.stringify(watchedCategories)); } catch(e) {}
+}
+
+function toggleWatchCategory(cat) {
+  const idx = watchedCategories.indexOf(cat);
+  if (idx === -1) watchedCategories.push(cat);
+  else watchedCategories.splice(idx, 1);
+  saveWatchedCategories();
+  renderNotifCatChips();
+  generateNotifications();
+}
+
+function renderNotifCatChips() {
+  const wrap = document.getElementById('notifCatChips');
+  if (!wrap) return;
+  wrap.innerHTML = CATEGORIES.map(c => `
+    <div class="notif-cat-chip ${watchedCategories.includes(c)?'active':''}" onclick="toggleWatchCategory('${esc(c)}')">${esc(c)}</div>`).join('');
+}
+
+function generateNotifications() {
+  // Генерируем уведомления на основе новых вакансий в отслеживаемых категориях
+  const relevant = JOBS.filter(j => watchedCategories.includes(j.category));
+  NOTIFICATIONS = relevant.slice(0, 20).map(j => ({
+    id: j.id,
+    icon: '💼',
+    title: `Новая вакансия в ${j.category}`,
+    text: `${j.title} — ${j.company} · ${j.salary} ₽/мес`,
+    time: _timeAgo(j.createdAt),
+    unread: (Date.now() - j.createdAt) < 86400000,
+    jobId: j.id
+  }));
+  renderNotifications();
+}
+
+function renderNotifications() {
+  const list = document.getElementById('notifList');
+  if (!list) return;
+  if (!NOTIFICATIONS.length) {
+    const hint = watchedCategories.length ? 'Новых вакансий по вашим категориям нет' : 'Выберите категории выше чтобы получать уведомления';
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">🔔</div>${hint}</div>`;
+    return;
+  }
+  list.innerHTML = NOTIFICATIONS.map(n => `
+    <div class="notif-item ${n.unread?'unread':''}" onclick="openJob('${n.jobId}')">
+      <div class="notif-icon">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-title">${esc(n.title)}</div>
+        <div class="notif-text">${esc(n.text)}</div>
+        <div class="notif-time">${esc(n.time)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function markAllRead() {
+  NOTIFICATIONS.forEach(n => n.unread = false);
+  renderNotifications();
+  showToast('✅ Все прочитаны');
+}
+
+function _timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'только что';
+  if (m < 60) return `${m} мин назад`;
+  const h = Math.floor(m/60);
+  if (h < 24) return `${h} ч назад`;
+  return `${Math.floor(h/24)} дн назад`;
+}
+
+// ═══════════════════════════════════════════════
+// SUPPORT
+// ═══════════════════════════════════════════════
+function openSupport() {
+  const msg = document.getElementById('supportMessage')?.value.trim();
+  let url = 'https://t.me/sapgos';
+  if (msg) url += `?text=${encodeURIComponent('Привет! ' + msg)}`;
+  if (tg && tg.openLink) tg.openLink(url);
+  else window.open(url, '_blank');
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let JOBS = [], APPLIES = [];
+let myApplies = [], favorites = [], myPosted = 0;
+let activeFilter = 'Все';
+let minSalary = 0;
+let currentJobId = null;
+let isAdmin = false;
+
+// ═══════════════════════════════════════════════
+// NAVIGATION STACK
+// ═══════════════════════════════════════════════
+// navStack: array of screenIds. Current = last item.
+let navStack = ['homeScreen'];
+
+// Main tabs (no stack push, replace root)
+const MAIN_TABS = ['homeScreen','favScreen','createScreen','newsScreen','profileScreen'];
+
+function navTo(screenId, btnEl) {
+  const cur = navStack[navStack.length - 1];
+  if (screenId === cur) return;
+
+  // Admin guard
+  if (screenId === 'adminScreen' && !isAdmin) { openAdminLogin(); return; }
+
+  // TG Auth guard — для размещения вакансий нужна авторизация через TG
+  if (screenId === 'createScreen' && !isAdmin && !isTgAuthorized()) {
+    openModal('tgAuthModal');
+    return;
+  }
+
+  // Reset create for non-admin when going via nav tab
+  if (screenId === 'createScreen' && !isAdmin) {
+    resetCreateForUser();
+  }
+
+  // Main tabs: replace entire stack
+  if (MAIN_TABS.includes(screenId)) {
+    navStack = [screenId];
+  } else {
+    navStack.push(screenId);
+  }
+
+  _animateTransition(cur, screenId);
+  updateNavBtns(screenId);
+  updateTgBackBtn();
+}
+
+function pushTo(screenId) {
+  // Push onto stack (sub-screen)
+  const cur = navStack[navStack.length - 1];
+  if (screenId === cur) return;
+  if (screenId === 'adminAppliesScreen') openAdminApplies();
+  if (screenId === 'walletScreen') walletLoadBalance();
+  navStack.push(screenId);
+  _animateTransition(cur, screenId);
+  updateTgBackBtn();
+}
+
+function goBack() {
+  if (navStack.length <= 1) { if (tg) tg.close(); return; }
+  const cur = navStack.pop();
+  const prev = navStack[navStack.length - 1];
+  _animateTransition(cur, prev, true);
+  updateNavBtns(prev);
+  updateTgBackBtn();
+}
+
+function _animateTransition(fromId, toId, isBack = false) {
+  const from = document.getElementById(fromId);
+  const to = document.getElementById(toId);
+  if (!from || !to) return;
+
+  from.classList.add('slide-left');
+  setTimeout(() => { from.classList.add('hidden'); from.classList.remove('slide-left'); }, 250);
+  to.classList.remove('hidden');
+
+  const sa = to.querySelector('.scroll-area');
+  if (sa && !isBack) sa.scrollTop = 0;
+
+  if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+}
+
+function updateNavBtns(activeScreenId) {
+  // Update all nav buttons across all bottom navs
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    // Determine which screen this button navigates to by its onclick
+    const onclick = btn.getAttribute('onclick') || '';
+    const match = onclick.match(/navTo\('(\w+)'/);
+    if (match) {
+      btn.classList.toggle('active', match[1] === activeScreenId);
+    }
+  });
+}
+
+function updateTgBackBtn() {
+  if (!tg) return;
+  if (navStack.length > 1) {
+    tg.BackButton.show();
+  } else {
+    tg.BackButton.hide();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// TELEGRAM USER AUTH (сохраняем пользователя в БД)
+// ═══════════════════════════════════════════════
+async function saveTelegramUserToDB() {
+  const tgUser = tg?.initDataUnsafe?.user;
+  if (!tgUser) return;
+  try {
+    const checkRes = await fetch(
+      SUPABASE_URL + `/rest/v1/telegram_users?tg_id=eq.${tgUser.id}&select=id`,
+      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON } }
+    );
+    const existing = await checkRes.json();
+    if (existing && existing.length > 0) return;
+    await fetch(SUPABASE_URL + '/rest/v1/telegram_users', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        tg_id: String(tgUser.id),
+        username: tgUser.username || `user_${tgUser.id}`,
+        full_name: [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || '',
+        first_name: tgUser.first_name || '',
+        last_name: tgUser.last_name || '',
+        photo_url: tgUser.photo_url || '',
+        is_premium: tgUser.is_premium || false,
+        language_code: tgUser.language_code || 'ru'
+      })
+    });
+  } catch(e) { console.error('saveTelegramUser error:', e); }
+}
+
+// ═══════════════════════════════════════════════
+// TG AUTH GATE
+// ═══════════════════════════════════════════════
+
+// Данные пользователя авторизованного через код (веб-версия)
+let webTgUser = null;
+let _authChatId = null;
+
+async function sendAuthCode() {
+  const username = document.getElementById('authUsername').value.trim().replace('@','');
+  const errEl = document.getElementById('authStep1Error');
+  const btn = document.getElementById('authSendBtn');
+  errEl.textContent = '';
+  if (!username) { errEl.textContent = 'Введите username'; return; }
+  btn.disabled = true; btn.textContent = 'Отправляем...';
+  try {
+    const res = await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/send-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.innerHTML = data.error === 'not_found'
+        ? `Сначала напишите <a href="https://t.me/JOBlK_bot" target="_blank" style="color:var(--accent2);">@JOBlK_bot</a> команду /start`
+        : (data.message || 'Ошибка, попробуйте снова');
+      btn.disabled = false; btn.textContent = 'Получить код'; return;
+    }
+    _authChatId = data.chatId;
+    document.getElementById('authStep2Hint').textContent = `Код отправлен @${username} в Telegram`;
+    document.getElementById('authStep1').style.display = 'none';
+    document.getElementById('authStep2').style.display = 'block';
+    setTimeout(() => document.getElementById('authCode').focus(), 100);
+  } catch(e) {
+    errEl.textContent = 'Ошибка соединения';
+    btn.disabled = false; btn.textContent = 'Получить код';
+  }
+}
+
+async function verifyAuthCode() {
+  const code = document.getElementById('authCode').value.trim();
+  const errEl = document.getElementById('authStep2Error');
+  const btn = document.getElementById('authVerifyBtn');
+  errEl.textContent = '';
+  if (code.length !== 6) { errEl.textContent = 'Код должен быть 6 цифр'; return; }
+  btn.disabled = true; btn.textContent = 'Проверяем...';
+  try {
+    const res = await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chatId: _authChatId, code })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      errEl.textContent = data.message || 'Неверный код';
+      btn.disabled = false; btn.textContent = 'Войти'; return;
+    }
+    onTelegramWebAuth(data.user);
+  } catch(e) {
+    errEl.textContent = 'Ошибка соединения';
+    btn.disabled = false; btn.textContent = 'Войти';
+  }
+}
+
+function backToStep1() {
+  document.getElementById('authStep2').style.display = 'none';
+  document.getElementById('authStep1').style.display = 'block';
+  document.getElementById('authCode').value = '';
+  document.getElementById('authStep2Error').textContent = '';
+  document.getElementById('authSendBtn').disabled = false;
+  document.getElementById('authSendBtn').textContent = 'Получить код';
+}
+
+
+
+function isTgAuthorized() {
+  // Вариант 1: открыто внутри Telegram Mini App
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) return true;
+  // Вариант 2: авторизовался через виджет в браузере
+  if (webTgUser && webTgUser.id) return true;
+  return false;
+}
+
+function getTgUser() {
+  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) return tg.initDataUnsafe.user;
+  return webTgUser;
+}
+
+// Callback после успешной авторизации через код
+function onTelegramWebAuth(user) {
+  webTgUser = user;
+  // Сохраняем сессию в localStorage (до закрытия вкладки)
+  try { localStorage.setItem('jobic_user', JSON.stringify(user)); } catch(e) {}
+  closeModal('tgAuthModal');
+  showToast(`✅ Привет, ${user.first_name}!`);
+  updateProfileStats();
+  const nameEl = document.getElementById('profileName');
+  const subEl = document.getElementById('profileSub');
+  if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
+  if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
+  if (_pendingAuthAction) { _pendingAuthAction(); _pendingAuthAction = null; }
+}
+
+// Восстанавливаем сессию при загрузке страницы
+function restoreSession() {
+  try {
+    const saved = localStorage.getItem('jobic_user');
+    if (saved) {
+      const user = JSON.parse(saved);
+      if (user && user.id) {
+        webTgUser = user;
+        const nameEl = document.getElementById('profileName');
+        const subEl = document.getElementById('profileSub');
+        if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
+        if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
+      }
+    }
+  } catch(e) {}
+}
+
+let _pendingAuthAction = null;
+
+function requireTgAuth(callback) {
+  if (isTgAuthorized()) {
+    callback();
+    return true;
+  }
+  _pendingAuthAction = callback;
+  openModal('tgAuthModal');
+  return false;
+}
+
+const TG_BOT_USERNAME = 'JOBlK_bot';
+
+function openTgBot() {
+  const url = `https://t.me/${TG_BOT_USERNAME}`;
+  if (tg && tg.openLink) tg.openLink(url);
+  else window.open(url, '_blank');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+async function init() {
+  restoreSession();
+  loadFavsFromSession();
+  loadFavTimestamps();
+  loadWatchedCategories();
+  saveTelegramUserToDB();
+  renderSkeletons();
+  JOBS = await loadJobs();
+  APPLIES = await loadApplies();
+  await Promise.all([loadCategories(), loadCities(), loadNews()]);
+  renderFeatured();
+  renderPremiumSection();
+  filterJobs();
+  renderNews();
+  updateProfileStats();
+  updateFavBadge();
+  renderNotifCatChips();
+  generateNotifications();
+}
+
+function updateProfileStats() {
+  document.getElementById('statApplied').textContent = myApplies.length;
+  document.getElementById('statFavs').textContent = favorites.length;
+  document.getElementById('statPosted').textContent = myPosted;
+}
+
+// ═══════════════════════════════════════════════
+// SALARY FILTER
+// ═══════════════════════════════════════════════
+function onSalaryFilter(val) {
+  minSalary = parseInt(val);
+  const label = minSalary === 0 ? 'Любая' : `от ${(minSalary/1000).toFixed(0)} 000 ₽`;
+  document.getElementById('salaryVal').textContent = label;
+  filterJobs();
+}
+
+// ═══════════════════════════════════════════════
+// RENDER JOB CARDS
+// ═══════════════════════════════════════════════
+function jobCardHTML(j) {
+  let badgeHtml = '';
+  if (j.pinned) badgeHtml = '<div class="badge badge-top">ТОП</div>';
+  else if (j.badge === 'hot') badgeHtml = '<div class="badge badge-hot">HOT</div>';
+  else if (j.badge === 'new') badgeHtml = '<div class="badge badge-new">NEW</div>';
+  const isFav = favorites.includes(j.id);
+  return `
+    <div class="job-card" onclick="openJob('${j.id}')">
+      <div class="card-accent-line" style="background:${j.accent||'linear-gradient(90deg,#7c5cff,#4da3ff)'}"></div>
+      <div class="card-top">
+        <div class="company-icon" style="background:${j.iconBg||'rgba(255,255,255,0.07)'}">
+          ${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}
+        </div>
+        <div class="card-meta">
+          <div class="card-title">${esc(j.title)}</div>
+          <div class="card-company">${esc(j.company)} · ${esc(j.city)}</div>
+        </div>
+        ${badgeHtml}
+      </div>
+      <div class="card-tags">${(j.tags||[]).map(t=>`<div class="tag">${esc(t)}</div>`).join('')}</div>
+      <div class="card-footer">
+        <div class="salary">${esc(j.salary)} <span>₽/мес</span></div>
+        <div class="card-actions">
+          <span class="views-counter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${formatViews(j.views||0)}</span>
+          <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${j.id}',this)" title="${isFav?'Убрать из избранного':'Добавить в избранное'}">${isFav?'❤️':'♡'}</button>
+          <button class="more-btn">Подробнее</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderJobs(jobs) {
+  const list = document.getElementById('jobList');
+  if (!jobs.length) {
+    list.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div>Вакансии не найдены</div>`; return;
+  }
+  list.innerHTML = jobs.map(jobCardHTML).join('');
+}
+
+function filterJobs() {
+  const q = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  let filtered = activeFilter === 'Все' ? JOBS : JOBS.filter(j => j.category === activeFilter);
+  if (q) filtered = filtered.filter(j =>
+    j.title.toLowerCase().includes(q) ||
+    j.company.toLowerCase().includes(q) ||
+    j.city.toLowerCase().includes(q) ||
+    (j.tags||[]).some(t => t.toLowerCase().includes(q)) // пункт 3: поиск по тегам
+  );
+  // Salary filter (пункт 4: фикс — используем salaryNum напрямую)
+  if (minSalary > 0) {
+    filtered = filtered.filter(j => {
+      const num = typeof j.salaryNum === 'number' ? j.salaryNum : parseInt((j.salary||'').replace(/\D/g,'')) || 0;
+      return num >= minSalary;
+    });
+  }
+  filtered.sort((a,b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return (b.createdAt||0) - (a.createdAt||0);
+  });
+  renderJobs(filtered);
+}
+
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  filterJobs();
+}
+
+// ═══════════════════════════════════════════════
+// FAVORITES
+// ═══════════════════════════════════════════════
+// пункт 8: обновляем бейдж ❤️ в nav
+function updateFavBadge() {
+  const count = favorites.length;
+  document.querySelectorAll('.nav-fav-badge').forEach(el => {
+    el.textContent = count > 0 ? (count > 99 ? '99+' : count) : '';
+    el.classList.toggle('visible', count > 0);
+  });
+}
+
+// timestamps для избранного (пункт 5: сортировка по времени добавления)
+let favTimestamps = {};
+function saveFavTimestamps() {
+  try { localStorage.setItem('jobic_fav_ts', JSON.stringify(favTimestamps)); } catch(e) {}
+}
+function loadFavTimestamps() {
+  try {
+    const s = localStorage.getItem('jobic_fav_ts');
+    if (s) favTimestamps = JSON.parse(s) || {};
+  } catch(e) {}
+}
+
+function saveFavsToSession() {
+  try { localStorage.setItem('jobic_favorites', JSON.stringify(favorites)); } catch(e) {}
+}
+
+function loadFavsFromSession() {
+  try {
+    const saved = localStorage.getItem('jobic_favorites');
+    if (saved) {
+      const arr = JSON.parse(saved);
+      if (Array.isArray(arr)) favorites = arr;
+    }
+  } catch(e) {}
+}
+
+function toggleFav(id, btn) {
+  const idx = favorites.indexOf(id);
+  if (idx === -1) {
+    favorites.push(id);
+    favTimestamps[id] = Date.now();
+    btn.textContent = '❤️';
+    btn.classList.add('active');
+    showToast('❤️ Добавлено в избранное');
+  } else {
+    favorites.splice(idx, 1);
+    delete favTimestamps[id];
+    btn.textContent = '♡';
+    btn.classList.remove('active');
+    showToast('Убрано из избранного');
+    renderFavScreen();
+  }
+  saveFavsToSession();
+  saveFavTimestamps();
+  updateFavBadge();
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+  updateProfileStats();
+}
+
+function toggleFavCurrent() {
+  const btn = document.getElementById('detailFavBtn');
+  const id = currentJobId;
+  const idx = favorites.indexOf(id);
+  if (idx === -1) {
+    favorites.push(id);
+    favTimestamps[id] = Date.now();
+    btn.textContent = '❤️';
+    btn.classList.add('active');
+    showToast('❤️ Добавлено в избранное');
+  } else {
+    favorites.splice(idx, 1);
+    delete favTimestamps[id];
+    btn.textContent = '♡';
+    btn.classList.remove('active');
+    showToast('Убрано из избранного');
+  }
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+  saveFavsToSession();
+  saveFavTimestamps();
+  updateFavBadge();
+  updateProfileStats();
+  filterJobs();
+}
+
+// пункт 5: сортировка избранного по времени добавления (новейшие сверху)
+function renderFavScreen() {
+  const list = document.getElementById('favList');
+  const favJobs = JOBS.filter(j => favorites.includes(j.id))
+    .sort((a, b) => (favTimestamps[b.id] || 0) - (favTimestamps[a.id] || 0));
+  if (!favJobs.length) {
+    list.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">❤️</div><div class="fav-empty-text">Нет избранных вакансий.<br>Нажми ♡ на карточке.</div></div>`;
+    return;
+  }
+  list.innerHTML = `<div style="padding-top:8px;">${favJobs.map(jobCardHTML).join('')}</div>`;
+}
+
+function openJob(id) {
+  currentJobId = id;
+  pushTo('detailScreen');
+
+  // Show skeleton while data might refresh
+  const j = JOBS.find(x => x.id === id);
+  if (j) _renderJobDetail(j);
+
+  // Always re-fetch fresh data for the opened job (пункт 14)
+  _refreshJobDetail(id);
+}
+
+async function _refreshJobDetail(id) {
+  try {
+    const rows = await sbFetch(`/rest/v1/jobs?id=eq.${id}&select=*`);
+    if (rows && rows[0]) {
+      const fresh = dbRowToJob(rows[0]);
+      const idx = JOBS.findIndex(x => x.id === id);
+      if (idx !== -1) JOBS[idx] = fresh; else JOBS.unshift(fresh);
+      _jobsCache = null; // bust
+      if (currentJobId === id) _renderJobDetail(fresh);
+    }
+  } catch(e) { /* silent — use cached */ }
+  incrementViews(id);
+}
+
+function _renderJobDetail(j) {
+  const id = j.id;
+  document.getElementById('detailBarTitle').textContent = j.title;
+  document.getElementById('detailAccent').style.background = j.accent || 'linear-gradient(90deg,#7c5cff,#4da3ff)';
+  document.getElementById('detailLogo').style.background = j.iconBg || 'rgba(255,255,255,0.07)';
+  document.getElementById('detailLogo').textContent = /^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase();
+  document.getElementById('detailTitle').textContent = j.title;
+  document.getElementById('detailCompany').textContent = `${j.company} · ${j.city}`;
+
+  // Count applies for this job
+  const applyCount = APPLIES.filter(a => a.jobId === id).length + (j.applies_count || 0);
+  document.getElementById('detailApplyCount').textContent = `📩 ${applyCount} откликов`;
+
+  document.getElementById('detailChips').innerHTML = `
+    <div class="chip">📍 ${esc(j.city)}</div>
+    <div class="chip">💼 Полная занятость</div>
+    <div class="chip">🏷 ${esc(j.category||'Общее')}</div>
+    <div class="chip">👁 ${formatViews(j.views||0)} просмотров</div>`;
+  document.getElementById('detailSalary').innerHTML = `${esc(j.salary)} <span>₽/мес</span>`;
+  document.getElementById('detailAbout').textContent = j.about || '—';
+  const reqs = Array.isArray(j.requirements) ? j.requirements : (j.requirements||'').split('\n').filter(Boolean);
+  const conds = Array.isArray(j.conditions) ? j.conditions : (j.conditions||'').split('\n').filter(Boolean);
+  document.getElementById('detailRequirements').innerHTML = reqs.map(r=>`<li>${esc(r)}</li>`).join('') || '<li>—</li>';
+  document.getElementById('detailConditions').innerHTML = conds.map(c=>`<li>${esc(c)}</li>`).join('') || '<li>—</li>';
+  document.getElementById('detailContact').innerHTML = j.contact
+    ? `<a href="https://t.me/${j.contact.replace('@','')}" style="color:#4da3ff;">${esc(j.contact)}</a>`
+    : '—';
+
+  // Fav button state
+  const favBtn = document.getElementById('detailFavBtn');
+  favBtn.textContent = favorites.includes(id) ? '❤️' : '♡';
+  favBtn.classList.toggle('active', favorites.includes(id));
+
+  // Apply button
+  const already = myApplies.some(a => a.jobId === id);
+  const btn = document.getElementById('applyBtn');
+  btn.textContent = already ? '✅ Отклик уже отправлен' : 'Откликнуться';
+  btn.disabled = already;
+}
+
+// ═══════════════════════════════════════════════
+// SKELETON LOADING (пункт 9)
+// ═══════════════════════════════════════════════
+function renderSkeletons(count = 4) {
+  const list = document.getElementById('jobList');
+  if (!list) return;
+  list.innerHTML = Array.from({length: count}).map(() => `
+    <div class="skeleton-card">
+      <div class="sk-row">
+        <div class="skeleton sk-icon"></div>
+        <div class="sk-meta">
+          <div class="skeleton sk-line tall short"></div>
+          <div class="skeleton sk-line tiny"></div>
+        </div>
+      </div>
+      <div class="skeleton sk-line" style="width:80%;margin-bottom:6px;"></div>
+      <div class="skeleton sk-line tiny" style="width:40%;"></div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// SEARCH HISTORY (пункт 12)
+// ═══════════════════════════════════════════════
+let searchHistory = [];
+const SEARCH_HISTORY_KEY = 'jobic_search_history';
+const SEARCH_HISTORY_MAX = 8;
+
+function loadSearchHistory() {
+  try { const s = localStorage.getItem(SEARCH_HISTORY_KEY); if (s) searchHistory = JSON.parse(s) || []; } catch(e) {}
+}
+function saveSearchHistory() {
+  try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(searchHistory)); } catch(e) {}
+}
+function addToSearchHistory(q) {
+  if (!q || q.length < 2) return;
+  searchHistory = [q, ...searchHistory.filter(h => h !== q)].slice(0, SEARCH_HISTORY_MAX);
+  saveSearchHistory();
+}
+function clearSearchHistory() {
+  searchHistory = [];
+  saveSearchHistory();
+  hideSearchHistory();
+}
+function showSearchHistory() {
+  loadSearchHistory();
+  if (!searchHistory.length) return;
+  const wrap = document.getElementById('searchHistoryWrap');
+  if (!wrap) return;
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="search-history-label">
+      <span>История поиска</span>
+      <span class="search-history-clear" onclick="clearSearchHistory()">Очистить</span>
+    </div>
+    <div class="search-history-chips">
+      ${searchHistory.map(h => `<div class="search-history-chip" onclick="applySearchHistory('${esc(h)}')">${esc(h)}</div>`).join('')}
+    </div>`;
+}
+function hideSearchHistory() {
+  const wrap = document.getElementById('searchHistoryWrap');
+  if (wrap) wrap.style.display = 'none';
+}
+function applySearchHistory(q) {
+  const input = document.getElementById('searchInput');
+  if (input) { input.value = q; filterJobs(); }
+  hideSearchHistory();
+}
+let _searchDebounce;
+function onSearchInput(val) {
+  filterJobs();
+  hideSearchHistory();
+  clearTimeout(_searchDebounce);
+  _searchDebounce = setTimeout(() => { if (val.trim().length >= 2) addToSearchHistory(val.trim()); }, 1200);
+}
+function onSearchBlur() {
+  setTimeout(() => hideSearchHistory(), 200);
+}
+
+// ═══════════════════════════════════════════════
+// SHARE JOB (пункт 7)
+// ═══════════════════════════════════════════════
+function shareJob() {
+  const j = JOBS.find(x => x.id === currentJobId);
+  if (!j) return;
+  const text = `💼 ${j.title} — ${j.company}\n📍 ${j.city} · 💰 ${j.salary} ₽/мес\n\nНайдено в Jobic`;
+  if (navigator.share) {
+    navigator.share({ title: j.title, text }).catch(() => {});
+  } else if (tg?.switchInlineQuery) {
+    tg.switchInlineQuery(text, ['users','groups']);
+  } else {
+    // Копируем в буфер
+    const dummy = document.createElement('textarea');
+    dummy.value = text;
+    document.body.appendChild(dummy);
+    dummy.select();
+    try { document.execCommand('copy'); showToast('📋 Ссылка скопирована'); } catch(e) {}
+    document.body.removeChild(dummy);
+  }
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+// ═══════════════════════════════════════════════
+// FEATURED APPLY (пункт 6)
+// ═══════════════════════════════════════════════
+function featuredApply(id) {
+  currentJobId = id;
+  if (myApplies.some(a => a.jobId === id)) {
+    showToast('✅ Вы уже откликались на эту вакансию'); return;
+  }
+  requireTgAuth(() => {
+    const u = getTgUser();
+    if (u) {
+      document.getElementById('applyName').value = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || '';
+      document.getElementById('applyContact').value = u.username ? `@${u.username}` : '';
+    }
+    openModal('applyModal');
+  });
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN: BOOST APPLIES COUNT (пункт 2)
+// ═══════════════════════════════════════════════
+async function boostApplies(id) {
+  const inputEl = document.getElementById(`boost_applies_input_${id}`);
+  if (!inputEl) return;
+  const amount = parseInt(inputEl.value) || 0;
+  if (amount <= 0 || amount > 10000) { showToast('⚠️ Введите число от 1 до 10 000', true); return; }
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return;
+  const newCount = (j.applies_count || 0) + amount;
+  j.applies_count = newCount;
+  try {
+    await sbFetch(`/rest/v1/jobs?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ applies_count: newCount })
+    });
+    inputEl.value = '';
+    showToast(`📩 +${amount} откликов → ${newCount} всего`);
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    renderAdminPanel();
+  } catch(e) { showToast('❌ Ошибка при накрутке', true); }
+}
+
+// ═══════════════════════════════════════════════
+// SALARY VALIDATION (пункт 11)
+// ═══════════════════════════════════════════════
+function validateSalaryInput(el) {
+  const val = el.value.replace(/\D/g, '');
+  const hint = document.getElementById('salaryHint');
+  const num = parseInt(val) || 0;
+  if (el.value.trim() && (num < 100 || num > 100000000)) {
+    el.classList.add('invalid');
+    if (hint) hint.classList.add('show');
+  } else {
+    el.classList.remove('invalid');
+    if (hint) hint.classList.remove('show');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// APPLY COUNT on confirm (increment on apply)
+// ═══════════════════════════════════════════════
+function applyJob() {
+  if (myApplies.some(a => a.jobId === currentJobId)) return;
+  requireTgAuth(() => {
+    const u = getTgUser();
+    if (u) {
+      document.getElementById('applyName').value = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || '';
+      document.getElementById('applyContact').value = u.username ? `@${u.username}` : '';
+    }
+    openModal('applyModal');
+  });
+}
+
+async function confirmApply() {
+  const name = document.getElementById('applyName').value.trim();
+  const contact = document.getElementById('applyContact').value.trim();
+  if (!name || !contact) { showToast('⚠️ Заполните имя и контакт', true); return; }
+
+  const j = JOBS.find(x => x.id === currentJobId);
+  if (!j) return;
+
+  const apply = {
+    id: Date.now(), jobId: currentJobId, jobTitle: j.title, company: j.company,
+    name, contact, date: new Date().toLocaleDateString('ru-RU'), ts: Date.now(),
+    creator_id: j.creator_id || null
+  };
+
+  APPLIES = await loadApplies();
+  APPLIES.push(apply);
+  await insertApply(apply);
+
+  myApplies.push(apply);
+  closeModal('applyModal');
+
+  // Обновляем счётчик откликов на вакансии (пункт 2)
+  const jobObj = JOBS.find(x => x.id === currentJobId);
+  if (jobObj) {
+    jobObj.applies_count = (jobObj.applies_count || 0) + 1;
+    // Обновляем бейдж если деталь открыта
+    const countEl = document.getElementById('detailApplyCount');
+    if (countEl && currentJobId === apply.jobId) {
+      const total = APPLIES.filter(a => a.jobId === currentJobId).length + (jobObj.applies_count || 0);
+      countEl.textContent = `📩 ${total} откликов`;
+    }
+    // Патчим в БД (fire and forget)
+    try {
+      sbFetch(`/rest/v1/jobs?id=eq.${currentJobId}`, {
+        method: 'PATCH', headers: {'Prefer':'return=minimal'},
+        body: JSON.stringify({ applies_count: jobObj.applies_count })
+      });
+    } catch(e) {}
+  }
+
+  // Уведомляем работодателя через бота
+  try {
+    fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jobId: currentJobId,
+        jobTitle: j.title,
+        jobCompany: j.company,
+        applicantName: name,
+        applicantContact: contact,
+        creatorId: j.creator_id || null
+      })
+    });
+  } catch(e) {}
+
+  // Update button
+  const btn = document.getElementById('applyBtn');
+  btn.textContent = '✅ Отклик уже отправлен';
+  btn.disabled = true;
+
+  // Telegram notification via sendData (only works when opened from keyboard button / inline)
+  // Since most Mini Apps use openLink, we just show in-app toast
+  showToast(`✅ Отклик отправлен в ${j.company}!`);
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+  // If Telegram Web App supports showAlert (for notification feel)
+  if (tg?.showAlert) {
+    // We use popup instead — more native feel
+    if (tg.showPopup) {
+      tg.showPopup({
+        title: 'Отклик отправлен! 🎉',
+        message: `Ваш контакт отправлен в ${j.company}.\nРаботодатель свяжется с вами по: ${contact}`,
+        buttons: [{ type: 'ok', text: 'Отлично!' }]
+      }, () => {});
+    }
+  }
+
+  updateProfileStats();
+}
+
+// ═══════════════════════════════════════════════
+// CREATE / EDIT JOB
+// ═══════════════════════════════════════════════
+function resetCreateForUser() {
+  document.getElementById('editJobId').value = '';
+  document.getElementById('createScreenTitle').textContent = 'Разместить вакансию';
+  document.getElementById('createScreenSub').textContent = 'Заполните информацию о позиции';
+  document.getElementById('adminCreateNote').innerHTML = '';
+  document.getElementById('planSection').style.display = '';
+  document.getElementById('submitBtn').textContent = 'Оплатить и разместить';
+  clearForm();
+}
+
+function openAdminCreate() {
+  document.getElementById('editJobId').value = '';
+  document.getElementById('createScreenTitle').textContent = 'Добавить вакансию';
+  document.getElementById('createScreenSub').textContent = 'Бесплатно для администратора';
+  document.getElementById('adminCreateNote').innerHTML = `
+    <div class="admin-create-note"><span>🔐</span><span>Вы вошли как администратор — размещение бесплатно</span></div>`;
+  document.getElementById('planSection').style.display = 'none';
+  document.getElementById('submitBtn').textContent = 'Разместить вакансию';
+  clearForm();
+  navTo('createScreen', null);
+}
+
+function openEditJob(id) {
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return;
+  document.getElementById('editJobId').value = id;
+  document.getElementById('createScreenTitle').textContent = 'Редактировать вакансию';
+  document.getElementById('createScreenSub').textContent = j.title;
+  document.getElementById('adminCreateNote').innerHTML = `
+    <div class="admin-create-note"><span>✏️</span><span>Редактирование вакансии</span></div>`;
+  document.getElementById('planSection').style.display = 'none';
+  document.getElementById('submitBtn').textContent = 'Сохранить изменения';
+  document.getElementById('fTitle').value = j.title;
+  document.getElementById('fCompany').value = j.company;
+  document.getElementById('fCity').value = j.city || '';
+  document.getElementById('fSalary').value = (j.salaryNum || parseInt((j.salary||'').replace(/\D/g,'')) || '').toString();
+  document.getElementById('fCategory').value = j.category || '';
+  document.getElementById('fIcon').value = j.icon || '';
+  document.getElementById('fDesc').value = j.about || '';
+  document.getElementById('fReqs').value = Array.isArray(j.requirements) ? j.requirements.join('\n') : (j.requirements||'');
+  document.getElementById('fConds').value = Array.isArray(j.conditions) ? j.conditions.join('\n') : (j.conditions||'');
+  document.getElementById('fTags').value = (j.tags||[]).join(', ');
+  document.getElementById('fContact').value = j.contact || '';
+  pushTo('createScreen');
+}
+
+function clearForm() {
+  ['fTitle','fCompany','fCity','fSalary','fCategory','fIcon','fDesc','fReqs','fConds','fTags','fContact']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+}
+
+async function submitJob() {
+  if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
+  const title = document.getElementById('fTitle').value.trim();
+  const company = document.getElementById('fCompany').value.trim();
+  const city = document.getElementById('fCity').value;
+  const salaryRaw = document.getElementById('fSalary').value.replace(/\D/g,'');
+  const salary = salaryRaw ? parseInt(salaryRaw).toLocaleString('ru-RU') : '';
+  if (!title || !company) { showToast('⚠️ Заполните название и компанию', true); return; }
+
+  const editId = document.getElementById('editJobId').value;
+  const tags = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const reqs = document.getElementById('fReqs').value.split('\n').map(r=>r.trim()).filter(Boolean);
+  const conds = document.getElementById('fConds').value.split('\n').map(c=>c.trim()).filter(Boolean);
+  const icon = document.getElementById('fIcon').value.trim() || '🏢';
+  const category = document.getElementById('fCategory').value || 'Общее';
+  const salaryNum = parseInt(salaryRaw) || 0;
+
+  if (editId) {
+    const idx = JOBS.findIndex(j => j.id == editId);
+    if (idx !== -1) {
+      JOBS[idx] = { ...JOBS[idx], title, company, city, salary, salaryNum, category, icon,
+        about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds, tags,
+        contact: document.getElementById('fContact').value.trim() };
+      await updateJob(JOBS[idx]);
+    }
+    showToast('✅ Вакансия обновлена!');
+  } else {
+    const newJob = {
+      id: null, title, company, city, salary, salaryNum, category, icon,
+      iconBg: 'rgba(124,92,255,0.15)', accent: 'linear-gradient(90deg,#7c5cff,#4da3ff)', badge: 'new',
+      tags, about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds,
+      contact: document.getElementById('fContact').value.trim(), pinned: false, createdAt: Date.now(),
+      creator_id: getTgUser()?.id ? String(getTgUser().id) : 'admin'
+    };
+    const saved = await insertJob(newJob);
+    JOBS.unshift(saved);
+    if (!isAdmin) myPosted++;
+    showToast('🚀 Вакансия размещена!');
+  }
+
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  clearForm();
+  renderFeatured();
+  filterJobs();
+  updateProfileStats();
+
+  setTimeout(() => {
+    if (isAdmin) { renderAdminPanel(); navTo('adminScreen', null); }
+    else navTo('homeScreen', null);
+  }, 800);
+}
+
+// ═══════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════
+function openAdminLogin() {
+  if (isAdmin) { navTo('adminScreen', null); return; }
+  document.getElementById('pinInput').value = '';
+  openModal('adminLoginModal');
+  setTimeout(() => document.getElementById('pinInput').focus(), 300);
+}
+
+function checkPin() {
+  const pin = document.getElementById('pinInput').value.trim();
+  if (pin === ADMIN_PIN) {
+    isAdmin = true;
+    closeModal('adminLoginModal');
+    document.getElementById('adminMenuText').textContent = '⚙️ Панель администратора';
+    document.getElementById('profileSub').textContent = '👑 Администратор';
+    renderAdminPanel();
+    navTo('adminScreen', null);
+    showToast('✅ Добро пожаловать, Администратор!');
+  } else {
+    showToast('❌ Неверный пин-код', true);
+    document.getElementById('pinInput').value = '';
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+  }
+}
+
+function logoutAdmin() {
+  isAdmin = false;
+  document.getElementById('adminMenuText').textContent = 'Войти как администратор';
+  document.getElementById('profileSub').textContent = 'Участник Jobic';
+  navTo('profileScreen', null);
+  showToast('👋 Вы вышли из панели');
+}
+
+async function renderAdminPanel() {
+  JOBS = await loadJobs(true); // force refresh
+  APPLIES = await loadApplies();
+  const pinned = JOBS.filter(j => j.pinned).length;
+  const totalViews = JOBS.reduce((sum, j) => sum + (j.views || 0), 0);
+  document.getElementById('aStatJobs').textContent = JOBS.length;
+  document.getElementById('aStatApplies').textContent = APPLIES.length;
+  document.getElementById('aStatPinned').textContent = pinned;
+  document.getElementById('aStatViews').textContent = formatViews(totalViews);
+  const pinnedCount = JOBS.filter(j => j.pinned).length;
+  const list = document.getElementById('adminJobList');
+  if (!JOBS.length) { list.innerHTML = '<div class="empty-state">Нет вакансий</div>'; return; }
+  list.innerHTML = `<div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">📌 Закреплено в карусели: ${pinnedCount}/5 — нажми 📌 чтобы добавить или убрать</div>` +
+  JOBS.map(j => `
+    <div class="job-admin-item">
+      <div class="job-admin-icon">${j.icon||'🏢'}</div>
+      <div class="job-admin-info">
+        <div class="job-admin-title">${esc(j.title)}</div>
+        <div class="job-admin-meta">${esc(j.company)} · ${j.pinned ? '📌 В топе' : 'Обычная'} · 👁 ${formatViews(j.views||0)} · 📩 ${j.applies_count||0}</div>
+        <div style="display:flex;gap:6px;margin-top:6px;align-items:center;flex-wrap:wrap;">
+          <input id="boost_input_${j.id}" class="boost-input" type="number" min="1" max="100000" placeholder="+ просмотры">
+          <button class="boost-btn" onclick="boostViews('${j.id}')">👁 Вьюсы</button>
+          <input id="boost_applies_input_${j.id}" class="boost-input" type="number" min="1" max="10000" placeholder="+ отклики">
+          <button class="boost-applies-btn" onclick="boostApplies('${j.id}')">📩 Отклики</button>
+        </div>
+      </div>
+      <div class="job-admin-actions">
+        <div class="icon-btn ${j.pinned?'pin-active':''}" onclick="togglePin('${j.id}')">📌</div>
+        <div class="icon-btn" onclick="openEditJob('${j.id}')">✏️</div>
+        <div class="icon-btn del-btn" onclick="deleteJob('${j.id}')">🗑</div>
+      </div>
+    </div>`).join('');
+
+  // Загружаем заявки на оплату
+  adminLoadPayments();
+}
+
+async function togglePin(id) {
+  JOBS = await loadJobs(true);
+  const j = JOBS.find(x => x.id === id);
+  if (!j) return;
+  if (j.pinned) {
+    j.pinned = false;
+    await patchJobField(j.id, { pinned: false });
+    renderFeatured(); renderPremiumSection(); filterJobs(); renderAdminPanel();
+    showToast('📍 Откреплено');
+    if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    return;
+  }
+  const pinnedList = JOBS.filter(x => x.pinned);
+  if (pinnedList.length >= 5) {
+    showToast('⚠️ Максимум 5 закреплённых вакансий', true);
+    return;
+  }
+  j.pinned = true;
+  await patchJobField(j.id, { pinned: true });
+  renderFeatured(); renderPremiumSection(); filterJobs(); renderAdminPanel();
+  showToast('📌 Закреплено в топе!');
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+}
+
+async function deleteJob(id) {
+  // Удаляем отклики на эту вакансию (если нет CASCADE FK — делаем вручную)
+  try { await sbFetch(`/rest/v1/applies?job_id=eq.${id}`, { method: 'DELETE' }); } catch(e) {}
+  await deleteJobDb(id);
+  _jobsCache = null; // bust cache
+  JOBS = JOBS.filter(j => j.id !== id);
+  APPLIES = APPLIES.filter(a => a.jobId !== id);
+  favorites = favorites.filter(f => f !== id);
+  saveFavsToSession();
+  renderFeatured(); renderPremiumSection(); filterJobs(); renderAdminPanel();
+  updateFavBadge();
+  showToast('🗑 Вакансия и отклики удалены');
+}
+
+async function openAdminApplies() {
+  APPLIES = await loadApplies();
+  const list = document.getElementById('adminAppliesList');
+  if (!APPLIES.length) {
+    list.innerHTML = '<div class="empty-state"><div class="e-icon">📭</div>Откликов пока нет</div>'; return;
+  }
+  const sorted = [...APPLIES].sort((a,b) => b.ts - a.ts);
+  list.innerHTML = sorted.map(a => `
+    <div class="apply-item">
+      <div class="apply-item-top">
+        <div class="apply-item-name">👤 ${esc(a.name)}</div>
+        <div class="apply-item-date">${esc(a.date)}</div>
+      </div>
+      <div class="apply-item-job">💼 ${esc(a.jobTitle)} · ${esc(a.company)}</div>
+      <div class="contact-btn" onclick="contactUser('${esc(a.contact)}')">
+        📩 Написать: ${esc(a.contact)}
+      </div>
+    </div>`).join('');
+}
+
+function contactUser(contact) {
+  const clean = contact.replace('@', '');
+  const url = contact.startsWith('+') ? `https://t.me/+${clean}` : `https://t.me/${clean}`;
+  if (tg) tg.openLink(url); else window.open(url, '_blank');
+}
+
+// ═══════════════════════════════════════════════
+// ОТКЛИКИ НА МОИ ВАКАНСИИ
+// ═══════════════════════════════════════════════
+async function openMyJobApplies() {
+  pushTo('myJobAppliesScreen');
+  const list = document.getElementById('myJobAppliesList');
+  list.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+
+  const myId = getTgUser()?.id ? String(getTgUser().id) : 'admin';
+  const all = await loadApplies();
+  const mine = all.filter(a => a.creator_id === myId);
+
+  if (!mine.length) {
+    list.innerHTML = '<div class="empty-state"><div class="e-icon">📭</div>Откликов на ваши вакансии пока нет</div>';
+    return;
+  }
+
+  list.innerHTML = mine.map(a => `
+    <div class="apply-item">
+      <div class="apply-item-top">
+        <div class="apply-item-name">👤 ${esc(a.name)}</div>
+        <div class="apply-item-date">${esc(a.date)}</div>
+      </div>
+      <div class="apply-item-job">💼 ${esc(a.jobTitle)} · ${esc(a.company)}</div>
+      <div class="contact-btn" onclick="contactUser('${esc(a.contact)}')">
+        📩 Написать: ${esc(a.contact)}
+      </div>
+    </div>`).join('');
+}
+
+
+function openAppliedScreen() {
+  const list = document.getElementById('myAppliesList');
+  if (!myApplies.length) {
+    list.innerHTML = '<div class="empty-state"><div class="e-icon">📭</div>Ещё нет откликов</div>';
+  } else {
+    list.innerHTML = myApplies.map(a => `
+      <div class="apply-item">
+        <div class="apply-item-top">
+          <div class="apply-item-name">💼 ${esc(a.jobTitle)}</div>
+          <div class="apply-item-date">${esc(a.date)}</div>
+        </div>
+        <div class="apply-item-job">${esc(a.company)}</div>
+        <div class="apply-item-contact" style="color:var(--green);font-size:13px;font-weight:600;">✅ Отклик отправлен</div>
+      </div>`).join('');
+  }
+  pushTo('appliedScreen');
+}
+
+// ═══════════════════════════════════════════════
+// FAV SCREEN (refresh on open)
+// ═══════════════════════════════════════════════
+// Intercept navTo for favScreen to refresh content
+const _origNavTo = navTo;
+// We patch by checking in _animateTransition — render fav on arrival
+function _onScreenShown(screenId) {
+  if (screenId === 'favScreen') renderFavScreen();
+  if (screenId === 'adminScreen' && isAdmin) renderAdminPanel();
+  if (screenId === 'newsScreen') { loadNews().then(renderNews); }
+  if (screenId === 'notificationsScreen') { renderNotifCatChips(); generateNotifications(); }
+}
+// Hook: after animateTransition, call _onScreenShown
+const __animOrig = _animateTransition;
+// Since we can't easily override closure, we call renderFavScreen in navTo directly:
+// (already handled: favScreen bottom nav onclick calls navTo which calls _animateTransition and shows screen)
+// Simple: override by watching screens
+const _navToWrapped = navTo;
+window.navTo = function(screenId, btn) {
+  _navToWrapped(screenId, btn);
+  setTimeout(() => _onScreenShown(screenId), 50);
+};
+
+// ═══════════════════════════════════════════════
+// PLAN SELECT
+// ═══════════════════════════════════════════════
+function selPlan(el) {
+  document.querySelectorAll('.plan-option').forEach(o => {
+    o.classList.remove('sel');
+    const r = o.querySelector('.radio');
+    r.classList.remove('on'); r.innerHTML = '';
+  });
+  el.classList.add('sel');
+  const r = el.querySelector('.radio');
+  r.classList.add('on');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════
+function openModal(id) {
+  if (id === 'tgAuthModal') {
+    const s1 = document.getElementById('authStep1');
+    const s2 = document.getElementById('authStep2');
+    if (s1) s1.style.display = 'block';
+    if (s2) s2.style.display = 'none';
+    const e1 = document.getElementById('authStep1Error');
+    const e2 = document.getElementById('authStep2Error');
+    if (e1) e1.textContent = '';
+    if (e2) e2.textContent = '';
+    const code = document.getElementById('authCode');
+    if (code) code.value = '';
+    const usernameEl = document.getElementById('authUsername');
+    if (usernameEl) usernameEl.value = '';
+    const btn = document.getElementById('authSendBtn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Получить код'; }
+  }
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════
+// TG BACK BUTTON
+// ═══════════════════════════════════════════════
+if (tg) {
+  tg.BackButton.onClick(() => goBack());
+  tg.BackButton.hide(); // hidden at start
+}
+
+
+// ═══════════════════════════════════════════════
+// PWA INSTALL
+// ═══════════════════════════════════════════════
+let _pwaPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _pwaPrompt = e;
+});
+
+function pwaShowBanner() {
+  const banner = document.getElementById('pwaBanner');
+  if (!banner) return;
+  banner.style.display = 'flex';
+  setTimeout(() => banner.classList.add('show'), 50);
+}
+
+function pwaDismiss() {
+  const banner = document.getElementById('pwaBanner');
+  if (banner) { banner.classList.remove('show'); setTimeout(() => banner.style.display='none', 400); }
+  localStorage.setItem('jobic_pwa_dismissed', '1');
+}
+
+function pwaTriggerInstall() {
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  pwaDismiss();
+  if (isIos || !_pwaPrompt) {
+    setTimeout(() => {
+      const modal = document.getElementById('pwaIosModal');
+      if (modal) modal.classList.add('show');
+    }, 300);
+    return;
+  }
+  _pwaPrompt.prompt();
+  _pwaPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') showToast('✅ Jobic добавлен на рабочий стол!');
+    _pwaPrompt = null;
+  });
+}
+
+function pwaCloseIos() {
+  const modal = document.getElementById('pwaIosModal');
+  if (modal) modal.classList.remove('show');
+  localStorage.setItem('jobic_pwa_dismissed', '1');
+}
+
+// Показываем баннер через 4 сек если не отклоняли и не в Telegram и не standalone
+setTimeout(() => {
+  if (window.Telegram?.WebApp?.initData) return;
+  if (window.navigator.standalone) return;
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  if (localStorage.getItem('jobic_pwa_dismissed')) return;
+  pwaShowBanner();
+}, 4000);
+
+// Pin input enter// Pin input enter
+document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPin(); });
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+init();
+
+// ── ADMIN PAYMENTS ──────────────────────────────────
+async function adminLoadPayments() {
+  const el = document.getElementById('adminPaymentRequests');
+  if (!el) return;
+  try {
+    const data = await sbFetch('/rest/v1/payment_requests?select=*&order=created_at.desc');
+    if (!data || !data.length) {
+      el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:8px 0;">Нет заявок</div>';
+      return;
+    }
+    el.innerHTML = data.map(p => {
+      const statusColor = p.status === 'pending' ? 'var(--orange)' : p.status === 'approved' ? 'var(--green)' : 'var(--red)';
+      const statusLabel = p.status === 'pending' ? '⏳ Ожидает' : p.status === 'approved' ? '✅ Одобрено' : '❌ Отклонено';
+      const amountNum = parseInt(String(p.amount).replace(/\s/g, '')) || 0;
+      return `
+        <div style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;background:var(--surface);">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+            <div>
+              <div style="font-weight:600;font-size:14px;">@${esc(p.username)}</div>
+              <div style="font-size:12px;color:var(--text3);">${p.tariff} · ${p.amount} ₽</div>
+              <div style="font-size:11px;color:var(--text3);">${new Date(p.created_at).toLocaleString('ru')}</div>
+            </div>
+            <span style="font-size:11px;font-weight:600;color:${statusColor};padding:3px 8px;border-radius:8px;border:1px solid ${statusColor};background:${statusColor}22;">${statusLabel}</span>
+          </div>
+          ${p.screenshot_url ? `<a href="${p.screenshot_url}" target="_blank" style="font-size:12px;color:var(--accent);display:inline-block;margin-bottom:8px;">📎 Посмотреть скриншот</a>` : '<div style="font-size:11px;color:var(--text3);margin-bottom:8px;">📎 Скриншот не прикреплён</div>'}
+          ${p.status === 'pending' ? `
+            <div style="display:flex;gap:6px;">
+              <button onclick="adminApprovePayment('${p.id}','${esc(p.tg_user_id)}','${esc(p.username)}',${amountNum})"
+                style="flex:1;padding:9px 0;border-radius:10px;background:rgba(77,255,154,0.15);border:1px solid var(--green);color:var(--green);font-size:13px;font-weight:600;cursor:pointer;">
+                ✅ Одобрить и начислить
+              </button>
+              <button onclick="adminRejectPayment('${p.id}')"
+                style="padding:9px 16px;border-radius:10px;background:rgba(255,92,92,0.12);border:1px solid var(--red);color:var(--red);font-size:13px;font-weight:600;cursor:pointer;">
+                ❌
+              </button>
+            </div>` : ''}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="color:var(--red);font-size:13px;">Ошибка загрузки заявок</div>';
+    console.error('adminLoadPayments error:', e);
+  }
+}
+
+async function adminApprovePayment(id, tgUserId, username, amount) {
+  if (!amount || amount <= 0) { showToast('⚠️ Некорректная сумма', true); return; }
+  try {
+    // Получаем текущий баланс
+    let currentBalance = 0;
+    try {
+      const existing = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(tgUserId) + '&select=balance');
+      if (existing && existing.length) currentBalance = existing[0].balance || 0;
+    } catch(e) {}
+
+    const newBalance = currentBalance + amount;
+
+    // Upsert баланс
+    await sbFetch('/rest/v1/user_balances', {
+      method: 'POST',
+      prefer: 'resolution=merge-duplicates',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ tg_user_id: tgUserId, username: username, balance: newBalance })
+    });
+
+    // Обновляем статус заявки
+    await sbFetch('/rest/v1/payment_requests?id=eq.' + id, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'approved' })
+    });
+
+    showToast('✅ Начислено ' + amount + ' ₽ → @' + username);
+    adminLoadPayments();
+  } catch(e) {
+    showToast('❌ Ошибка при начислении', true);
+    console.error('adminApprovePayment error:', e);
+  }
+}
+
+async function adminRejectPayment(id) {
+  try {
+    await sbFetch('/rest/v1/payment_requests?id=eq.' + id, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'rejected' })
+    });
+    showToast('❌ Заявка отклонена');
+    adminLoadPayments();
+  } catch(e) {
+    showToast('❌ Ошибка', true);
+  }
+}
+
+async function adminGiveBalance() {
+  const userInput = document.getElementById('adminBalanceUser').value.replace('@','').trim();
+  const amt = parseInt(document.getElementById('adminBalanceAmt').value);
+  if (!userInput) { showToast('⚠️ Введите @username', true); return; }
+  if (!amt || amt <= 0) { showToast('⚠️ Введите сумму', true); return; }
+
+  try {
+    let currentBalance = 0;
+    try {
+      const existing = await sbFetch('/rest/v1/user_balances?username=eq.' + encodeURIComponent(userInput) + '&select=balance');
+      if (existing && existing.length) currentBalance = existing[0].balance || 0;
+    } catch(e) {}
+
+    const newBal = currentBalance + amt;
+    await sbFetch('/rest/v1/user_balances', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ username: userInput, balance: newBal })
+    });
+
+    document.getElementById('adminBalanceUser').value = '';
+    document.getElementById('adminBalanceAmt').value = '';
+    showToast('✅ Выдано ' + amt + ' ₽ → @' + userInput);
+  } catch(e) {
+    showToast('❌ Ошибка при выдаче баланса', true);
+    console.error('adminGiveBalance error:', e);
+  }
+}
+// ── END ADMIN PAYMENTS ──────────────────────────────
+
+// ── WALLET ──────────────────────────────────────────
+let walletSelectedTariff = 'Стандарт';
+let walletSelectedSum = '1 500';
+let walletScreenshotFile = null;
+
+function walletTab(name, tabEl) {
+  const map = { main: 'wp-main', flow: 'wp-flow', tariffs: 'wp-tariffs' };
+  document.querySelectorAll('#walletScreen .wpane').forEach(p => p.classList.remove('wt-active'));
+  document.querySelectorAll('#walletScreen .wallet-tab').forEach(t => t.classList.remove('wt-active'));
+  document.getElementById(map[name]).classList.add('wt-active');
+  if (tabEl) tabEl.classList.add('wt-active');
+}
+
+function walletSelTariff(el, name, sum) {
+  document.querySelectorAll('.wtariff-card').forEach(c => c.classList.remove('wsel'));
+  el.classList.add('wsel');
+  walletSelectedTariff = name;
+  walletSelectedSum = sum;
+  const uEl = document.getElementById('wNotifUser');
+  const tEl = document.getElementById('wNotifTariff');
+  const sEl = document.getElementById('wNotifSum');
+  if (uEl && window.Telegram?.WebApp?.initDataUnsafe?.user?.username)
+    uEl.textContent = '@' + window.Telegram.WebApp.initDataUnsafe.user.username;
+  if (tEl) tEl.textContent = name;
+  if (sEl) sEl.textContent = sum + ' ₽';
+}
+
+function walletUploadScreenshot() {
+  document.getElementById('walletFileInput').click();
+}
+
+function walletHandleFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  walletScreenshotFile = file;
+  const textEl = document.getElementById('walletUploadText');
+  if (textEl) textEl.textContent = '✅ ' + file.name + ' — прикреплён';
+  const box = document.getElementById('walletUploadBox');
+  if (box) box.style.borderColor = 'var(--green)';
+  // Показываем кнопку «Я оплатил»
+  const btn = document.getElementById('walletPaidBtn');
+  if (btn) btn.style.display = 'block';
+}
+
+function walletSendNotification() {
+  const tg = window.Telegram?.WebApp;
+  const username = tg?.initDataUnsafe?.user?.username
+    || tg?.initDataUnsafe?.user?.first_name
+    || 'пользователь';
+  const payload = JSON.stringify({
+    action: 'payment',
+    username: username,
+    tariff: walletSelectedTariff,
+    sum: walletSelectedSum,
+    hasScreenshot: !!walletScreenshotFile
+  });
+  try {
+    if (tg) tg.sendData(payload);
+  } catch(e) {
+    const msg = encodeURIComponent(
+      '💳 Оплата тарифа «' + walletSelectedTariff + '»\n' +
+      '💰 Сумма: ' + walletSelectedSum + ' ₽\n' +
+      '👤 ' + (tg?.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : username) + '\n' +
+      '📎 Скриншот прикреплён'
+    );
+    openLink('https://t.me/sapgos?text=' + msg);
+  }
+}
+
+async function walletConfirmPayment() {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const username = tgUser?.username || tgUser?.first_name || 'unknown';
+  const userId = tgUser?.id ? String(tgUser.id) : null;
+
+  if (!walletScreenshotFile) {
+    showToast('⚠️ Прикрепите скриншот оплаты');
+    return;
+  }
+
+  const btn = document.getElementById('walletPaidBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Отправляем...';
+
+  try {
+    // 1. Загружаем скрин в Supabase Storage
+    let screenshotUrl = null;
+    const fileName = 'payments/' + (userId || 'anon') + '_' + Date.now() + '.jpg';
+    const storageRes = await fetch(
+      SUPABASE_URL + '/storage/v1/object/screenshots/' + fileName,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON,
+          'Authorization': 'Bearer ' + SUPABASE_ANON,
+          'Content-Type': walletScreenshotFile.type || 'image/jpeg',
+          'x-upsert': 'true'
+        },
+        body: walletScreenshotFile
+      }
+    );
+    if (storageRes.ok) {
+      screenshotUrl = SUPABASE_URL + '/storage/v1/object/public/screenshots/' + fileName;
+    }
+
+    // 2. Пишем заявку в payment_requests и получаем id
+    const inserted = await sbFetch('/rest/v1/payment_requests', {
+      method: 'POST',
+      prefer: 'return=representation',
+      headers: { 'Prefer': 'return=representation' },
+      body: JSON.stringify({
+        tg_user_id: userId,
+        username: username,
+        tariff: walletSelectedTariff,
+        amount: walletSelectedSum,
+        screenshot_url: screenshotUrl,
+        status: 'pending'
+      })
+    });
+
+    const requestId = inserted && inserted[0] ? inserted[0].id : null;
+
+    // 3. Шлём уведомление боту (Railway URL)
+    const BOT_SERVER = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot'; // ← заменишь после деплоя
+    if (requestId && BOT_SERVER !== 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot') {
+      try {
+        await fetch(BOT_SERVER + '/notify-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Secret': 'jobic_secret_2024'
+          },
+          body: JSON.stringify({
+            request_id: requestId,
+            username: username,
+            tg_user_id: userId,
+            tariff: walletSelectedTariff,
+            amount: walletSelectedSum,
+            screenshot_url: screenshotUrl
+          })
+        });
+      } catch(e) {
+        console.warn('Bot notify failed (non-critical):', e);
+      }
+    }
+
+    showToast('✅ Заявка отправлена! Администратор проверит и начислит баланс.');
+    btn.textContent = '✅ Заявка отправлена';
+
+    // Сбрасываем файл
+    walletScreenshotFile = null;
+    document.getElementById('walletFileInput').value = '';
+  } catch(e) {
+    console.error('Payment error:', e);
+    showToast('❌ Ошибка. Напишите @sapgos напрямую.');
+    btn.disabled = false;
+    btn.textContent = '✅ Я оплатил — уведомить администратора';
+  }
+}
+
+function walletUpdateBalance(balance) {
+  const amtEl = document.getElementById('walletBalance');
+  const badgeEl = document.getElementById('walletBalanceBadge');
+  if (amtEl) amtEl.innerHTML = balance.toLocaleString('ru') + ' <span>₽</span>';
+  if (badgeEl) badgeEl.textContent = balance.toLocaleString('ru') + ' ₽';
+}
+
+function walletRenderVacancies(vacancies) {
+  const el = document.getElementById('walletVacancies');
+  if (!el) return;
+  if (!vacancies || !vacancies.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">Нет активных вакансий</div>';
+    return;
+  }
+  el.innerHTML = vacancies.map(v => {
+    const badgeCls = v.daysLeft <= 3 ? 'badge badge-orange' : 'badge badge-green';
+    return `<div class="wvac-item"><div><div class="wvac-name">${v.name}</div><div class="wvac-sub">${v.date} · ${v.tariff}</div></div><span class="${badgeCls}">${v.daysLeft} дн.</span></div>`;
+  }).join('');
+}
+
+function walletRenderTransactions(txs) {
+  const el = document.getElementById('walletTransactions');
+  if (!el) return;
+  if (!txs || !txs.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">История пуста</div>';
+    return;
+  }
+  el.innerHTML = txs.map(t => `<div class="wtx-item"><div class="wtx-dot ${t.type}">${t.type === 'plus' ? '+' : '−'}</div><div><div class="wtx-name">${t.name}</div><div class="wtx-date">${t.date}</div></div><div class="wtx-amount ${t.type}">${t.type === 'plus' ? '+' : '−'}${t.amount} ₽</div></div>`).join('');
+}
+
+// Обновить username в превью при старте
+(function() {
+  const tg = window.Telegram?.WebApp;
+  if (tg?.initDataUnsafe?.user?.username) {
+    const el = document.getElementById('wNotifUser');
+    if (el) el.textContent = '@' + tg.initDataUnsafe.user.username;
+  }
+})();
+
+// Загрузить баланс пользователя из Supabase
+async function walletLoadBalance() {
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  if (!tgUser?.id) return;
+  try {
+    const data = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + tgUser.id + '&select=balance');
+    if (data && data.length) {
+      walletUpdateBalance(data[0].balance || 0);
+    }
+  } catch(e) {
+    console.error('walletLoadBalance error:', e);
+  }
+}
+// ── END WALLET JS ──────────────────────────────────
+</script>
+</body>
+</html>
