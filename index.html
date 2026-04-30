@@ -959,7 +959,7 @@
         <button class="wallet-tab" onclick="walletTab('tariffs',this)">🚀 Тарифы</button>
       </div>
       <div class="wpane wt-active" id="wp-main">
-        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="walletTab('tariffs', document.querySelectorAll('.wallet-tab')[2])">Пополнить баланс</button></div></div>
+        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="(function(){const u=window.Telegram?.WebApp?.initDataUnsafe?.user;if(!u?.id){showToast('⚠️ Войдите в аккаунт');openModal('tgAuthModal');return;}walletTab('tariffs',document.querySelectorAll('.wallet-tab')[2]);})()">Пополнить баланс</button></div></div>
         <div class="sec-label" style="margin-top:14px">Активные вакансии</div>
         <div class="wvac-card" id="walletVacancies"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">Нет активных вакансий</div></div>
         <div class="sec-label" style="margin-top:2px">История транзакций</div>
@@ -1129,6 +1129,12 @@ if (tg) {
   tg.setHeaderColor('#0d0d1a');
   tg.setBackgroundColor('#0d0d1a');
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
+  const u = tg.initDataUnsafe?.user;
+  if (u && u.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
+  if (u) {
+    document.getElementById('profileName').textContent =
+      [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
+  }
 }
 
 // iOS keyboard fix
@@ -1163,35 +1169,45 @@ function toggleTheme() {
 const SUPABASE_URL  = 'https://vznzoismzrtipowpfigu.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bnpvaXNtenJ0aXBvd3BmaWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTU3NzYsImV4cCI6MjA5Mjg5MTc3Nn0._qyN2g_nThgNtDv42kRsByk_D4TIDVTadWfvmbQdU68';
 
+/*
+ ┌─ SUPABASE: нужна таблица balance_transactions ───────────────────────────┐
+ │ CREATE TABLE IF NOT EXISTS balance_transactions (                        │
+ │   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),            │
+ │   tg_user_id      text,                                                  │
+ │   username        text,                                                  │
+ │   amount          integer NOT NULL,  -- положительное = начисление       │
+ │   description     text,                                                  │
+ │   payment_request_id uuid REFERENCES payment_requests(id),              │
+ │   created_at      timestamptz DEFAULT now()                              │
+ │ );                                                                       │
+ │ ALTER TABLE balance_transactions ENABLE ROW LEVEL SECURITY;             │
+ │ CREATE POLICY "anon insert" ON balance_transactions FOR INSERT           │
+ │   TO anon WITH CHECK (true);                                             │
+ │ CREATE POLICY "anon select own" ON balance_transactions FOR SELECT       │
+ │   TO anon USING (true);                                                  │
+ └──────────────────────────────────────────────────────────────────────────┘
+*/
+
 const ADMIN_PIN = '1234'; // ← Смените на свой пин
 
 async function sbFetch(path, options = {}) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 10000);
-  try {
-    const res = await fetch(SUPABASE_URL + path, {
-      ...options,
-      signal: controller.signal,
-      headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON,
-        'Content-Type': 'application/json',
-        'Prefer': options.prefer || '',
-        ...(options.headers || {})
-      }
-    });
-    clearTimeout(timer);
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('Supabase error:', err);
-      throw new Error(err);
+  const res = await fetch(SUPABASE_URL + path, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_ANON,
+      'Authorization': 'Bearer ' + SUPABASE_ANON,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || '',
+      ...(options.headers || {})
     }
-    const text = await res.text();
-    return text ? JSON.parse(text) : [];
-  } catch(e) {
-    clearTimeout(timer);
-    throw e;
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('Supabase error:', err);
+    throw new Error(err);
   }
+  const text = await res.text();
+  return text ? JSON.parse(text) : [];
 }
 
 // ─── JOBS ────────────────────────────────────────
@@ -1886,7 +1902,7 @@ function pushTo(screenId) {
   const cur = navStack[navStack.length - 1];
   if (screenId === cur) return;
   if (screenId === 'adminAppliesScreen') openAdminApplies();
-  if (screenId === 'walletScreen') walletLoadBalance();
+  if (screenId === 'walletScreen') { walletLoadBalance(); walletStartPolling(); }
   navStack.push(screenId);
   _animateTransition(cur, screenId);
   updateTgBackBtn();
@@ -1895,6 +1911,7 @@ function pushTo(screenId) {
 function goBack() {
   if (navStack.length <= 1) { if (tg) tg.close(); return; }
   const cur = navStack.pop();
+  if (cur === 'walletScreen') walletStopPolling();
   const prev = navStack[navStack.length - 1];
   _animateTransition(cur, prev, true);
   updateNavBtns(prev);
@@ -2072,6 +2089,9 @@ function onTelegramWebAuth(user) {
   const subEl = document.getElementById('profileSub');
   if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
   if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
+  // Если пользователь на экране кошелька — обновляем данные
+  const cur = navStack[navStack.length - 1];
+  if (cur === 'walletScreen') walletLoadBalance();
   if (_pendingAuthAction) { _pendingAuthAction(); _pendingAuthAction = null; }
 }
 
@@ -2117,17 +2137,6 @@ function openTgBot() {
 // ═══════════════════════════════════════════════
 async function init() {
   restoreSession();
-
-  // Авторизация TG пользователя (webTgUser уже объявлен)
-  const _tgU = tg?.initDataUnsafe?.user;
-  if (_tgU && _tgU.id) {
-    webTgUser = _tgU;
-    try { localStorage.setItem('jobic_user', JSON.stringify(_tgU)); } catch(e) {}
-    const nameEl = document.getElementById('profileName');
-    if (nameEl) nameEl.textContent =
-      [_tgU.first_name, _tgU.last_name].filter(Boolean).join(' ') || _tgU.username || 'Пользователь';
-  }
-
   loadFavsFromSession();
   loadFavTimestamps();
   loadWatchedCategories();
@@ -3167,12 +3176,37 @@ async function adminApprovePayment(id, tgUserId, username, amount) {
       body: JSON.stringify({ tg_user_id: tgUserId, username: username, balance: newBalance })
     });
 
+    // Записываем транзакцию в историю
+    try {
+      await sbFetch('/rest/v1/balance_transactions', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          tg_user_id: tgUserId,
+          username: username,
+          amount: amount,
+          description: 'Пополнение баланса (заявка #' + id + ')',
+          payment_request_id: id
+        })
+      });
+    } catch(e) { console.warn('transaction insert failed (non-critical):', e); }
+
     // Обновляем статус заявки
     await sbFetch('/rest/v1/payment_requests?id=eq.' + id, {
       method: 'PATCH',
       headers: { 'Prefer': 'return=minimal' },
       body: JSON.stringify({ status: 'approved' })
     });
+
+    // Уведомляем пользователя через бота
+    const BOT_SERVER = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot';
+    try {
+      await fetch(BOT_SERVER + '/notify-approved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Secret': 'jobic_secret_2024' },
+        body: JSON.stringify({ tg_user_id: tgUserId, username: username, amount: amount, new_balance: newBalance })
+      });
+    } catch(e) { console.warn('Bot notify approved failed (non-critical):', e); }
 
     showToast('✅ Начислено ' + amount + ' ₽ → @' + username);
     adminLoadPayments();
@@ -3204,9 +3238,13 @@ async function adminGiveBalance() {
 
   try {
     let currentBalance = 0;
+    let existingTgId = null;
     try {
-      const existing = await sbFetch('/rest/v1/user_balances?username=eq.' + encodeURIComponent(userInput) + '&select=balance');
-      if (existing && existing.length) currentBalance = existing[0].balance || 0;
+      const existing = await sbFetch('/rest/v1/user_balances?username=eq.' + encodeURIComponent(userInput) + '&select=balance,tg_user_id');
+      if (existing && existing.length) {
+        currentBalance = existing[0].balance || 0;
+        existingTgId = existing[0].tg_user_id || null;
+      }
     } catch(e) {}
 
     const newBal = currentBalance + amt;
@@ -3215,6 +3253,20 @@ async function adminGiveBalance() {
       headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify({ username: userInput, balance: newBal })
     });
+
+    // Записываем транзакцию
+    try {
+      await sbFetch('/rest/v1/balance_transactions', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          tg_user_id: existingTgId || null,
+          username: userInput,
+          amount: amt,
+          description: 'Ручное начисление администратором'
+        })
+      });
+    } catch(e) { console.warn('transaction insert failed (non-critical):', e); }
 
     document.getElementById('adminBalanceUser').value = '';
     document.getElementById('adminBalanceAmt').value = '';
@@ -3254,6 +3306,12 @@ function walletSelTariff(el, name, sum) {
 }
 
 function walletUploadScreenshot() {
+  const tgUser = getTgUser();
+  if (!tgUser?.id) {
+    showToast('⚠️ Войдите в аккаунт через Telegram, чтобы оплатить');
+    openModal('tgAuthModal');
+    return;
+  }
   document.getElementById('walletFileInput').click();
 }
 
@@ -3397,6 +3455,20 @@ function walletUpdateBalance(balance) {
   if (badgeEl) badgeEl.textContent = balance.toLocaleString('ru') + ' ₽';
 }
 
+// Полное обновление кошелька при возврате на экран (polling)
+let _walletPollTimer = null;
+function walletStartPolling() {
+  walletStopPolling();
+  _walletPollTimer = setInterval(() => {
+    const cur = navStack[navStack.length - 1];
+    if (cur === 'walletScreen') walletLoadBalance();
+    else walletStopPolling();
+  }, 8000); // каждые 8 секунд пока на экране
+}
+function walletStopPolling() {
+  if (_walletPollTimer) { clearInterval(_walletPollTimer); _walletPollTimer = null; }
+}
+
 function walletRenderVacancies(vacancies) {
   const el = document.getElementById('walletVacancies');
   if (!el) return;
@@ -3432,14 +3504,74 @@ function walletRenderTransactions(txs) {
 // Загрузить баланс пользователя из Supabase
 async function walletLoadBalance() {
   const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  if (!tgUser?.id) return;
-  try {
-    const data = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + tgUser.id + '&select=balance');
-    if (data && data.length) {
-      walletUpdateBalance(data[0].balance || 0);
+
+  // Нет авторизации — показываем приглашение войти
+  const walletMainPane = document.getElementById('wp-main');
+  if (!tgUser?.id) {
+    walletUpdateBalance(0);
+    walletRenderTransactions([]);
+    walletRenderVacancies([]);
+    // Показываем заглушку с кнопкой входа если ещё не показана
+    if (walletMainPane && !document.getElementById('walletAuthPrompt')) {
+      const wlt = walletMainPane.querySelector('.wlt-card');
+      if (wlt) {
+        const prompt = document.createElement('div');
+        prompt.id = 'walletAuthPrompt';
+        prompt.style.cssText = 'background:rgba(124,92,255,0.1);border:1px solid rgba(124,92,255,0.3);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px;';
+        prompt.innerHTML = `<div style="font-size:36px;margin-bottom:10px;">🔐</div>
+          <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">Войдите в аккаунт</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">Чтобы видеть баланс, историю транзакций и оплачивать тарифы — войдите через Telegram</div>
+          <button onclick="openModal('tgAuthModal')" style="padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#229ED9,#1a7bbf);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);">✈️ Войти через Telegram</button>`;
+        walletMainPane.insertBefore(prompt, wlt);
+      }
     }
+    return;
+  }
+
+  // Авторизован — убираем заглушку если была
+  const existingPrompt = document.getElementById('walletAuthPrompt');
+  if (existingPrompt) existingPrompt.remove();
+
+  const userId = String(tgUser.id);
+  try {
+    // Баланс
+    const data = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + userId + '&select=balance');
+    walletUpdateBalance((data && data.length) ? (data[0].balance || 0) : 0);
   } catch(e) {
     console.error('walletLoadBalance error:', e);
+  }
+  try {
+    // История транзакций
+    const txData = await sbFetch('/rest/v1/balance_transactions?tg_user_id=eq.' + userId + '&order=created_at.desc&limit=20&select=*');
+    if (txData && txData.length) {
+      walletRenderTransactions(txData.map(t => ({
+        type: t.amount > 0 ? 'plus' : 'minus',
+        name: t.description || (t.amount > 0 ? 'Пополнение' : 'Списание'),
+        date: new Date(t.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}),
+        amount: Math.abs(t.amount)
+      })));
+    } else {
+      walletRenderTransactions([]);
+    }
+  } catch(e) {
+    walletRenderTransactions([]);
+  }
+  try {
+    // Активные вакансии пользователя
+    const vacData = await sbFetch('/rest/v1/jobs?creator_id=eq.' + userId + '&select=id,title,created_at,tariff,expires_at&order=created_at.desc&limit=10');
+    if (vacData && vacData.length) {
+      const now = Date.now();
+      walletRenderVacancies(vacData.map(v => {
+        const exp = v.expires_at ? new Date(v.expires_at).getTime() : (new Date(v.created_at).getTime() + 30*24*3600*1000);
+        const daysLeft = Math.max(0, Math.round((exp - now) / 86400000));
+        const dateStr = new Date(v.created_at).toLocaleDateString('ru', {day:'2-digit',month:'2-digit'});
+        return { name: v.title, date: dateStr, tariff: v.tariff || 'Стандарт', daysLeft };
+      }));
+    } else {
+      walletRenderVacancies([]);
+    }
+  } catch(e) {
+    walletRenderVacancies([]);
   }
 }
 // ── END WALLET JS ──────────────────────────────────
