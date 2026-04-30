@@ -174,6 +174,7 @@
   .badge-hot { background: rgba(255,92,141,0.2); color: var(--accent3); border: 1px solid rgba(255,92,141,0.3); }
   .badge-new { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
   .badge-top { background: rgba(255,200,0,0.15); color: #ffd700; border: 1px solid rgba(255,200,0,0.3); }
+  .badge-orange { background: rgba(255,170,92,0.15); color: var(--orange); border: 1px solid rgba(255,170,92,0.3); }
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .tag { padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; color: var(--text3); font-weight: 500; }
   [data-theme="light"] .tag { background: rgba(124,92,255,0.06); }
@@ -233,6 +234,8 @@
   .plan-option { display: flex; align-items: center; gap: 12px; padding: 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; margin-bottom: 8px; transition: all 0.2s; }
   .plan-option:last-child { margin-bottom: 0; }
   .plan-option.sel { background: rgba(124,92,255,0.12); border-color: rgba(124,92,255,0.45); }
+  .plan-option.locked { opacity: 0.5; }
+  .plan-lock-hint { font-size: 10px; color: var(--red); margin-top: 3px; font-weight: 500; }
   .plan-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
   .plan-info { flex: 1; }
   .plan-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
@@ -279,6 +282,8 @@
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.show { opacity: 1; pointer-events: all; }
   .modal-box { background: #1a1a2e; border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 340px; }
+  .modal-sheet { background: #1a1a2e; border: 1px solid var(--border2); border-radius: var(--radius) var(--radius) 0 0; padding: 24px; width: 100%; position: absolute; bottom: 0; left: 0; right: 0; max-height: 90vh; overflow-y: auto; }
+  [data-theme="light"] .modal-sheet { background: #fff; }
   [data-theme="light"] .modal-box { background: #fff; }
   .modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.3px; }
   .modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
@@ -390,7 +395,7 @@
 
   /* ═══════ SELECT DROPDOWN ═══════ */
   .form-select { width: 100%; padding: 14px 16px; border-radius: var(--radius-sm); background: var(--surface2); border: 1px solid var(--border2); color: var(--text); font-size: 14px; font-family: var(--font-body); outline: none; margin-bottom: 10px; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
-  [data-theme="light"] .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(0,0,0,0.4)' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+  [data-theme="light"] .form-select { background-color: rgba(255,255,255,0.9); color: #1a1a2e; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(0,0,0,0.4)' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
 
   /* ═══════ CAROUSEL ═══════ */
   .carousel-wrap { position: relative; overflow: hidden; border-radius: var(--radius); margin-bottom: 4px; }
@@ -687,19 +692,19 @@
       <div id="planSection">
         <div class="form-block">
           <label class="form-label">Тарифный план</label>
-          <div class="plan-option sel" onclick="selPlan(this)">
+          <div class="plan-option sel" data-plan="standard" data-price="299" onclick="selPlan(this)">
             <div class="plan-icon">⚡</div>
             <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
             <div class="plan-price">299 ₽</div>
             <div class="radio on"></div>
           </div>
-          <div class="plan-option" onclick="selPlan(this)">
+          <div class="plan-option" data-plan="promo" data-price="799" onclick="selPlan(this)">
             <div class="plan-icon">🚀</div>
             <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи</div></div>
             <div class="plan-price">799 ₽</div>
             <div class="radio"></div>
           </div>
-          <div class="plan-option" onclick="selPlan(this)">
+          <div class="plan-option" data-plan="premium" data-price="1990" onclick="selPlan(this)">
             <div class="plan-icon">👑</div>
             <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured + email</div></div>
             <div class="plan-price">1 990 ₽</div>
@@ -959,7 +964,7 @@
         <button class="wallet-tab" onclick="walletTab('tariffs',this)">🚀 Тарифы</button>
       </div>
       <div class="wpane wt-active" id="wp-main">
-        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="(function(){const u=window.Telegram?.WebApp?.initDataUnsafe?.user;if(!u?.id){showToast('⚠️ Войдите в аккаунт');openModal('tgAuthModal');return;}walletTab('tariffs',document.querySelectorAll('.wallet-tab')[2]);})()">Пополнить баланс</button></div></div>
+        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="walletGoToTariffs()">Пополнить баланс</button></div></div>
         <div class="sec-label" style="margin-top:14px">Активные вакансии</div>
         <div class="wvac-card" id="walletVacancies"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">Нет активных вакансий</div></div>
         <div class="sec-label" style="margin-top:2px">История транзакций</div>
@@ -980,7 +985,7 @@
         <div class="wtariff-card" onclick="walletSelTariff(this,'Старт','900')"><div class="wtariff-row"><div><div class="wtariff-name">Старт</div><div class="wtariff-desc">1 вакансия · 30 дней</div></div><div class="wtariff-price">900 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">1 вакансия</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill">Стандартный вид</span></div></div>
         <div class="wtariff-card popular" onclick="walletSelTariff(this,'Стандарт','1 500')"><div class="wpop-badge">⚡ ПОПУЛЯРНЫЙ</div><div class="wtariff-row"><div><div class="wtariff-name">Стандарт</div><div class="wtariff-desc">3 вакансии · 30 дней</div></div><div class="wtariff-price">1 500 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">3 вакансии</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Выделение</span></div></div>
         <div class="wtariff-card" onclick="walletSelTariff(this,'Про','5 000')"><div class="wtariff-row"><div><div class="wtariff-name">Про</div><div class="wtariff-desc">10 вакансий · 30 дней · Закреп</div></div><div class="wtariff-price">5 000 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">10 вакансий</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Закреп</span><span class="wfeat-pill acc">Выделение</span><span class="wfeat-pill acc">Значок PRO</span></div></div>
-        <button class="wbtn-select" onclick="walletTab('flow', document.querySelectorAll('.wallet-tab')[1])">Оплатить → Реквизиты</button>
+        <button class="wbtn-select" onclick="(function(){if(!document.querySelector('.wtariff-card.wsel')){showToast('⚠️ Сначала выберите тариф',true);return;}walletTab('flow', document.querySelectorAll('.wallet-tab')[1]);})()">Перейти к оплате →</button>
         <div class="wtariff-note">После оплаты баланс начисляется вручную администратором.<br>Поддержка: <a href="https://t.me/sapgos">@sapgos</a></div>
       </div>
     </div>
@@ -1005,24 +1010,32 @@
   <!-- ═══════ TG AUTH MODAL ═══════ -->
   <div class="modal-overlay" id="tgAuthModal">
     <div class="modal-sheet" style="padding:28px 24px 32px;">
+
       <!-- Шаг 1: ввод username -->
       <div id="authStep1">
         <div style="text-align:center;font-size:48px;margin-bottom:12px;">✈️</div>
-        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:8px;text-align:center;">Войти через Telegram</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;text-align:center;">Введите ваш Telegram username — мы пришлём код подтверждения</div>
-        <div style="position:relative;margin-bottom:12px;">
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.5px;margin-bottom:6px;text-align:center;">Войти через Telegram</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px;text-align:center;">Введите ваш @username — бот пришлёт код подтверждения</div>
+
+        <div style="position:relative;margin-bottom:8px;">
           <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);font-size:15px;">@</span>
           <input id="authUsername" type="text" placeholder="username" autocomplete="off" autocorrect="off" autocapitalize="off"
             style="width:100%;padding:14px 14px 14px 30px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-size:15px;font-family:var(--font-body);box-sizing:border-box;outline:none;"
             onkeydown="if(event.key==='Enter')sendAuthCode()">
         </div>
         <div id="authStep1Error" style="font-size:12px;color:var(--red);margin-bottom:10px;min-height:18px;text-align:center;"></div>
+
         <button onclick="sendAuthCode()" id="authSendBtn"
           style="width:100%;padding:15px;border-radius:var(--radius-sm);background:linear-gradient(135deg,#229ED9,#1a7bbf);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);margin-bottom:10px;min-height:52px;">
           Получить код
         </button>
-        <div style="font-size:11px;color:var(--text3);text-align:center;margin-bottom:12px;">Бот @JOBlK_bot пришлёт вам код в Telegram</div>
-        <button class="modal-btn-cancel" onclick="closeModal('tgAuthModal')">Отмена</button>
+
+        <div style="font-size:11px;color:var(--text3);text-align:center;line-height:1.7;margin-bottom:14px;">
+          Бот <a href="https://t.me/JOBlK_bot" target="_blank" style="color:var(--accent2);">@JOBlK_bot</a> пришлёт 6-значный код.<br>
+          Если не писали боту раньше — сначала нажмите <b style="color:var(--text2);">/start</b>
+        </div>
+
+        <button class="modal-btn-cancel" onclick="_pendingAuthAction=null;closeModal('tgAuthModal')">Отмена</button>
       </div>
 
       <!-- Шаг 2: ввод кода -->
@@ -1042,6 +1055,7 @@
           ← Назад
         </button>
       </div>
+
     </div>
   </div>
 
@@ -1130,10 +1144,15 @@ if (tg) {
   tg.setBackgroundColor('#0d0d1a');
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
   const u = tg.initDataUnsafe?.user;
-  if (u && u.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
-  if (u) {
-    document.getElementById('profileName').textContent =
-      [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
+  if (u && u.id) {
+    // Автоматическая авторизация внутри Telegram — сразу сохраняем пользователя
+    webTgUser = u;
+    try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {}
+    // Обновляем профиль
+    const nameEl = document.getElementById('profileName');
+    const subEl = document.getElementById('profileSub');
+    if (nameEl) nameEl.textContent = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
+    if (subEl) subEl.textContent = u.username ? `@${u.username}` : 'Участник Jobic';
   }
 }
 
@@ -1197,7 +1216,7 @@ async function sbFetch(path, options = {}) {
       'apikey': SUPABASE_ANON,
       'Authorization': 'Bearer ' + SUPABASE_ANON,
       'Content-Type': 'application/json',
-      'Prefer': options.prefer || '',
+      ...(options.prefer ? { 'Prefer': options.prefer } : {}),
       ...(options.headers || {})
     }
   });
@@ -1381,12 +1400,13 @@ function dbRowToJob(r) {
     creator_id: r.creator_id || null,
     views: r.views || 0,
     applies_count: r.applies_count || 0,
-    plan: r.plan || 'standard'
+    plan: r.plan || 'standard',
+    expires_at: r.expires_at || null
   };
 }
 
 function jobToDbRow(j) {
-  return {
+  const row = {
     id: j.id,
     title: j.title,
     company: j.company,
@@ -1409,6 +1429,8 @@ function jobToDbRow(j) {
     applies_count: j.applies_count || 0,
     plan: j.plan || 'standard'
   };
+  if (j.expires_at) row.expires_at = j.expires_at;
+  return row;
 }
 
 function tryParseArr(val) {
@@ -1858,6 +1880,23 @@ let minSalary = 0;
 let currentJobId = null;
 let isAdmin = false;
 
+// Данные авторизованного пользователя (веб-сессия)
+let webTgUser = null;
+
+// Проверка авторизации — доступна сразу после объявления
+function isTgAuthorized() {
+  if (tg?.initDataUnsafe?.user?.id) return true;
+  if (webTgUser?.id) return true;
+  return false;
+}
+
+function getTgUser() {
+  if (tg?.initDataUnsafe?.user) return tg.initDataUnsafe.user;
+  return webTgUser;
+}
+
+let _pendingAuthAction = null;
+
 // ═══════════════════════════════════════════════
 // NAVIGATION STACK
 // ═══════════════════════════════════════════════
@@ -1876,6 +1915,7 @@ function navTo(screenId, btnEl) {
 
   // TG Auth guard — для размещения вакансий нужна авторизация через TG
   if (screenId === 'createScreen' && !isAdmin && !isTgAuthorized()) {
+    _pendingAuthAction = () => navTo('createScreen', btnEl);
     openModal('tgAuthModal');
     return;
   }
@@ -1992,9 +2032,6 @@ async function saveTelegramUserToDB() {
 // ═══════════════════════════════════════════════
 // TG AUTH GATE
 // ═══════════════════════════════════════════════
-
-// Данные пользователя авторизованного через код (веб-версия)
-let webTgUser = null;
 let _authChatId = null;
 
 async function sendAuthCode() {
@@ -2002,29 +2039,54 @@ async function sendAuthCode() {
   const errEl = document.getElementById('authStep1Error');
   const btn = document.getElementById('authSendBtn');
   errEl.textContent = '';
-  if (!username) { errEl.textContent = 'Введите username'; return; }
-  btn.disabled = true; btn.textContent = 'Отправляем...';
+
+  if (!username) { errEl.textContent = 'Введите @username'; return; }
+
+  // Проверяем: вдруг уже авторизованы через Telegram?
+  if (tg?.initDataUnsafe?.user?.id) {
+    onTelegramWebAuth(tg.initDataUnsafe.user);
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = '⏳ Отправляем...';
+
   try {
     const res = await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/send-code', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'apikey': SUPABASE_ANON
+      },
       body: JSON.stringify({ username })
     });
-    const data = await res.json();
+
+    let data = {};
+    try { data = await res.json(); } catch(e) {}
+
     if (!res.ok) {
-      errEl.innerHTML = data.error === 'not_found'
-        ? `Сначала напишите <a href="https://t.me/JOBlK_bot" target="_blank" style="color:var(--accent2);">@JOBlK_bot</a> команду /start`
-        : (data.message || 'Ошибка, попробуйте снова');
-      btn.disabled = false; btn.textContent = 'Получить код'; return;
+      btn.disabled = false; btn.textContent = 'Получить код';
+      if (data.error === 'not_found' || res.status === 404) {
+        errEl.innerHTML = `Сначала напишите боту <a href="https://t.me/JOBlK_bot" target="_blank" style="color:var(--accent2);font-weight:600;">@JOBlK_bot</a> команду <b>/start</b> — затем попробуйте снова`;
+      } else if (res.status === 401 || res.status === 403) {
+        errEl.innerHTML = `Ошибка доступа к боту (${res.status}). Напишите <a href="https://t.me/sapgos" target="_blank" style="color:var(--accent2);">@sapgos</a>`;
+      } else {
+        errEl.textContent = data.message || data.error || `Ошибка: ${res.status}. Попробуйте позже`;
+      }
+      return;
     }
+
     _authChatId = data.chatId;
-    document.getElementById('authStep2Hint').textContent = `Код отправлен @${username} в Telegram`;
+    document.getElementById('authStep2Hint').innerHTML = `Код отправлен <b>@${username}</b> в Telegram`;
     document.getElementById('authStep1').style.display = 'none';
     document.getElementById('authStep2').style.display = 'block';
     setTimeout(() => document.getElementById('authCode').focus(), 100);
+
   } catch(e) {
-    errEl.textContent = 'Ошибка соединения';
+    // Сетевая ошибка (CORS, нет интернета, функция не задеплоена)
     btn.disabled = false; btn.textContent = 'Получить код';
+    errEl.innerHTML = `Не удалось подключиться к боту.<br>Напишите <a href="https://t.me/JOBlK_bot?start=auth_${encodeURIComponent(username)}" target="_blank" style="color:var(--accent2);font-weight:600;">@JOBlK_bot</a> команду <b>/start</b> и попробуйте снова`;
+    console.error('sendAuthCode network error:', e);
   }
 }
 
@@ -2038,17 +2100,23 @@ async function verifyAuthCode() {
   try {
     const res = await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/verify-code', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'apikey': SUPABASE_ANON
+      },
       body: JSON.stringify({ chatId: _authChatId, code })
     });
-    const data = await res.json();
+    let data = {};
+    try { data = await res.json(); } catch(e) { data = {}; }
     if (!res.ok) {
-      errEl.textContent = data.message || 'Неверный код';
+      errEl.textContent = data.message || data.error || `Неверный код (${res.status})`;
       btn.disabled = false; btn.textContent = 'Войти'; return;
     }
     onTelegramWebAuth(data.user);
   } catch(e) {
-    errEl.textContent = 'Ошибка соединения';
+    console.error('verifyAuthCode error:', e);
+    errEl.textContent = 'Ошибка соединения. Попробуйте ещё раз.';
     btn.disabled = false; btn.textContent = 'Войти';
   }
 }
@@ -2064,34 +2132,21 @@ function backToStep1() {
 
 
 
-function isTgAuthorized() {
-  // Вариант 1: открыто внутри Telegram Mini App
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) return true;
-  // Вариант 2: авторизовался через виджет в браузере
-  if (webTgUser && webTgUser.id) return true;
-  return false;
-}
-
-function getTgUser() {
-  if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) return tg.initDataUnsafe.user;
-  return webTgUser;
-}
-
-// Callback после успешной авторизации через код
+// Callback после успешной авторизации через код или бота
 function onTelegramWebAuth(user) {
+  if (!user || !user.id) { console.warn('onTelegramWebAuth: no user'); return; }
   webTgUser = user;
-  // Сохраняем сессию в localStorage (до закрытия вкладки)
   try { localStorage.setItem('jobic_user', JSON.stringify(user)); } catch(e) {}
   closeModal('tgAuthModal');
-  showToast(`✅ Привет, ${user.first_name}!`);
+  showToast(`✅ Привет, ${user.first_name || 'друг'}!`);
   updateProfileStats();
   const nameEl = document.getElementById('profileName');
   const subEl = document.getElementById('profileSub');
   if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
   if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
-  // Если пользователь на экране кошелька — обновляем данные
-  const cur = navStack[navStack.length - 1];
-  if (cur === 'walletScreen') walletLoadBalance();
+  const existingPrompt = document.getElementById('walletAuthPrompt');
+  if (existingPrompt) existingPrompt.remove();
+  walletLoadBalance();
   if (_pendingAuthAction) { _pendingAuthAction(); _pendingAuthAction = null; }
 }
 
@@ -2112,24 +2167,17 @@ function restoreSession() {
   } catch(e) {}
 }
 
-let _pendingAuthAction = null;
-
 function requireTgAuth(callback) {
-  if (isTgAuthorized()) {
-    callback();
-    return true;
-  }
+  if (isTgAuthorized()) { callback(); return true; }
   _pendingAuthAction = callback;
   openModal('tgAuthModal');
   return false;
 }
 
 const TG_BOT_USERNAME = 'JOBlK_bot';
-
 function openTgBot() {
   const url = `https://t.me/${TG_BOT_USERNAME}`;
-  if (tg && tg.openLink) tg.openLink(url);
-  else window.open(url, '_blank');
+  if (tg && tg.openLink) tg.openLink(url); else window.open(url, '_blank');
 }
 
 // ═══════════════════════════════════════════════
@@ -2140,7 +2188,21 @@ async function init() {
   loadFavsFromSession();
   loadFavTimestamps();
   loadWatchedCategories();
-  saveTelegramUserToDB();
+
+  // ── Автоматическая авторизация если открыто внутри Telegram ──
+  const tgUser = tg?.initDataUnsafe?.user;
+  if (tgUser?.id) {
+    // Уже авторизованы — тихо обновляем UI без тоста
+    webTgUser = tgUser;
+    const nameEl = document.getElementById('profileName');
+    const subEl = document.getElementById('profileSub');
+    if (nameEl) nameEl.textContent = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Пользователь';
+    if (subEl) subEl.textContent = tgUser.username ? `@${tgUser.username}` : 'Участник Jobic';
+    saveTelegramUserToDB(); // сохраняем в БД асинхронно
+  } else {
+    saveTelegramUserToDB();
+  }
+
   renderSkeletons();
   JOBS = await loadJobs();
   APPLIES = await loadApplies();
@@ -2153,6 +2215,11 @@ async function init() {
   updateFavBadge();
   renderNotifCatChips();
   generateNotifications();
+
+  // Загружаем баланс кошелька в бейдж профиля сразу если авторизованы
+  if (isTgAuthorized()) {
+    walletLoadBalance();
+  }
 }
 
 function updateProfileStats() {
@@ -2378,7 +2445,7 @@ function _renderJobDetail(j) {
   document.getElementById('detailCompany').textContent = `${j.company} · ${j.city}`;
 
   // Count applies for this job
-  const applyCount = APPLIES.filter(a => a.jobId === id).length + (j.applies_count || 0);
+  const applyCount = Math.max(APPLIES.filter(a => String(a.jobId) === String(id)).length, j.applies_count || 0);
   document.getElementById('detailApplyCount').textContent = `📩 ${applyCount} откликов`;
 
   document.getElementById('detailChips').innerHTML = `
@@ -2673,7 +2740,19 @@ function resetCreateForUser() {
   document.getElementById('createScreenSub').textContent = 'Заполните информацию о позиции';
   document.getElementById('adminCreateNote').innerHTML = '';
   document.getElementById('planSection').style.display = '';
-  document.getElementById('submitBtn').textContent = 'Оплатить и разместить';
+  // Убираем плашку баланса если была
+  const bb = document.getElementById('createBalanceBanner');
+  if (bb) bb.remove();
+  // Сбрасываем состояние тарифов
+  document.querySelectorAll('.plan-option').forEach((o, i) => {
+    o.classList.toggle('sel', i === 0);
+    o.style.opacity = '1';
+    const r = o.querySelector('.radio');
+    if (r) { r.classList.toggle('on', i === 0); r.innerHTML = i === 0 ? '' : ''; }
+    const hint = o.querySelector('.plan-lock-hint');
+    if (hint) hint.remove();
+  });
+  _updateSubmitBtnPrice();
   clearForm();
 }
 
@@ -2718,6 +2797,53 @@ function clearForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 }
 
+// Цены тарифов при размещении вакансии
+const PLAN_PRICES = { standard: 299, promo: 799, premium: 1990 };
+const PLAN_NAMES  = { standard: 'Стандарт', promo: 'Продвижение', premium: 'Премиум' };
+const PLAN_DAYS   = { standard: 7, promo: 14, premium: 30 };
+
+// Вспомогательная функция: получить текущий баланс пользователя из БД
+async function _getUserBalance(userId) {
+  try {
+    const rows = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(userId) + '&select=balance');
+    return (rows && rows.length) ? (rows[0].balance || 0) : 0;
+  } catch(e) { return 0; }
+}
+
+// Вспомогательная функция: атомарное списание баланса + запись транзакции
+// Возвращает { ok: true, newBalance } или { ok: false, reason, balance }
+async function _deductBalance(userId, username, amount, description) {
+  // Получаем свежий баланс прямо перед списанием
+  const currentBalance = await _getUserBalance(userId);
+  if (currentBalance < amount) {
+    return { ok: false, reason: 'insufficient', balance: currentBalance };
+  }
+  const newBalance = currentBalance - amount;
+  try {
+    // Обновляем баланс
+    await sbFetch('/rest/v1/user_balances', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ tg_user_id: userId, username: username, balance: newBalance })
+    });
+    // Записываем транзакцию (отрицательная сумма = списание)
+    await sbFetch('/rest/v1/balance_transactions', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        tg_user_id: userId,
+        username: username,
+        amount: -amount,
+        description: description
+      })
+    });
+    return { ok: true, newBalance };
+  } catch(e) {
+    console.error('_deductBalance error:', e);
+    return { ok: false, reason: 'error', balance: currentBalance };
+  }
+}
+
 async function submitJob() {
   if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
   const title = document.getElementById('fTitle').value.trim();
@@ -2736,6 +2862,7 @@ async function submitJob() {
   const salaryNum = parseInt(salaryRaw) || 0;
 
   if (editId) {
+    // Редактирование — бесплатно, пользователь уже оплатил
     const idx = JOBS.findIndex(j => j.id == editId);
     if (idx !== -1) {
       JOBS[idx] = { ...JOBS[idx], title, company, city, salary, salaryNum, category, icon,
@@ -2745,17 +2872,91 @@ async function submitJob() {
     }
     showToast('✅ Вакансия обновлена!');
   } else {
+    // Новая вакансия — определяем план и цену
+    const selPlanEl = document.querySelector('.plan-option.sel');
+    const planKey = selPlanEl?.dataset?.plan || 'standard';
+    const planPrice = parseInt(selPlanEl?.dataset?.price || '299');
+    const planDays = PLAN_DAYS[planKey] || 7;
+
+    // Для пользователей (не admin) — проверяем и списываем баланс
+    if (!isAdmin) {
+      const tgUser = getTgUser();
+      const userId = tgUser?.id ? String(tgUser.id) : null;
+      const username = tgUser?.username || tgUser?.first_name || 'user';
+
+      if (!userId) { openModal('tgAuthModal'); return; }
+
+      // Блокируем кнопку на время операции
+      const btn = document.getElementById('submitBtn');
+      const origText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '⏳ Проверяем баланс...';
+
+      const result = await _deductBalance(
+        userId, username, planPrice,
+        `Размещение вакансии «${title}» · тариф ${PLAN_NAMES[planKey]} (${planDays} дн.)`
+      );
+
+      if (!result.ok) {
+        btn.disabled = false;
+        btn.textContent = origText;
+        if (result.reason === 'insufficient') {
+          const deficit = planPrice - result.balance;
+          showToast(`❌ Недостаточно средств. Не хватает ${deficit} ₽`, true);
+          // Предлагаем перейти к пополнению
+          setTimeout(() => {
+            if (tg && tg.showPopup) {
+              tg.showPopup({
+                title: 'Недостаточно баланса',
+                message: `Для тарифа «${PLAN_NAMES[planKey]}» нужно ${planPrice} ₽.
+Ваш баланс: ${result.balance} ₽.
+Не хватает: ${deficit} ₽`,
+                buttons: [
+                  { id: 'topup', type: 'default', text: '💳 Пополнить баланс' },
+                  { id: 'cancel', type: 'cancel' }
+                ]
+              }, (btnId) => {
+                if (btnId === 'topup') pushTo('walletScreen');
+              });
+            } else {
+              if (confirm(`Недостаточно баланса.\nНужно: ${planPrice} ₽ · У вас: ${result.balance} ₽\nПерейти в кошелёк?`)) {
+                pushTo('walletScreen');
+              }
+            }
+          }, 200);
+        } else {
+          showToast('❌ Ошибка при списании. Попробуйте ещё раз.', true);
+        }
+        return;
+      }
+
+      // Баланс списан — обновляем отображение кошелька в фоне
+      walletUpdateBalance(result.newBalance);
+      btn.textContent = '⏳ Размещаем...';
+    }
+
+    // Вычисляем дату истечения вакансии
+    const expiresAt = new Date(Date.now() + planDays * 24 * 3600 * 1000).toISOString();
+
     const newJob = {
       id: null, title, company, city, salary, salaryNum, category, icon,
       iconBg: 'rgba(124,92,255,0.15)', accent: 'linear-gradient(90deg,#7c5cff,#4da3ff)', badge: 'new',
       tags, about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds,
       contact: document.getElementById('fContact').value.trim(), pinned: false, createdAt: Date.now(),
-      creator_id: getTgUser()?.id ? String(getTgUser().id) : 'admin'
+      creator_id: getTgUser()?.id ? String(getTgUser().id) : 'admin',
+      plan: planKey,
+      expires_at: expiresAt
     };
     const saved = await insertJob(newJob);
     JOBS.unshift(saved);
     if (!isAdmin) myPosted++;
-    showToast('🚀 Вакансия размещена!');
+
+    const priceText = isAdmin ? 'бесплатно' : `−${planPrice} ₽`;
+    showToast(`🚀 Вакансия размещена! ${priceText}`);
+
+    // Сбрасываем кнопку
+    const btn2 = document.getElementById('submitBtn');
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Оплатить и разместить'; }
   }
 
   if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
@@ -2867,6 +3068,22 @@ async function togglePin(id) {
 }
 
 async function deleteJob(id) {
+  // Подтверждение перед удалением
+  const confirmed = await new Promise(resolve => {
+    if (tg && tg.showPopup) {
+      tg.showPopup({
+        title: 'Удалить вакансию?',
+        message: 'Вакансия и все отклики будут удалены безвозвратно.',
+        buttons: [
+          { id: 'ok', type: 'destructive', text: 'Удалить' },
+          { id: 'cancel', type: 'cancel' }
+        ]
+      }, (btnId) => resolve(btnId === 'ok'));
+    } else {
+      resolve(confirm('Удалить вакансию и все отклики?'));
+    }
+  });
+  if (!confirmed) return;
   // Удаляем отклики на эту вакансию (если нет CASCADE FK — делаем вручную)
   try { await sbFetch(`/rest/v1/applies?job_id=eq.${id}`, { method: 'DELETE' }); } catch(e) {}
   await deleteJobDb(id);
@@ -2901,9 +3118,19 @@ async function openAdminApplies() {
 }
 
 function contactUser(contact) {
-  const clean = contact.replace('@', '');
-  const url = contact.startsWith('+') ? `https://t.me/+${clean}` : `https://t.me/${clean}`;
-  if (tg) tg.openLink(url); else window.open(url, '_blank');
+  if (!contact) return;
+  const trimmed = contact.trim();
+  let url;
+  if (trimmed.startsWith('+') || /^[0-9]{7,}$/.test(trimmed.replace(/[\s\-]/g, ''))) {
+    // Номер телефона
+    const digits = trimmed.replace(/[\s\-\(\)]/g, '');
+    url = `https://t.me/${digits}`;
+  } else {
+    // Telegram username
+    const clean = trimmed.replace('@', '');
+    url = `https://t.me/${clean}`;
+  }
+  if (tg && tg.openLink) tg.openLink(url); else window.open(url, '_blank');
 }
 
 // ═══════════════════════════════════════════════
@@ -2966,6 +3193,42 @@ function _onScreenShown(screenId) {
   if (screenId === 'adminScreen' && isAdmin) renderAdminPanel();
   if (screenId === 'newsScreen') { loadNews().then(renderNews); }
   if (screenId === 'notificationsScreen') { renderNotifCatChips(); generateNotifications(); }
+  if (screenId === 'createScreen' && !isAdmin && isTgAuthorized()) { updatePlanAffordability(); }
+}
+
+// Показывает баланс на экране размещения и подсвечивает доступные тарифы
+async function updatePlanAffordability() {
+  const tgUser = getTgUser();
+  if (!tgUser?.id || isAdmin) return;
+  const balance = await _getUserBalance(String(tgUser.id));
+  // Обновляем или создаём плашку с балансом
+  let balanceBanner = document.getElementById('createBalanceBanner');
+  if (!balanceBanner) {
+    balanceBanner = document.createElement('div');
+    balanceBanner.id = 'createBalanceBanner';
+    balanceBanner.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:rgba(77,255,154,0.07);border:1px solid rgba(77,255,154,0.2);border-radius:12px;margin-bottom:12px;font-size:13px;';
+    const planSection = document.getElementById('planSection');
+    if (planSection) planSection.insertAdjacentElement('beforebegin', balanceBanner);
+  }
+  balanceBanner.innerHTML = `<span style="color:var(--text2);">💰 Ваш баланс</span><span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:${balance > 0 ? 'var(--green)' : 'var(--text3)'};">${balance.toLocaleString('ru')} ₽</span>`;
+  // Подсвечиваем недоступные тарифы
+  document.querySelectorAll('.plan-option').forEach(opt => {
+    const priceEl = opt.querySelector('.plan-price');
+    if (!priceEl) return;
+    const price = parseInt(priceEl.textContent.replace(/\D/g,'')) || 0;
+    const locked = price > balance;
+    opt.style.opacity = locked ? '0.5' : '1';
+    // Убираем устаревший индикатор
+    const old = opt.querySelector('.plan-lock-hint');
+    if (old) old.remove();
+    if (locked) {
+      const hint = document.createElement('div');
+      hint.className = 'plan-lock-hint';
+      hint.style.cssText = 'font-size:10px;color:var(--red);margin-top:3px;';
+      hint.textContent = `Не хватает ${(price - balance).toLocaleString('ru')} ₽`;
+      opt.querySelector('.plan-info')?.appendChild(hint);
+    }
+  });
 }
 // Hook: after animateTransition, call _onScreenShown
 const __animOrig = _animateTransition;
@@ -2985,11 +3248,21 @@ function selPlan(el) {
   document.querySelectorAll('.plan-option').forEach(o => {
     o.classList.remove('sel');
     const r = o.querySelector('.radio');
-    r.classList.remove('on'); r.innerHTML = '';
+    if (r) { r.classList.remove('on'); r.innerHTML = ''; }
   });
   el.classList.add('sel');
   const r = el.querySelector('.radio');
-  r.classList.add('on');
+  if (r) r.classList.add('on');
+  _updateSubmitBtnPrice();
+}
+
+function _updateSubmitBtnPrice() {
+  const btn = document.getElementById('submitBtn');
+  if (!btn || isAdmin) return;
+  const sel = document.querySelector('.plan-option.sel');
+  const price = parseInt(sel?.dataset?.price || '299');
+  const planName = sel?.querySelector('.plan-name')?.textContent || 'Стандарт';
+  btn.textContent = `Оплатить и разместить · ${price} ₽`;
 }
 
 // ═══════════════════════════════════════════════
@@ -3104,7 +3377,7 @@ setTimeout(() => {
   pwaShowBanner();
 }, 4000);
 
-// Pin input enter// Pin input enter
+// Pin input enter
 document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') checkPin(); });
 
 // ═══════════════════════════════════════════════
@@ -3283,12 +3556,44 @@ let walletSelectedTariff = 'Стандарт';
 let walletSelectedSum = '1 500';
 let walletScreenshotFile = null;
 
+function walletGoToTariffs() {
+  const tgUser = getTgUser();
+  if (!tgUser?.id) {
+    _pendingAuthAction = () => { walletTab('tariffs', document.getElementById('walletScreen').querySelectorAll('.wallet-tab')[2]); };
+    openModal('tgAuthModal');
+    return;
+  }
+  const tabs = document.getElementById('walletScreen').querySelectorAll('.wallet-tab');
+  walletTab('tariffs', tabs[2]);
+}
+
 function walletTab(name, tabEl) {
   const map = { main: 'wp-main', flow: 'wp-flow', tariffs: 'wp-tariffs' };
   document.querySelectorAll('#walletScreen .wpane').forEach(p => p.classList.remove('wt-active'));
   document.querySelectorAll('#walletScreen .wallet-tab').forEach(t => t.classList.remove('wt-active'));
   document.getElementById(map[name]).classList.add('wt-active');
   if (tabEl) tabEl.classList.add('wt-active');
+  // При переходе на «Как оплатить» обновляем превью уведомления
+  if (name === 'flow') {
+    const tEl = document.getElementById('wNotifTariff');
+    const sEl = document.getElementById('wNotifSum');
+    if (tEl) tEl.textContent = walletSelectedTariff;
+    if (sEl) sEl.textContent = walletSelectedSum + ' ₽';
+    const uEl = document.getElementById('wNotifUser');
+    if (uEl) {
+      const u = getTgUser();
+      uEl.textContent = u?.username ? '@' + u.username : (u?.first_name || '@username');
+    }
+    // Сбрасываем поле загрузки при каждом открытии вкладки оплаты
+    walletScreenshotFile = null;
+    try { document.getElementById('walletFileInput').value = ''; } catch(e) {}
+    const textEl = document.getElementById('walletUploadText');
+    if (textEl) textEl.textContent = 'Нажмите, чтобы прикрепить скриншот';
+    const box = document.getElementById('walletUploadBox');
+    if (box) box.style.borderColor = '';
+    const paidBtn = document.getElementById('walletPaidBtn');
+    if (paidBtn) { paidBtn.style.display = 'none'; paidBtn.disabled = false; paidBtn.textContent = '✅ Я оплатил — уведомить администратора'; }
+  }
 }
 
 function walletSelTariff(el, name, sum) {
@@ -3349,7 +3654,8 @@ function walletSendNotification() {
       '👤 ' + (tg?.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : username) + '\n' +
       '📎 Скриншот прикреплён'
     );
-    openLink('https://t.me/sapgos?text=' + msg);
+    const url = 'https://t.me/sapgos?text=' + msg;
+    if (tg && tg.openLink) tg.openLink(url); else window.open(url, '_blank');
   }
 }
 
@@ -3437,9 +3743,16 @@ async function walletConfirmPayment() {
     showToast('✅ Заявка отправлена! Администратор проверит и начислит баланс.');
     btn.textContent = '✅ Заявка отправлена';
 
-    // Сбрасываем файл
-    walletScreenshotFile = null;
-    document.getElementById('walletFileInput').value = '';
+    // Полный сброс UI через 2 секунды
+    setTimeout(() => {
+      walletScreenshotFile = null;
+      document.getElementById('walletFileInput').value = '';
+      const textEl = document.getElementById('walletUploadText');
+      if (textEl) textEl.textContent = 'Нажмите, чтобы прикрепить скриншот';
+      const box = document.getElementById('walletUploadBox');
+      if (box) box.style.borderColor = '';
+      if (btn) { btn.style.display = 'none'; btn.disabled = false; btn.textContent = '✅ Я оплатил — уведомить администратора'; }
+    }, 2000);
   } catch(e) {
     console.error('Payment error:', e);
     showToast('❌ Ошибка. Напишите @sapgos напрямую.');
@@ -3503,7 +3816,7 @@ function walletRenderTransactions(txs) {
 
 // Загрузить баланс пользователя из Supabase
 async function walletLoadBalance() {
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const tgUser = getTgUser();
 
   // Нет авторизации — показываем приглашение войти
   const walletMainPane = document.getElementById('wp-main');
@@ -3521,7 +3834,7 @@ async function walletLoadBalance() {
         prompt.innerHTML = `<div style="font-size:36px;margin-bottom:10px;">🔐</div>
           <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">Войдите в аккаунт</div>
           <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.5;">Чтобы видеть баланс, историю транзакций и оплачивать тарифы — войдите через Telegram</div>
-          <button onclick="openModal('tgAuthModal')" style="padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#229ED9,#1a7bbf);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);">✈️ Войти через Telegram</button>`;
+          <button onclick="_pendingAuthAction=()=>walletLoadBalance();openModal('tgAuthModal')" style="padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#229ED9,#1a7bbf);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);">✈️ Войти через Telegram</button>`;
         walletMainPane.insertBefore(prompt, wlt);
       }
     }
@@ -3558,14 +3871,14 @@ async function walletLoadBalance() {
   }
   try {
     // Активные вакансии пользователя
-    const vacData = await sbFetch('/rest/v1/jobs?creator_id=eq.' + userId + '&select=id,title,created_at,tariff,expires_at&order=created_at.desc&limit=10');
+    const vacData = await sbFetch('/rest/v1/jobs?creator_id=eq.' + userId + '&select=id,title,created_at,plan,expires_at&order=created_at.desc&limit=10');
     if (vacData && vacData.length) {
       const now = Date.now();
       walletRenderVacancies(vacData.map(v => {
         const exp = v.expires_at ? new Date(v.expires_at).getTime() : (new Date(v.created_at).getTime() + 30*24*3600*1000);
         const daysLeft = Math.max(0, Math.round((exp - now) / 86400000));
         const dateStr = new Date(v.created_at).toLocaleDateString('ru', {day:'2-digit',month:'2-digit'});
-        return { name: v.title, date: dateStr, tariff: v.tariff || 'Стандарт', daysLeft };
+        const tariffMap = { standard: 'Стандарт', promo: 'Продвижение', premium: 'Премиум' }; return { name: v.title, date: dateStr, tariff: tariffMap[v.tariff || v.plan] || 'Стандарт', daysLeft };
       }));
     } else {
       walletRenderVacancies([]);
