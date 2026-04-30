@@ -1129,12 +1129,6 @@ if (tg) {
   tg.setHeaderColor('#0d0d1a');
   tg.setBackgroundColor('#0d0d1a');
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
-  const u = tg.initDataUnsafe?.user;
-  if (u && u.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
-  if (u) {
-    document.getElementById('profileName').textContent =
-      [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
-  }
 }
 
 // iOS keyboard fix
@@ -1172,23 +1166,32 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const ADMIN_PIN = '1234'; // ← Смените на свой пин
 
 async function sbFetch(path, options = {}) {
-  const res = await fetch(SUPABASE_URL + path, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': 'Bearer ' + SUPABASE_ANON,
-      'Content-Type': 'application/json',
-      'Prefer': options.prefer || '',
-      ...(options.headers || {})
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(SUPABASE_URL + path, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': options.prefer || '',
+        ...(options.headers || {})
+      }
+    });
+    clearTimeout(timer);
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Supabase error:', err);
+      throw new Error(err);
     }
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    console.error('Supabase error:', err);
-    throw new Error(err);
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
+  } catch(e) {
+    clearTimeout(timer);
+    throw e;
   }
-  const text = await res.text();
-  return text ? JSON.parse(text) : [];
 }
 
 // ─── JOBS ────────────────────────────────────────
@@ -2114,6 +2117,17 @@ function openTgBot() {
 // ═══════════════════════════════════════════════
 async function init() {
   restoreSession();
+
+  // Авторизация TG пользователя (webTgUser уже объявлен)
+  const _tgU = tg?.initDataUnsafe?.user;
+  if (_tgU && _tgU.id) {
+    webTgUser = _tgU;
+    try { localStorage.setItem('jobic_user', JSON.stringify(_tgU)); } catch(e) {}
+    const nameEl = document.getElementById('profileName');
+    if (nameEl) nameEl.textContent =
+      [_tgU.first_name, _tgU.last_name].filter(Boolean).join(' ') || _tgU.username || 'Пользователь';
+  }
+
   loadFavsFromSession();
   loadFavTimestamps();
   loadWatchedCategories();
@@ -3286,6 +3300,11 @@ async function walletConfirmPayment() {
   const username = tgUser?.username || tgUser?.first_name || 'unknown';
   const userId = tgUser?.id ? String(tgUser.id) : null;
 
+  if (!userId) {
+    showToast('⚠️ Войдите в аккаунт перед оплатой');
+    return;
+  }
+
   if (!walletScreenshotFile) {
     showToast('⚠️ Прикрепите скриншот оплаты');
     return;
@@ -3412,7 +3431,7 @@ function walletRenderTransactions(txs) {
 
 // Загрузить баланс пользователя из Supabase
 async function walletLoadBalance() {
-  const tgUser = getTgUser();
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
   if (!tgUser?.id) return;
   try {
     const data = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + tgUser.id + '&select=balance');
