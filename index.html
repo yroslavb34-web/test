@@ -174,7 +174,6 @@
   .badge-hot { background: rgba(255,92,141,0.2); color: var(--accent3); border: 1px solid rgba(255,92,141,0.3); }
   .badge-new { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
   .badge-top { background: rgba(255,200,0,0.15); color: #ffd700; border: 1px solid rgba(255,200,0,0.3); }
-  .badge-orange { background: rgba(255,170,92,0.15); color: var(--orange); border: 1px solid rgba(255,170,92,0.3); }
   .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
   .tag { padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; color: var(--text3); font-weight: 500; }
   [data-theme="light"] .tag { background: rgba(124,92,255,0.06); }
@@ -234,8 +233,6 @@
   .plan-option { display: flex; align-items: center; gap: 12px; padding: 13px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,0.03); cursor: pointer; margin-bottom: 8px; transition: all 0.2s; }
   .plan-option:last-child { margin-bottom: 0; }
   .plan-option.sel { background: rgba(124,92,255,0.12); border-color: rgba(124,92,255,0.45); }
-  .plan-option.locked { opacity: 0.5; }
-  .plan-lock-hint { font-size: 10px; color: var(--red); margin-top: 3px; font-weight: 500; }
   .plan-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
   .plan-info { flex: 1; }
   .plan-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
@@ -692,19 +689,19 @@
       <div id="planSection">
         <div class="form-block">
           <label class="form-label">Тарифный план</label>
-          <div class="plan-option sel" data-plan="standard" data-price="299" onclick="selPlan(this)">
+          <div class="plan-option sel" onclick="selPlan(this)">
             <div class="plan-icon">⚡</div>
             <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
             <div class="plan-price">299 ₽</div>
             <div class="radio on"></div>
           </div>
-          <div class="plan-option" data-plan="promo" data-price="799" onclick="selPlan(this)">
+          <div class="plan-option" onclick="selPlan(this)">
             <div class="plan-icon">🚀</div>
             <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи</div></div>
             <div class="plan-price">799 ₽</div>
             <div class="radio"></div>
           </div>
-          <div class="plan-option" data-plan="premium" data-price="1990" onclick="selPlan(this)">
+          <div class="plan-option" onclick="selPlan(this)">
             <div class="plan-icon">👑</div>
             <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured + email</div></div>
             <div class="plan-price">1 990 ₽</div>
@@ -1400,13 +1397,12 @@ function dbRowToJob(r) {
     creator_id: r.creator_id || null,
     views: r.views || 0,
     applies_count: r.applies_count || 0,
-    plan: r.plan || 'standard',
-    expires_at: r.expires_at || null
+    plan: r.plan || 'standard'
   };
 }
 
 function jobToDbRow(j) {
-  const row = {
+  return {
     id: j.id,
     title: j.title,
     company: j.company,
@@ -1429,8 +1425,6 @@ function jobToDbRow(j) {
     applies_count: j.applies_count || 0,
     plan: j.plan || 'standard'
   };
-  if (j.expires_at) row.expires_at = j.expires_at;
-  return row;
 }
 
 function tryParseArr(val) {
@@ -2740,19 +2734,7 @@ function resetCreateForUser() {
   document.getElementById('createScreenSub').textContent = 'Заполните информацию о позиции';
   document.getElementById('adminCreateNote').innerHTML = '';
   document.getElementById('planSection').style.display = '';
-  // Убираем плашку баланса если была
-  const bb = document.getElementById('createBalanceBanner');
-  if (bb) bb.remove();
-  // Сбрасываем состояние тарифов
-  document.querySelectorAll('.plan-option').forEach((o, i) => {
-    o.classList.toggle('sel', i === 0);
-    o.style.opacity = '1';
-    const r = o.querySelector('.radio');
-    if (r) { r.classList.toggle('on', i === 0); r.innerHTML = i === 0 ? '' : ''; }
-    const hint = o.querySelector('.plan-lock-hint');
-    if (hint) hint.remove();
-  });
-  _updateSubmitBtnPrice();
+  document.getElementById('submitBtn').textContent = 'Оплатить и разместить';
   clearForm();
 }
 
@@ -2797,53 +2779,6 @@ function clearForm() {
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
 }
 
-// Цены тарифов при размещении вакансии
-const PLAN_PRICES = { standard: 299, promo: 799, premium: 1990 };
-const PLAN_NAMES  = { standard: 'Стандарт', promo: 'Продвижение', premium: 'Премиум' };
-const PLAN_DAYS   = { standard: 7, promo: 14, premium: 30 };
-
-// Вспомогательная функция: получить текущий баланс пользователя из БД
-async function _getUserBalance(userId) {
-  try {
-    const rows = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(userId) + '&select=balance');
-    return (rows && rows.length) ? (rows[0].balance || 0) : 0;
-  } catch(e) { return 0; }
-}
-
-// Вспомогательная функция: атомарное списание баланса + запись транзакции
-// Возвращает { ok: true, newBalance } или { ok: false, reason, balance }
-async function _deductBalance(userId, username, amount, description) {
-  // Получаем свежий баланс прямо перед списанием
-  const currentBalance = await _getUserBalance(userId);
-  if (currentBalance < amount) {
-    return { ok: false, reason: 'insufficient', balance: currentBalance };
-  }
-  const newBalance = currentBalance - amount;
-  try {
-    // Обновляем баланс
-    await sbFetch('/rest/v1/user_balances', {
-      method: 'POST',
-      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({ tg_user_id: userId, username: username, balance: newBalance })
-    });
-    // Записываем транзакцию (отрицательная сумма = списание)
-    await sbFetch('/rest/v1/balance_transactions', {
-      method: 'POST',
-      headers: { 'Prefer': 'return=minimal' },
-      body: JSON.stringify({
-        tg_user_id: userId,
-        username: username,
-        amount: -amount,
-        description: description
-      })
-    });
-    return { ok: true, newBalance };
-  } catch(e) {
-    console.error('_deductBalance error:', e);
-    return { ok: false, reason: 'error', balance: currentBalance };
-  }
-}
-
 async function submitJob() {
   if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
   const title = document.getElementById('fTitle').value.trim();
@@ -2862,7 +2797,6 @@ async function submitJob() {
   const salaryNum = parseInt(salaryRaw) || 0;
 
   if (editId) {
-    // Редактирование — бесплатно, пользователь уже оплатил
     const idx = JOBS.findIndex(j => j.id == editId);
     if (idx !== -1) {
       JOBS[idx] = { ...JOBS[idx], title, company, city, salary, salaryNum, category, icon,
@@ -2872,91 +2806,25 @@ async function submitJob() {
     }
     showToast('✅ Вакансия обновлена!');
   } else {
-    // Новая вакансия — определяем план и цену
-    const selPlanEl = document.querySelector('.plan-option.sel');
-    const planKey = selPlanEl?.dataset?.plan || 'standard';
-    const planPrice = parseInt(selPlanEl?.dataset?.price || '299');
-    const planDays = PLAN_DAYS[planKey] || 7;
-
-    // Для пользователей (не admin) — проверяем и списываем баланс
-    if (!isAdmin) {
-      const tgUser = getTgUser();
-      const userId = tgUser?.id ? String(tgUser.id) : null;
-      const username = tgUser?.username || tgUser?.first_name || 'user';
-
-      if (!userId) { openModal('tgAuthModal'); return; }
-
-      // Блокируем кнопку на время операции
-      const btn = document.getElementById('submitBtn');
-      const origText = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = '⏳ Проверяем баланс...';
-
-      const result = await _deductBalance(
-        userId, username, planPrice,
-        `Размещение вакансии «${title}» · тариф ${PLAN_NAMES[planKey]} (${planDays} дн.)`
-      );
-
-      if (!result.ok) {
-        btn.disabled = false;
-        btn.textContent = origText;
-        if (result.reason === 'insufficient') {
-          const deficit = planPrice - result.balance;
-          showToast(`❌ Недостаточно средств. Не хватает ${deficit} ₽`, true);
-          // Предлагаем перейти к пополнению
-          setTimeout(() => {
-            if (tg && tg.showPopup) {
-              tg.showPopup({
-                title: 'Недостаточно баланса',
-                message: `Для тарифа «${PLAN_NAMES[planKey]}» нужно ${planPrice} ₽.
-Ваш баланс: ${result.balance} ₽.
-Не хватает: ${deficit} ₽`,
-                buttons: [
-                  { id: 'topup', type: 'default', text: '💳 Пополнить баланс' },
-                  { id: 'cancel', type: 'cancel' }
-                ]
-              }, (btnId) => {
-                if (btnId === 'topup') pushTo('walletScreen');
-              });
-            } else {
-              if (confirm(`Недостаточно баланса.\nНужно: ${planPrice} ₽ · У вас: ${result.balance} ₽\nПерейти в кошелёк?`)) {
-                pushTo('walletScreen');
-              }
-            }
-          }, 200);
-        } else {
-          showToast('❌ Ошибка при списании. Попробуйте ещё раз.', true);
-        }
-        return;
-      }
-
-      // Баланс списан — обновляем отображение кошелька в фоне
-      walletUpdateBalance(result.newBalance);
-      btn.textContent = '⏳ Размещаем...';
-    }
-
-    // Вычисляем дату истечения вакансии
-    const expiresAt = new Date(Date.now() + planDays * 24 * 3600 * 1000).toISOString();
-
     const newJob = {
       id: null, title, company, city, salary, salaryNum, category, icon,
       iconBg: 'rgba(124,92,255,0.15)', accent: 'linear-gradient(90deg,#7c5cff,#4da3ff)', badge: 'new',
       tags, about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds,
       contact: document.getElementById('fContact').value.trim(), pinned: false, createdAt: Date.now(),
       creator_id: getTgUser()?.id ? String(getTgUser().id) : 'admin',
-      plan: planKey,
-      expires_at: expiresAt
+      plan: (() => {
+        const sel = document.querySelector('.plan-option.sel .plan-name');
+        if (!sel) return 'standard';
+        const name = sel.textContent.trim();
+        if (name === 'Продвижение') return 'promo';
+        if (name === 'Премиум') return 'premium';
+        return 'standard';
+      })()
     };
     const saved = await insertJob(newJob);
     JOBS.unshift(saved);
     if (!isAdmin) myPosted++;
-
-    const priceText = isAdmin ? 'бесплатно' : `−${planPrice} ₽`;
-    showToast(`🚀 Вакансия размещена! ${priceText}`);
-
-    // Сбрасываем кнопку
-    const btn2 = document.getElementById('submitBtn');
-    if (btn2) { btn2.disabled = false; btn2.textContent = 'Оплатить и разместить'; }
+    showToast('🚀 Вакансия размещена!');
   }
 
   if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
@@ -3193,42 +3061,6 @@ function _onScreenShown(screenId) {
   if (screenId === 'adminScreen' && isAdmin) renderAdminPanel();
   if (screenId === 'newsScreen') { loadNews().then(renderNews); }
   if (screenId === 'notificationsScreen') { renderNotifCatChips(); generateNotifications(); }
-  if (screenId === 'createScreen' && !isAdmin && isTgAuthorized()) { updatePlanAffordability(); }
-}
-
-// Показывает баланс на экране размещения и подсвечивает доступные тарифы
-async function updatePlanAffordability() {
-  const tgUser = getTgUser();
-  if (!tgUser?.id || isAdmin) return;
-  const balance = await _getUserBalance(String(tgUser.id));
-  // Обновляем или создаём плашку с балансом
-  let balanceBanner = document.getElementById('createBalanceBanner');
-  if (!balanceBanner) {
-    balanceBanner = document.createElement('div');
-    balanceBanner.id = 'createBalanceBanner';
-    balanceBanner.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:rgba(77,255,154,0.07);border:1px solid rgba(77,255,154,0.2);border-radius:12px;margin-bottom:12px;font-size:13px;';
-    const planSection = document.getElementById('planSection');
-    if (planSection) planSection.insertAdjacentElement('beforebegin', balanceBanner);
-  }
-  balanceBanner.innerHTML = `<span style="color:var(--text2);">💰 Ваш баланс</span><span style="font-family:var(--font-display);font-weight:700;font-size:15px;color:${balance > 0 ? 'var(--green)' : 'var(--text3)'};">${balance.toLocaleString('ru')} ₽</span>`;
-  // Подсвечиваем недоступные тарифы
-  document.querySelectorAll('.plan-option').forEach(opt => {
-    const priceEl = opt.querySelector('.plan-price');
-    if (!priceEl) return;
-    const price = parseInt(priceEl.textContent.replace(/\D/g,'')) || 0;
-    const locked = price > balance;
-    opt.style.opacity = locked ? '0.5' : '1';
-    // Убираем устаревший индикатор
-    const old = opt.querySelector('.plan-lock-hint');
-    if (old) old.remove();
-    if (locked) {
-      const hint = document.createElement('div');
-      hint.className = 'plan-lock-hint';
-      hint.style.cssText = 'font-size:10px;color:var(--red);margin-top:3px;';
-      hint.textContent = `Не хватает ${(price - balance).toLocaleString('ru')} ₽`;
-      opt.querySelector('.plan-info')?.appendChild(hint);
-    }
-  });
 }
 // Hook: after animateTransition, call _onScreenShown
 const __animOrig = _animateTransition;
@@ -3248,21 +3080,11 @@ function selPlan(el) {
   document.querySelectorAll('.plan-option').forEach(o => {
     o.classList.remove('sel');
     const r = o.querySelector('.radio');
-    if (r) { r.classList.remove('on'); r.innerHTML = ''; }
+    r.classList.remove('on'); r.innerHTML = '';
   });
   el.classList.add('sel');
   const r = el.querySelector('.radio');
-  if (r) r.classList.add('on');
-  _updateSubmitBtnPrice();
-}
-
-function _updateSubmitBtnPrice() {
-  const btn = document.getElementById('submitBtn');
-  if (!btn || isAdmin) return;
-  const sel = document.querySelector('.plan-option.sel');
-  const price = parseInt(sel?.dataset?.price || '299');
-  const planName = sel?.querySelector('.plan-name')?.textContent || 'Стандарт';
-  btn.textContent = `Оплатить и разместить · ${price} ₽`;
+  r.classList.add('on');
 }
 
 // ═══════════════════════════════════════════════
@@ -3816,7 +3638,7 @@ function walletRenderTransactions(txs) {
 
 // Загрузить баланс пользователя из Supabase
 async function walletLoadBalance() {
-  const tgUser = getTgUser();
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
 
   // Нет авторизации — показываем приглашение войти
   const walletMainPane = document.getElementById('wp-main');
@@ -3871,7 +3693,7 @@ async function walletLoadBalance() {
   }
   try {
     // Активные вакансии пользователя
-    const vacData = await sbFetch('/rest/v1/jobs?creator_id=eq.' + userId + '&select=id,title,created_at,plan,expires_at&order=created_at.desc&limit=10');
+    const vacData = await sbFetch('/rest/v1/jobs?creator_id=eq.' + userId + '&select=id,title,created_at,tariff,expires_at&order=created_at.desc&limit=10');
     if (vacData && vacData.length) {
       const now = Date.now();
       walletRenderVacancies(vacData.map(v => {
