@@ -583,6 +583,79 @@
   .btn-screenshot { padding: 10px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); font-size: 13px; cursor: pointer; }
   /* ── END ADMIN CSS ── */
 
+  /* ── ONBOARDING ── */
+  .onboarding-screen { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; flex-direction: column; }
+  .onboarding-slides { flex: 1; overflow: hidden; position: relative; }
+  .onboarding-slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; text-align: center; opacity: 0; transform: translateX(60px); transition: all 0.4s cubic-bezier(0.4,0,0.2,1); pointer-events: none; }
+  .onboarding-slide.active { opacity: 1; transform: translateX(0); pointer-events: all; }
+  .onboarding-slide.exit { opacity: 0; transform: translateX(-60px); }
+  .onboarding-emoji { font-size: 80px; margin-bottom: 28px; }
+  .onboarding-title { font-family: var(--font-display); font-size: 26px; font-weight: 900; color: var(--text); letter-spacing: -0.8px; margin-bottom: 14px; line-height: 1.2; }
+  .onboarding-title span { background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .onboarding-body { font-size: 16px; color: var(--text2); line-height: 1.7; font-weight: 300; max-width: 300px; }
+  .onboarding-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; }
+  .onboarding-dot { width: 8px; height: 8px; border-radius: 4px; background: var(--border2); transition: all 0.3s; }
+  .onboarding-dot.active { width: 24px; background: var(--accent); }
+  .onboarding-btn { width: calc(100% - 64px); margin: 0 32px 16px; padding: 18px; border-radius: var(--radius); background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-size: 16px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); letter-spacing: -0.3px; }
+  .onboarding-skip { background: none; border: none; color: var(--text3); font-size: 14px; cursor: pointer; padding: 8px 32px 32px; font-family: var(--font-body); }
+
+  /* ── HOME HEADER УЛУЧШЕНИЯ ── */
+  .home-greeting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .home-user-name { font-size: 13px; font-weight: 500; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .home-avatar-mini { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg,var(--accent),var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; font-family: var(--font-display); flex-shrink: 0; cursor: pointer; }
+
+  /* ── PROFILE УЛУЧШЕНИЯ ── */
+  .profile-hero { background: linear-gradient(135deg,rgba(124,92,255,0.15),rgba(77,163,255,0.1)); border: 1px solid rgba(124,92,255,0.2); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+  .profile-avatar-large { width: 68px; height: 68px; border-radius: 20px; background: linear-gradient(135deg,var(--accent),var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700; color: #fff; font-family: var(--font-display); flex-shrink: 0; border: 2px solid rgba(255,255,255,0.15); }
+  .profile-hero-info { flex: 1; min-width: 0; }
+  .profile-hero-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 3px; }
+  .profile-hero-sub { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+  .profile-hero-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; background: rgba(77,255,154,0.12); border: 1px solid rgba(77,255,154,0.25); color: var(--green); font-size: 11px; font-weight: 600; font-family: var(--font-display); }
+
+  /* ── STAT BOXES УЛУЧШЕНИЯ ── */
+  .stat-row-new { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-box-new { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .stat-box-new:active { background: var(--surface2); transform: scale(0.97); }
+  .stat-num-new { font-family: var(--font-display); font-size: 24px; font-weight: 900; color: var(--text); letter-spacing: -1px; }
+  .stat-name-new { font-size: 10px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ── FAV EMPTY УЛУЧШЕНИЯ ── */
+  .fav-empty-new { text-align: center; padding: 60px 20px 20px; }
+  .fav-empty-new .fe-emoji { font-size: 64px; margin-bottom: 16px; }
+  .fav-empty-new .fe-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 8px; }
+  .fav-empty-new .fe-sub { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 24px; }
+  .fav-empty-new .fe-btn { padding: 14px 32px; border-radius: var(--radius-sm); background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-size: 14px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); }
+
+  /* ── DETAIL: ПОХОЖИЕ ВАКАНСИИ ── */
+  .similar-section { margin-top: 4px; }
+  .similar-title { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: var(--font-display); }
+  .similar-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+  .similar-card:active { background: var(--surface2); transform: scale(0.98); }
+  .similar-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; border: 1px solid var(--border); }
+  .similar-info { flex: 1; min-width: 0; }
+  .similar-job-title { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .similar-company { font-size: 12px; color: var(--text2); }
+  .similar-salary { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+
+  /* ── APPLY SUCCESS ── */
+  .apply-success-state { text-align: center; padding: 20px; background: rgba(77,255,154,0.07); border: 1px solid rgba(77,255,154,0.2); border-radius: var(--radius-sm); margin-bottom: 12px; }
+  .apply-success-icon { font-size: 40px; margin-bottom: 8px; }
+  .apply-success-text { font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 4px; }
+  .apply-success-sub { font-size: 12px; color: var(--text3); }
+
+  /* ── MY APPLIES СТАТУСЫ ── */
+  .apply-status-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 600; font-family: var(--font-display); }
+  .apply-status-sent { background: rgba(77,163,255,0.12); color: var(--accent2); border: 1px solid rgba(77,163,255,0.25); }
+  .apply-status-viewed { background: rgba(255,200,0,0.12); color: #ffd700; border: 1px solid rgba(255,200,0,0.25); }
+  .apply-status-replied { background: rgba(77,255,154,0.12); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
+
+  /* ── ПОИСК: ПОПУЛЯРНЫЕ ЗАПРОСЫ ── */
+  .search-popular { padding: 8px 0 4px; }
+  .search-popular-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; font-family: var(--font-display); margin-bottom: 10px; }
+  .search-popular-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .search-popular-chip { padding: 6px 13px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .search-popular-chip:active { background: rgba(124,92,255,0.15); border-color: rgba(124,92,255,0.35); color: var(--accent); }
+
   /* ── END WALLET CSS ── */
 </style>
 </head>
@@ -596,9 +669,11 @@
     <div class="header">
       <div class="header-row">
         <div>
-          <div class="greeting">Добро пожаловать</div>
+          <div class="home-greeting-row">
+            <div class="home-user-name" id="homeGreeting">Добро пожаловать</div>
+          </div>
           <div class="logo">Jobic<span>.</span></div>
-          <div class="tagline">Найди работу своей мечты</div>
+          <div class="tagline" id="homeTagline">Найди работу своей мечты</div>
         </div>
         <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
       </div>
@@ -607,9 +682,13 @@
       <div class="search-wrap">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input class="search-input" id="searchInput" placeholder="Профессия, компания..." oninput="onSearchInput(this.value)" onblur="onSearchBlur()" onfocus="showSearchHistory()" />
+          <input class="search-input" id="searchInput" placeholder="Профессия, компания..." oninput="onSearchInput(this.value)" onblur="onSearchBlur()" onfocus="showSearchHistory();if(!document.getElementById('searchInput').value)showPopularSearches()" />
         </div>
         <div id="searchHistoryWrap" class="search-history" style="display:none;"></div>
+        <div id="searchPopularWrap" class="search-popular" style="display:none;">
+          <div class="search-popular-label">🔥 Популярные</div>
+          <div class="search-popular-chips" id="searchPopularChips"></div>
+        </div>
       </div>
       <div class="filter-row" id="filterRow">
         <div class="pill active" onclick="setFilter('Все', this)">Все</div>
@@ -680,10 +759,20 @@
       <div class="desc-block"><div class="desc-heading">Требования</div><ul class="desc-body" id="detailRequirements" style="padding-left:16px;"></ul></div>
       <div class="desc-block"><div class="desc-heading">Условия</div><ul class="desc-body" id="detailConditions" style="padding-left:16px;"></ul></div>
       <div class="desc-block"><div class="desc-heading">Контакты</div><div class="desc-body" id="detailContact"></div></div>
+      <div id="applySuccessBlock" style="display:none;" class="apply-success-state">
+        <div class="apply-success-icon">✅</div>
+        <div class="apply-success-text">Отклик отправлен!</div>
+        <div class="apply-success-sub">Работодатель получит уведомление в Telegram</div>
+      </div>
       <button class="apply-big" id="applyBtn" onclick="applyJob()">Откликнуться</button>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px 8px;">
         <span class="apply-count" id="detailApplyCount">📩 0 откликов</span>
         <button class="share-btn" onclick="shareJob()" style="width:auto;padding:0 14px;font-size:13px;color:var(--text2);border-radius:10px;height:36px;gap:6px;display:flex;align-items:center;">⬆️ Поделиться</button>
+      </div>
+      <!-- Похожие вакансии -->
+      <div class="similar-section">
+        <div class="similar-title">Похожие вакансии</div>
+        <div id="similarJobsList"></div>
       </div>
     </div>
     <!-- No bottom nav on detail — use back button -->
@@ -790,13 +879,29 @@
       </div>
     </div>
     <div class="scroll-area">
-      <div class="profile-avatar">👤</div>
-      <div class="profile-name" id="profileName">Пользователь</div>
-      <div class="profile-sub" id="profileSub">Участник Jobic</div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="stat-num" id="statApplied">0</div><div class="stat-name">Откликов</div></div>
-        <div class="stat-box"><div class="stat-num" id="statFavs">0</div><div class="stat-name">Избранных</div></div>
-        <div class="stat-box"><div class="stat-num" id="statPosted">0</div><div class="stat-name">Размещено</div></div>
+      <!-- Hero блок профиля -->
+      <div class="profile-hero">
+        <div class="profile-avatar-large" id="profileAvatarEl">👤</div>
+        <div class="profile-hero-info">
+          <div class="profile-hero-name" id="profileName">Пользователь</div>
+          <div class="profile-hero-sub" id="profileSub">Участник Jobic</div>
+          <div class="profile-hero-badge">✅ Активный участник</div>
+        </div>
+      </div>
+      <!-- Статистика — кликабельная -->
+      <div class="stat-row-new">
+        <div class="stat-box-new" onclick="openAppliedScreen()">
+          <div class="stat-num-new" id="statApplied">0</div>
+          <div class="stat-name-new">Откликов</div>
+        </div>
+        <div class="stat-box-new" onclick="navTo('favScreen',null)">
+          <div class="stat-num-new" id="statFavs">0</div>
+          <div class="stat-name-new">Избранных</div>
+        </div>
+        <div class="stat-box-new" onclick="openMyJobApplies()">
+          <div class="stat-num-new" id="statPosted">0</div>
+          <div class="stat-name-new">Размещено</div>
+        </div>
       </div>
       <div class="sec-label">Меню</div>
       <div class="menu-item" style="border-color:rgba(77,255,154,0.3);background:rgba(77,255,154,0.05);" onclick="pushTo('walletScreen')"><span class="menu-item-icon">💰</span><span class="menu-item-text">Кошелёк <span id="walletBalanceBadge" style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(77,255,154,0.15);color:var(--green);border:1px solid rgba(77,255,154,0.3);font-family:var(--font-display)">0 ₽</span></span><span class="menu-item-arrow">›</span></div>
@@ -1253,6 +1358,34 @@
     </div>
   </div>
 
+  <!-- ═══════ ONBOARDING ═══════ -->
+  <div id="onboardingScreen" class="onboarding-screen" style="display:none;">
+    <div class="onboarding-slides">
+      <div class="onboarding-slide active" id="ob-slide-0">
+        <div class="onboarding-emoji">🚀</div>
+        <div class="onboarding-title">Найди работу<br>в <span>Telegram</span></div>
+        <div class="onboarding-body">Jobic — биржа труда прямо в мессенджере. Сотни вакансий без лишних сайтов и регистраций.</div>
+      </div>
+      <div class="onboarding-slide" id="ob-slide-1">
+        <div class="onboarding-emoji">⚡</div>
+        <div class="onboarding-title">Отклик за<br><span>1 клик</span></div>
+        <div class="onboarding-body">Нашёл подходящую вакансию? Откликнись мгновенно — работодатель получит уведомление прямо в Telegram.</div>
+      </div>
+      <div class="onboarding-slide" id="ob-slide-2">
+        <div class="onboarding-emoji">💼</div>
+        <div class="onboarding-title">Разместить<br><span>вакансию</span></div>
+        <div class="onboarding-body">Ищешь сотрудников? Размести вакансию за пару минут и получай отклики от реальных кандидатов.</div>
+      </div>
+    </div>
+    <div class="onboarding-dots">
+      <div class="onboarding-dot active" id="ob-dot-0"></div>
+      <div class="onboarding-dot" id="ob-dot-1"></div>
+      <div class="onboarding-dot" id="ob-dot-2"></div>
+    </div>
+    <button class="onboarding-btn" id="obNextBtn" onclick="obNext()">Далее →</button>
+    <button class="onboarding-skip" onclick="obFinish()">Пропустить</button>
+  </div>
+
   <!-- iOS инструкция -->
   <div class="pwa-ios-modal" id="pwaIosModal">
     <div class="pwa-ios-box">
@@ -1282,26 +1415,16 @@ let webTgUser = null; // данные пользователя из Telegram и�
 // ═══════════════════════════════════════════════
 const tg = window.Telegram?.WebApp;
 if (tg) {
-  tg.ready(); tg.expand();
+  tg.ready();
+  tg.expand();
   tg.setHeaderColor('#0d0d1a');
   tg.setBackgroundColor('#0d0d1a');
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
+  // Только сохраняем данные — UI обновим в init() когда DOM точно готов
   const u = tg.initDataUnsafe?.user;
   if (u && u.id) {
-    // АВТОМАТИЧЕСКАЯ авторизация внутри Telegram Mini App
     webTgUser = u;
     try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {}
-    const nameEl = document.getElementById('profileName');
-    const subEl = document.getElementById('profileSub');
-    if (nameEl) nameEl.textContent = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
-    if (subEl) subEl.textContent = u.username ? `@${u.username}` : 'Участник Jobic';
-    // Сохраняем в БД сразу (асинхронно)
-    const _ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bnpvaXNtenJ0aXBvd3BmaWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTU3NzYsImV4cCI6MjA5Mjg5MTc3Nn0._qyN2g_nThgNtDv42kRsByk_D4TIDVTadWfvmbQdU68';
-    fetch('https://vznzoismzrtipowpfigu.supabase.co/rest/v1/telegram_users', {
-      method: 'POST',
-      headers: { 'apikey': _ANON, 'Authorization': 'Bearer ' + _ANON, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({ tg_id: String(u.id), username: u.username || ('user_' + u.id), full_name: [u.first_name, u.last_name].filter(Boolean).join(' ') || '', first_name: u.first_name || '', last_name: u.last_name || '', photo_url: u.photo_url || '', is_premium: u.is_premium || false, language_code: u.language_code || 'ru' })
-    }).catch(function(err) { console.warn('TG auto-save user:', err); });
   }
 }
 
@@ -1314,6 +1437,57 @@ document.addEventListener('focusin', e => {
   }
 });
 document.addEventListener('focusout', () => setTimeout(() => window.scrollTo(0, lastScrollY), 100));
+
+// ═══════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════
+const OB_KEY = 'jobic_onboarded_v1';
+let _obSlide = 0;
+
+function checkOnboarding() {
+  try {
+    if (localStorage.getItem(OB_KEY)) return; // уже видел
+    const screen = document.getElementById('onboardingScreen');
+    if (screen) screen.style.display = 'flex';
+  } catch(e) {}
+}
+
+function obNext() {
+  const total = 3;
+  if (_obSlide < total - 1) {
+    // Убираем текущий слайд
+    const cur = document.getElementById('ob-slide-' + _obSlide);
+    const curDot = document.getElementById('ob-dot-' + _obSlide);
+    if (cur) cur.classList.add('exit');
+    if (curDot) curDot.classList.remove('active');
+    setTimeout(() => { if (cur) { cur.classList.remove('active','exit'); } }, 400);
+
+    _obSlide++;
+
+    // Показываем следующий
+    const next = document.getElementById('ob-slide-' + _obSlide);
+    const nextDot = document.getElementById('ob-dot-' + _obSlide);
+    if (next) { next.classList.add('active'); }
+    if (nextDot) nextDot.classList.add('active');
+
+    // Меняем текст кнопки на последнем слайде
+    const btn = document.getElementById('obNextBtn');
+    if (btn && _obSlide === total - 1) btn.textContent = 'Начать 🚀';
+  } else {
+    obFinish();
+  }
+}
+
+function obFinish() {
+  try { localStorage.setItem(OB_KEY, '1'); } catch(e) {}
+  const screen = document.getElementById('onboardingScreen');
+  if (screen) {
+    screen.style.opacity = '0';
+    screen.style.transition = 'opacity 0.3s';
+    setTimeout(() => { screen.style.display = 'none'; screen.style.opacity = '1'; }, 300);
+  }
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
 
 // ═══════════════════════════════════════════════
 // THEME
@@ -2288,33 +2462,67 @@ function onTelegramWebAuth(user) {
   webTgUser = user;
   try { localStorage.setItem('jobic_user', JSON.stringify(user)); } catch(e) {}
   closeModal('tgAuthModal');
-  showToast(`✅ Привет, ${user.first_name || 'друг'}!`);
+  showToast('✅ Привет, ' + (user.first_name || 'друг') + '!');
+  // Единая функция — обновляет имя, аватар, приветствие
+  applyUserToUI();
   updateProfileStats();
-  const nameEl = document.getElementById('profileName');
-  const subEl = document.getElementById('profileSub');
-  if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
-  if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
   const existingPrompt = document.getElementById('walletAuthPrompt');
   if (existingPrompt) existingPrompt.remove();
   walletLoadBalance();
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
   if (_pendingAuthAction) { _pendingAuthAction(); _pendingAuthAction = null; }
 }
 
 // Восстанавливаем сессию при загрузке страницы
 function restoreSession() {
+  // Только восстанавливаем данные из localStorage
+  // UI обновляется в applyUserToUI() которая вызывается в init()
   try {
     const saved = localStorage.getItem('jobic_user');
     if (saved) {
       const user = JSON.parse(saved);
       if (user && user.id) {
-        webTgUser = user;
-        const nameEl = document.getElementById('profileName');
-        const subEl = document.getElementById('profileSub');
-        if (nameEl) nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
-        if (subEl && !isAdmin) subEl.textContent = user.username ? `@${user.username}` : 'Участник Jobic';
+        // Telegram данные имеют приоритет над localStorage
+        if (!webTgUser) webTgUser = user;
       }
     }
   } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+// ЕДИНСТВЕННАЯ функция обновления UI пользователя
+// Вызывается из init() и после авторизации
+// ══════════════════════════════════════════════
+function applyUserToUI() {
+  const user = getTgUser();
+  if (!user) return;
+
+  const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || 'Пользователь';
+  const sub  = user.username ? '@' + user.username : 'Участник Jobic';
+
+  // Профиль — имя и подпись
+  const nameEl = document.getElementById('profileName');
+  const subEl  = document.getElementById('profileSub');
+  if (nameEl && !nameEl._adminOverride) nameEl.textContent = name;
+  if (subEl  && !isAdmin) subEl.textContent = sub;
+
+  // Аватар — первая буква имени
+  const avatarEl = document.getElementById('profileAvatarEl');
+  if (avatarEl) {
+    avatarEl.textContent = name[0] ? name[0].toUpperCase() : '?';
+    avatarEl.style.fontSize = '28px';
+  }
+
+  // Приветствие на главной
+  const greetEl = document.getElementById('homeGreeting');
+  if (greetEl) {
+    const firstName = user.first_name || user.username || '';
+    const hour = new Date().getHours();
+    let greeting = hour >= 5 && hour < 12 ? 'Доброе утро' :
+                   hour >= 12 && hour < 18 ? 'Добрый день' :
+                   hour >= 18 && hour < 23 ? 'Добрый вечер' : 'Доброй ночи';
+    greetEl.textContent = firstName ? greeting + ', ' + firstName + ' 👋' : greeting;
+  }
 }
 
 function requireTgAuth(callback) {
@@ -2334,24 +2542,23 @@ function openTgBot() {
 // INIT
 // ═══════════════════════════════════════════════
 async function init() {
-  restoreSession();
+  restoreSession();      // восстанавливает webTgUser из localStorage
   loadFavsFromSession();
   loadFavTimestamps();
   loadWatchedCategories();
 
-  // ── Автоматическая авторизация если открыто внутри Telegram ──
+  // ── Telegram данные (приоритет над localStorage) ──
   const tgUser = tg?.initDataUnsafe?.user;
   if (tgUser?.id) {
-    // Уже авторизованы — тихо обновляем UI без тоста
     webTgUser = tgUser;
-    const nameEl = document.getElementById('profileName');
-    const subEl = document.getElementById('profileSub');
-    if (nameEl) nameEl.textContent = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || 'Пользователь';
-    if (subEl) subEl.textContent = tgUser.username ? `@${tgUser.username}` : 'Участник Jobic';
-    saveTelegramUserToDB(); // сохраняем в БД асинхронно
-  } else {
-    saveTelegramUserToDB();
+    try { localStorage.setItem('jobic_user', JSON.stringify(tgUser)); } catch(e) {}
   }
+
+  // ── Применяем данные пользователя к UI (DOM уже готов) ──
+  applyUserToUI();
+
+  // ── Сохраняем в БД асинхронно ──
+  saveTelegramUserToDB();
 
   renderSkeletons();
   JOBS = await loadJobs();
@@ -2370,6 +2577,13 @@ async function init() {
   if (isTgAuthorized()) {
     walletLoadBalance();
   }
+
+  // Персонализация
+  updateHomeGreeting();
+  updateProfileAvatar();
+
+  // Показываем онбординг новым пользователям
+  checkOnboarding();
 }
 
 function updateProfileStats() {
@@ -2377,6 +2591,8 @@ function updateProfileStats() {
   document.getElementById('statFavs').textContent = favorites.length;
   document.getElementById('statPosted').textContent = myPosted;
 }
+
+// updateHomeGreeting и updateProfileAvatar объединены в applyUserToUI()
 
 // ═══════════════════════════════════════════════
 // SALARY FILTER
@@ -2553,7 +2769,12 @@ function renderFavScreen() {
   const favJobs = JOBS.filter(j => favorites.includes(j.id))
     .sort((a, b) => (favTimestamps[b.id] || 0) - (favTimestamps[a.id] || 0));
   if (!favJobs.length) {
-    list.innerHTML = `<div class="fav-empty"><div class="fav-empty-icon">❤️</div><div class="fav-empty-text">Нет избранных вакансий.<br>Нажми ♡ на карточке.</div></div>`;
+    list.innerHTML = `<div class="fav-empty-new">
+      <div class="fe-emoji">🔍</div>
+      <div class="fe-title">Пока пусто</div>
+      <div class="fe-sub">Нажми ♡ на понравившейся вакансии — она появится здесь. Так удобнее сравнивать и не терять нужные.</div>
+      <button class="fe-btn" onclick="navTo('homeScreen', document.querySelector('.nav-btn'))">Смотреть вакансии</button>
+    </div>`;
     return;
   }
   list.innerHTML = `<div style="padding-top:8px;">${favJobs.map(jobCardHTML).join('')}</div>`;
@@ -2608,6 +2829,10 @@ function _renderJobDetail(j) {
   const reqs = Array.isArray(j.requirements) ? j.requirements : (j.requirements||'').split('\n').filter(Boolean);
   const conds = Array.isArray(j.conditions) ? j.conditions : (j.conditions||'').split('\n').filter(Boolean);
   document.getElementById('detailRequirements').innerHTML = reqs.map(r=>`<li>${esc(r)}</li>`).join('') || '<li>—</li>';
+  // Рендерим похожие вакансии
+  renderSimilarJobs(j);
+  // Сбрасываем состояние кнопки отклика
+  resetApplyBtn(j.id);
   document.getElementById('detailConditions').innerHTML = conds.map(c=>`<li>${esc(c)}</li>`).join('') || '<li>—</li>';
   document.getElementById('detailContact').innerHTML = j.contact
     ? `<a href="https://t.me/${j.contact.replace('@','')}" style="color:#4da3ff;">${esc(j.contact)}</a>`
@@ -2696,9 +2921,33 @@ let _searchDebounce;
 function onSearchInput(val) {
   filterJobs();
   hideSearchHistory();
+  hidePopularSearches();
   clearTimeout(_searchDebounce);
   _searchDebounce = setTimeout(() => { if (val.trim().length >= 2) addToSearchHistory(val.trim()); }, 1200);
 }
+function showPopularSearches() {
+  const wrap = document.getElementById('searchPopularWrap');
+  const chipsEl = document.getElementById('searchPopularChips');
+  if (!wrap || !chipsEl) return;
+  // Топ категории + популярные слова
+  const popular = ['React Developer','Python','Удалённо','Дизайнер','Менеджер','IT','Маркетинг','Продажи','Водитель','Бухгалтер'];
+  chipsEl.innerHTML = popular.map(q => `<div class="search-popular-chip" onclick="applyPopularSearch('${esc(q)}')">🔍 ${esc(q)}</div>`).join('');
+  wrap.style.display = 'block';
+}
+
+function hidePopularSearches() {
+  const wrap = document.getElementById('searchPopularWrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function applyPopularSearch(q) {
+  const input = document.getElementById('searchInput');
+  if (input) { input.value = q; onSearchInput(q); }
+  hidePopularSearches();
+  const hw = document.getElementById('searchHistoryWrap');
+  if (hw) hw.style.display = 'none';
+}
+
 function onSearchBlur() {
   setTimeout(() => hideSearchHistory(), 200);
 }
@@ -2788,6 +3037,45 @@ function validateSalaryInput(el) {
 // ═══════════════════════════════════════════════
 // APPLY COUNT on confirm (increment on apply)
 // ═══════════════════════════════════════════════
+function renderSimilarJobs(currentJob) {
+  const el = document.getElementById('similarJobsList');
+  if (!el) return;
+  const similar = JOBS.filter(j =>
+    j.id !== currentJob.id &&
+    (j.category === currentJob.category || j.city === currentJob.city)
+  ).slice(0, 3);
+  if (!similar.length) { el.innerHTML = ''; return; }
+  el.innerHTML = similar.map(j => `
+    <div class="similar-card" onclick="openJob('${j.id}')">
+      <div class="similar-icon" style="background:${j.iconBg||'rgba(124,92,255,0.12)'}">
+        ${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}
+      </div>
+      <div class="similar-info">
+        <div class="similar-job-title">${esc(j.title)}</div>
+        <div class="similar-company">${esc(j.company)} · ${esc(j.city)}</div>
+      </div>
+      <div class="similar-salary">${esc(j.salary)}<br><span style="font-size:10px;color:var(--text3);font-weight:400;">₽/мес</span></div>
+    </div>`).join('');
+}
+
+function resetApplyBtn(jobId) {
+  const btn = document.getElementById('applyBtn');
+  const successBlock = document.getElementById('applySuccessBlock');
+  if (!btn) return;
+  // Проверяем — откликался ли уже на эту вакансию
+  const alreadyApplied = myApplies.some(a => String(a.jobId) === String(jobId));
+  if (alreadyApplied) {
+    btn.style.display = 'none';
+    if (successBlock) successBlock.style.display = 'block';
+  } else {
+    btn.style.display = 'block';
+    btn.textContent = 'Откликнуться';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    if (successBlock) successBlock.style.display = 'none';
+  }
+}
+
 function applyJob() {
   if (myApplies.some(a => a.jobId === currentJobId)) return;
   requireTgAuth(() => {
@@ -2856,10 +3144,11 @@ async function confirmApply() {
     });
   } catch(e) {}
 
-  // Update button
+  // Показываем success state
   const btn = document.getElementById('applyBtn');
-  btn.textContent = '✅ Отклик уже отправлен';
-  btn.disabled = true;
+  const successBlock = document.getElementById('applySuccessBlock');
+  btn.style.display = 'none';
+  if (successBlock) successBlock.style.display = 'block';
 
   // Telegram notification via sendData (only works when opened from keyboard button / inline)
   // Since most Mini Apps use openLink, we just show in-app toast
@@ -3611,7 +3900,12 @@ async function openMyJobApplies() {
 function openAppliedScreen() {
   const list = document.getElementById('myAppliesList');
   if (!myApplies.length) {
-    list.innerHTML = '<div class="empty-state"><div class="e-icon">📭</div>Ещё нет откликов</div>';
+    list.innerHTML = `<div class="fav-empty-new">
+      <div class="fe-emoji">📭</div>
+      <div class="fe-title">Откликов пока нет</div>
+      <div class="fe-sub">Находи вакансии и откликайся в один клик — все отклики будут храниться здесь.</div>
+      <button class="fe-btn" onclick="navTo('homeScreen', document.querySelector('.nav-btn'))">Найти вакансию</button>
+    </div>`;
   } else {
     list.innerHTML = myApplies.map(a => `
       <div class="apply-item">
