@@ -1145,14 +1145,20 @@ if (tg) {
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
   const u = tg.initDataUnsafe?.user;
   if (u && u.id) {
-    // Автоматическая авторизация внутри Telegram — сразу сохраняем пользователя
+    // АВТОМАТИЧЕСКАЯ авторизация внутри Telegram Mini App
     webTgUser = u;
     try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {}
-    // Обновляем профиль
     const nameEl = document.getElementById('profileName');
     const subEl = document.getElementById('profileSub');
     if (nameEl) nameEl.textContent = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Пользователь';
     if (subEl) subEl.textContent = u.username ? `@${u.username}` : 'Участник Jobic';
+    // Сохраняем в БД сразу (асинхронно)
+    const _ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bnpvaXNtenJ0aXBvd3BmaWd1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMTU3NzYsImV4cCI6MjA5Mjg5MTc3Nn0._qyN2g_nThgNtDv42kRsByk_D4TIDVTadWfvmbQdU68';
+    fetch('https://vznzoismzrtipowpfigu.supabase.co/rest/v1/telegram_users', {
+      method: 'POST',
+      headers: { 'apikey': _ANON, 'Authorization': 'Bearer ' + _ANON, 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ tg_id: String(u.id), username: u.username || ('user_' + u.id), full_name: [u.first_name, u.last_name].filter(Boolean).join(' ') || '', first_name: u.first_name || '', last_name: u.last_name || '', photo_url: u.photo_url || '', is_premium: u.is_premium || false, language_code: u.language_code || 'ru' })
+    }).catch(function(err) { console.warn('TG auto-save user:', err); });
   }
 }
 
@@ -3504,49 +3510,77 @@ async function adminRejectPayment(id) {
 }
 
 async function adminGiveBalance() {
-  const userInput = document.getElementById('adminBalanceUser').value.replace('@','').trim();
+  const userInput = document.getElementById('adminBalanceUser').value.replace('@','').trim().toLowerCase();
   const amt = parseInt(document.getElementById('adminBalanceAmt').value);
   if (!userInput) { showToast('⚠️ Введите @username', true); return; }
   if (!amt || amt <= 0) { showToast('⚠️ Введите сумму', true); return; }
 
+  const btn = document.querySelector('[onclick="adminGiveBalance()"]');
+  if (btn) { btn.disabled = true; btn.textContent = 'Начисляю...'; }
+
   try {
+    // 1. Ищем пользователя в telegram_users по username
+    const users = await sbFetch('/rest/v1/telegram_users?username=ilike.' + encodeURIComponent(userInput) + '&select=tg_id,username,first_name&limit=1');
+    if (!users || !users.length) {
+      showToast('❌ Пользователь @' + userInput + ' не найден. Он должен написать /start боту.', true);
+      if (btn) { btn.disabled = false; btn.textContent = 'Выдать баланс'; }
+      return;
+    }
+    const user = users[0];
+    const tgId = user.tg_id;
+
+    // 2. Получаем текущий баланс по tg_user_id
     let currentBalance = 0;
-    let existingTgId = null;
     try {
-      const existing = await sbFetch('/rest/v1/user_balances?username=eq.' + encodeURIComponent(userInput) + '&select=balance,tg_user_id');
-      if (existing && existing.length) {
-        currentBalance = existing[0].balance || 0;
-        existingTgId = existing[0].tg_user_id || null;
-      }
+      const balData = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(tgId) + '&select=balance&limit=1');
+      if (balData && balData.length) currentBalance = balData[0].balance || 0;
     } catch(e) {}
 
     const newBal = currentBalance + amt;
+
+    // 3. Обновляем баланс (upsert по tg_user_id)
     await sbFetch('/rest/v1/user_balances', {
       method: 'POST',
       headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify({ username: userInput, balance: newBal })
+      body: JSON.stringify({ tg_user_id: tgId, username: user.username || userInput, balance: newBal })
     });
 
-    // Записываем транзакцию
+    // 4. Записываем транзакцию
     try {
       await sbFetch('/rest/v1/balance_transactions', {
         method: 'POST',
         headers: { 'Prefer': 'return=minimal' },
         body: JSON.stringify({
-          tg_user_id: existingTgId || null,
-          username: userInput,
+          tg_user_id: tgId,
+          username: user.username || userInput,
           amount: amt,
           description: 'Ручное начисление администратором'
         })
       });
     } catch(e) { console.warn('transaction insert failed (non-critical):', e); }
 
+    // 5. Уведомляем пользователя через бота
+    try {
+      await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-approved', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON,
+          'apikey': SUPABASE_ANON,
+          'X-Secret': 'jobic_secret_2024'
+        },
+        body: JSON.stringify({ tg_user_id: tgId, amount: String(amt), new_balance: String(newBal) })
+      });
+    } catch(e) { console.warn('bot notify failed (non-critical):', e); }
+
     document.getElementById('adminBalanceUser').value = '';
     document.getElementById('adminBalanceAmt').value = '';
-    showToast('✅ Выдано ' + amt + ' ₽ → @' + userInput);
+    showToast('✅ Выдано ' + amt + ' ₽ → @' + userInput + ' (баланс: ' + newBal + ' ₽)');
   } catch(e) {
-    showToast('❌ Ошибка при выдаче баланса', true);
+    showToast('❌ Ошибка: ' + (e.message || 'попробуйте снова'), true);
     console.error('adminGiveBalance error:', e);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Выдать баланс'; }
   }
 }
 // ── END ADMIN PAYMENTS ──────────────────────────────
