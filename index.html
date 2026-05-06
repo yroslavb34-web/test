@@ -550,6 +550,39 @@
   .wtariff-note a{color:var(--accent2);text-decoration:none}
   .wsupport-row{text-align:center;margin-top:14px;font-size:12px;color:var(--text3)}
   .wsupport-row a{color:var(--accent2);text-decoration:none;font-weight:600}
+  /* ── ADMIN ACTION BUTTONS ── */
+  .admin-action-btn {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 18px 10px; border-radius: var(--radius-sm);
+    cursor: pointer; transition: all 0.18s; text-align: center;
+    min-height: 90px;
+  }
+  .admin-action-btn:active { transform: scale(0.95); opacity: 0.85; }
+  .admin-action-icon { font-size: 28px; margin-bottom: 6px; line-height: 1; }
+  .admin-action-label { font-size: 12px; font-weight: 600; color: var(--text); font-family: var(--font-display); letter-spacing: -0.2px; }
+
+  .admin-user-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
+  .admin-user-avatar { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .admin-user-info { flex: 1; min-width: 0; }
+  .admin-user-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .admin-user-meta { font-size: 11px; color: var(--text3); }
+  .admin-user-balance { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap; }
+
+  .admin-payment-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; }
+  .admin-payment-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .admin-payment-user { font-size: 14px; font-weight: 600; color: var(--text); }
+  .admin-payment-status { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 8px; font-family: var(--font-display); }
+  .status-pending { background: rgba(255,170,92,0.15); color: var(--orange); border: 1px solid rgba(255,170,92,0.3); }
+  .status-approved { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.3); }
+  .status-rejected { background: rgba(255,92,92,0.15); color: var(--red); border: 1px solid rgba(255,92,92,0.3); }
+  .admin-payment-detail { font-size: 12px; color: var(--text2); margin-bottom: 10px; line-height: 1.6; }
+  .admin-payment-actions { display: flex; gap: 8px; }
+  .btn-approve { flex: 1; padding: 10px; border-radius: 10px; background: rgba(77,255,154,0.15); border: 1px solid rgba(77,255,154,0.3); color: var(--green); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+  .btn-reject { flex: 1; padding: 10px; border-radius: 10px; background: rgba(255,92,92,0.1); border: 1px solid rgba(255,92,92,0.2); color: var(--red); font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--font-body); }
+  .btn-screenshot { padding: 10px 14px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); font-size: 13px; cursor: pointer; }
+  /* ── END ADMIN CSS ── */
+
   /* ── END WALLET CSS ── */
 </style>
 </head>
@@ -788,6 +821,7 @@
   </div>
 
   <!-- ═══════ ADMIN PANEL ═══════ -->
+  <!-- ═══════ ADMIN PANEL (новый дизайн) ═══════ -->
   <div class="screen hidden" id="adminScreen">
     <div class="tg-safe-top"></div>
     <div class="admin-header">
@@ -796,41 +830,145 @@
       <div class="admin-badge">ADMIN</div>
     </div>
     <div class="scroll-area">
+
+      <!-- Статистика -->
       <div class="admin-card">
-        <div class="admin-card-title">Статистика</div>
-        <div class="admin-stat-row" style="grid-template-columns:repeat(4,1fr);">
-          <div class="admin-stat"><div class="admin-stat-num" id="aStatJobs">0</div><div class="admin-stat-label">Вакансий</div></div>
-          <div class="admin-stat"><div class="admin-stat-num" id="aStatApplies">0</div><div class="admin-stat-label">Откликов</div></div>
-          <div class="admin-stat"><div class="admin-stat-num" id="aStatPinned">0</div><div class="admin-stat-label">В топе</div></div>
-          <div class="admin-stat"><div class="admin-stat-num" id="aStatViews">0</div><div class="admin-stat-label">Просмотров</div></div>
+        <div class="admin-card-title">📊 Статистика</div>
+        <div class="admin-stat-row" style="grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px;">
+          <div class="admin-stat" style="padding:16px;">
+            <div class="admin-stat-num" id="aStatJobs" style="font-size:28px;">0</div>
+            <div class="admin-stat-label">Вакансий</div>
+          </div>
+          <div class="admin-stat" style="padding:16px;">
+            <div class="admin-stat-num" id="aStatApplies" style="font-size:28px;">0</div>
+            <div class="admin-stat-label">Откликов</div>
+          </div>
+          <div class="admin-stat" style="padding:16px;">
+            <div class="admin-stat-num" id="aStatPinned" style="font-size:28px;">0</div>
+            <div class="admin-stat-label">В топе</div>
+          </div>
+          <div class="admin-stat" style="padding:16px;">
+            <div class="admin-stat-num" id="aStatViews" style="font-size:28px;">0</div>
+            <div class="admin-stat-label">Просмотров</div>
+          </div>
+        </div>
+        <!-- Быстрое начисление баланса прямо в статистике -->
+        <div style="background:rgba(77,255,154,0.07);border:1px solid rgba(77,255,154,0.2);border-radius:var(--radius-sm);padding:12px;margin-top:4px;">
+          <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:8px;font-family:var(--font-display);letter-spacing:0.06em;">💰 БЫСТРОЕ НАЧИСЛЕНИЕ</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input class="form-input" id="adminBalanceUser" placeholder="@username" style="flex:1;margin:0;min-height:42px;font-size:13px;">
+            <input class="form-input" id="adminBalanceAmt" type="number" placeholder="₽" style="width:80px;margin:0;min-height:42px;font-size:13px;">
+            <button onclick="adminGiveBalance()" style="padding:0 14px;height:42px;border-radius:10px;background:var(--green);color:#000;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;font-family:var(--font-display);">Выдать</button>
+          </div>
         </div>
       </div>
+
+      <!-- Главное меню действий -->
       <div class="admin-card">
-        <div class="admin-card-title">Действия</div>
+        <div class="admin-card-title">⚡ Действия</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;" onclick="openAdminCreate()">➕ Добавить</button>
-          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;" onclick="pushTo('adminAppliesScreen')">📩 Отклики</button>
-          <button class="more-btn" style="border-radius:var(--radius-sm);padding:14px;font-size:13px;grid-column:span 2;" onclick="pushTo('adminNewsScreen');renderAdminNews()">📰 Управление новостями</button>
+
+          <div class="admin-action-btn" onclick="openAdminCreate()" style="background:linear-gradient(135deg,rgba(124,92,255,0.25),rgba(77,163,255,0.15));border:1px solid rgba(124,92,255,0.4);">
+            <div class="admin-action-icon">➕</div>
+            <div class="admin-action-label">Добавить вакансию</div>
+          </div>
+
+          <div class="admin-action-btn" onclick="pushTo('adminAppliesScreen')" style="background:linear-gradient(135deg,rgba(77,163,255,0.2),rgba(77,255,154,0.1));border:1px solid rgba(77,163,255,0.4);" id="adminAppliesBtn">
+            <div class="admin-action-icon">📩</div>
+            <div class="admin-action-label">Отклики</div>
+            <div id="adminAppliesBadge" style="display:none;position:absolute;top:8px;right:8px;background:var(--accent3);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:var(--font-display);"></div>
+          </div>
+
+          <div class="admin-action-btn" onclick="pushTo('adminNewsScreen');renderAdminNews()" style="background:linear-gradient(135deg,rgba(255,170,92,0.15),rgba(255,92,141,0.1));border:1px solid rgba(255,170,92,0.3);">
+            <div class="admin-action-icon">📰</div>
+            <div class="admin-action-label">Новости</div>
+          </div>
+
+          <div class="admin-action-btn" onclick="pushTo('adminPaymentsScreen');adminLoadPaymentsScreen()" style="background:linear-gradient(135deg,rgba(77,255,154,0.15),rgba(77,163,255,0.1));border:1px solid rgba(77,255,154,0.3);" id="adminPaymentsBtn">
+            <div class="admin-action-icon">💳</div>
+            <div class="admin-action-label">Оплаты</div>
+            <div id="adminPaymentsBadge" style="display:none;position:absolute;top:8px;right:8px;background:var(--green);color:#000;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;font-family:var(--font-display);"></div>
+          </div>
+
+          <div class="admin-action-btn" onclick="pushTo('adminUsersScreen');adminLoadUsers()" style="background:linear-gradient(135deg,rgba(255,92,141,0.15),rgba(124,92,255,0.1));border:1px solid rgba(255,92,141,0.3);">
+            <div class="admin-action-icon">👥</div>
+            <div class="admin-action-label">Пользователи</div>
+          </div>
+
+          <div class="admin-action-btn" onclick="pushTo('adminJobsScreen')" style="background:linear-gradient(135deg,rgba(255,200,0,0.15),rgba(255,140,0,0.1));border:1px solid rgba(255,200,0,0.3);">
+            <div class="admin-action-icon">💼</div>
+            <div class="admin-action-label">Все вакансии</div>
+          </div>
+
         </div>
       </div>
+
+      <!-- Последние события -->
       <div class="admin-card">
-        <div class="admin-card-title">💳 Заявки на оплату</div>
-        <div id="adminPaymentRequests"><div class="loading-text" style="color:var(--text3);font-size:13px;">Загрузка...</div></div>
+        <div class="admin-card-title">🔔 Последние события</div>
+        <div id="adminRecentEvents"><div class="loading-text" style="color:var(--text3);font-size:13px;">Загрузка...</div></div>
       </div>
-      <div class="admin-card">
-        <div class="admin-card-title">👥 Выдать баланс пользователю</div>
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <input class="form-input" id="adminBalanceUser" placeholder="@username" style="flex:1;margin:0;min-height:44px;">
-          <input class="form-input" id="adminBalanceAmt" type="number" placeholder="Сумма ₽" style="width:110px;margin:0;min-height:44px;">
-        </div>
-        <button class="modal-btn" style="margin-bottom:0;" onclick="adminGiveBalance()">Выдать баланс</button>
-      </div>
-      <div class="admin-card">
-        <div class="admin-card-title">Все вакансии</div>
-        <div id="adminJobList"><div class="loading-text" style="color:var(--text3);font-size:13px;">Загрузка...</div></div>
-      </div>
+
       <button class="modal-btn-cancel" style="margin-top:4px;" onclick="logoutAdmin()">🚪 Выйти из панели</button>
       <div style="height:8px;"></div>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN: PAYMENTS SCREEN ═══════ -->
+  <div class="screen hidden" id="adminPaymentsScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">💳 Заявки на оплату</div>
+      <button onclick="adminLoadPaymentsScreen()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px;">Обновить</button>
+    </div>
+    <div class="scroll-area" id="adminPaymentsList">
+      <div class="loading-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN: USERS SCREEN ═══════ -->
+  <div class="screen hidden" id="adminUsersScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">👥 Пользователи</div>
+      <button onclick="adminLoadUsers()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px;">Обновить</button>
+    </div>
+    <div class="scroll-area">
+      <!-- Поиск пользователя -->
+      <div style="margin-bottom:12px;">
+        <div class="search-box" style="margin-bottom:10px;">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="adminUserSearch" placeholder="Поиск по @username..." oninput="adminFilterUsers(this.value)">
+        </div>
+        <!-- Быстрое начисление -->
+        <div style="background:rgba(77,255,154,0.07);border:1px solid rgba(77,255,154,0.2);border-radius:var(--radius-sm);padding:14px;">
+          <div style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:10px;font-family:var(--font-display);">💰 НАЧИСЛИТЬ БАЛАНС</div>
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <input class="form-input" id="adminBalanceUser2" placeholder="@username" style="flex:1;margin:0;min-height:44px;">
+            <input class="form-input" id="adminBalanceAmt2" type="number" placeholder="Сумма ₽" style="width:100px;margin:0;min-height:44px;">
+          </div>
+          <button class="modal-btn" style="margin:0;" onclick="adminGiveBalance2()">💰 Начислить баланс</button>
+        </div>
+      </div>
+      <div id="adminUsersList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN: JOBS SCREEN ═══════ -->
+  <div class="screen hidden" id="adminJobsScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">💼 Все вакансии</div>
+      <button onclick="openAdminCreate()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px;">+ Добавить</button>
+    </div>
+    <div class="scroll-area">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:12px;padding:8px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">
+        📌 Закреплено в карусели: <span id="adminPinnedCount">0</span>/5
+      </div>
+      <div id="adminJobList"><div class="loading-wrap"><div class="spinner"></div></div></div>
     </div>
   </div>
 
@@ -1134,6 +1272,11 @@
 
 </div>
 <script>
+// ═══════════════════════════════════════════════
+// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (объявляем ДО блока Telegram)
+// ═══════════════════════════════════════════════
+let webTgUser = null; // данные пользователя из Telegram или веб-авторизации
+
 // ═══════════════════════════════════════════════
 // TELEGRAM
 // ═══════════════════════════════════════════════
@@ -1886,9 +2029,7 @@ let minSalary = 0;
 let currentJobId = null;
 let isAdmin = false;
 
-// Данные авторизованного пользователя (веб-сессия)
-let webTgUser = null;
-
+// Данные авторизованного пользователя (объявлено выше в начале скрипта)
 // Проверка авторизации — доступна сразу после объявления
 function isTgAuthorized() {
   if (tg?.initDataUnsafe?.user?.id) return true;
@@ -1948,6 +2089,9 @@ function pushTo(screenId) {
   const cur = navStack[navStack.length - 1];
   if (screenId === cur) return;
   if (screenId === 'adminAppliesScreen') openAdminApplies();
+  if (screenId === 'adminJobsScreen') adminRenderJobsScreen();
+  if (screenId === 'adminPaymentsScreen') adminLoadPaymentsScreen();
+  if (screenId === 'adminUsersScreen') adminLoadUsers();
   if (screenId === 'walletScreen') { walletLoadBalance(); walletStartPolling(); }
   navStack.push(screenId);
   _animateTransition(cur, screenId);
@@ -3004,28 +3148,304 @@ function checkPin() {
   }
 }
 
-function logoutAdmin() {
-  isAdmin = false;
-  document.getElementById('adminMenuText').textContent = 'Войти как администратор';
-  document.getElementById('profileSub').textContent = 'Участник Jobic';
-  navTo('profileScreen', null);
-  showToast('👋 Вы вышли из панели');
+// ══════════════════════════════════════════
+// ADMIN PANEL — НОВЫЕ ФУНКЦИИ
+// ══════════════════════════════════════════
+
+// Загрузка последних событий на главном экране
+async function adminLoadRecentEvents() {
+  const el = document.getElementById('adminRecentEvents');
+  if (!el) return;
+  try {
+    // Последние отклики
+    const applies = await sbFetch('/rest/v1/applies?order=created_at.desc&limit=3&select=*');
+    // Последние заявки на оплату
+    const payments = await sbFetch('/rest/v1/payment_requests?order=created_at.desc&limit=3&select=*');
+
+    let html = '';
+
+    if (payments && payments.length) {
+      payments.forEach(p => {
+        const statusMap = { pending: '⏳', approved: '✅', rejected: '❌' };
+        const timeStr = new Date(p.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+        html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:20px;">${statusMap[p.status]||'💳'}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);">@${esc(p.username||'?')} — ${esc(p.tariff||'?')}</div>
+            <div style="font-size:11px;color:var(--text3);">${esc(String(p.amount))} ₽ · ${timeStr}</div>
+          </div>
+          ${p.status==='pending' ? `<button onclick="adminQuickApprove('${p.id}','${p.tg_user_id}',${p.amount},'${esc(p.username||'')}')" style="padding:6px 10px;border-radius:8px;background:rgba(77,255,154,0.15);border:1px solid rgba(77,255,154,0.3);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">✅ Принять</button>` : ''}
+        </div>`;
+      });
+    }
+
+    if (applies && applies.length) {
+      applies.forEach(a => {
+        const timeStr = a.created_at ? new Date(a.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : a.date || '';
+        html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:20px;">📩</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(a.name||'?')} → ${esc(a.job_title||a.jobTitle||'?')}</div>
+            <div style="font-size:11px;color:var(--text3);">${esc(a.contact||'')} · ${timeStr}</div>
+          </div>
+        </div>`;
+      });
+    }
+
+    if (!html) {
+      html = '<div class="empty-state" style="padding:20px 0;"><div class="e-icon">🌟</div>Событий пока нет</div>';
+    }
+
+    el.innerHTML = html;
+
+    // Обновляем бейджи на кнопках
+    const pendingPayments = (payments||[]).filter(p => p.status === 'pending').length;
+    const badge = document.getElementById('adminPaymentsBadge');
+    if (badge) {
+      badge.textContent = pendingPayments;
+      badge.style.display = pendingPayments > 0 ? 'block' : 'none';
+    }
+    const appliesBadge = document.getElementById('adminAppliesBadge');
+    if (appliesBadge && applies) {
+      appliesBadge.textContent = applies.length;
+      appliesBadge.style.display = applies.length > 0 ? 'block' : 'none';
+    }
+  } catch(e) {
+    console.error('adminLoadRecentEvents:', e);
+    if (el) el.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:10px 0;">Ошибка загрузки</div>';
+  }
 }
 
-async function renderAdminPanel() {
-  JOBS = await loadJobs(true); // force refresh
-  APPLIES = await loadApplies();
-  const pinned = JOBS.filter(j => j.pinned).length;
-  const totalViews = JOBS.reduce((sum, j) => sum + (j.views || 0), 0);
-  document.getElementById('aStatJobs').textContent = JOBS.length;
-  document.getElementById('aStatApplies').textContent = APPLIES.length;
-  document.getElementById('aStatPinned').textContent = pinned;
-  document.getElementById('aStatViews').textContent = formatViews(totalViews);
+// Быстрое одобрение оплаты прямо с главного экрана
+async function adminQuickApprove(requestId, tgUserId, amount, username) {
+  if (!confirm(`Начислить ${amount} ₽ → @${username}?`)) return;
+  try {
+    // Получаем текущий баланс
+    const balData = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(tgUserId) + '&select=balance&limit=1');
+    const currentBalance = (balData && balData.length) ? (balData[0].balance || 0) : 0;
+    const newBalance = currentBalance + parseInt(amount);
+
+    // Обновляем баланс
+    await sbFetch('/rest/v1/user_balances', {
+      method: 'POST',
+      headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ tg_user_id: tgUserId, username: username, balance: newBalance })
+    });
+
+    // Меняем статус заявки
+    await sbFetch('/rest/v1/payment_requests?id=eq.' + requestId, {
+      method: 'PATCH',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ status: 'approved' })
+    });
+
+    // Уведомляем пользователя
+    try {
+      await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-approved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON, 'apikey': SUPABASE_ANON, 'X-Secret': 'jobic_secret_2024' },
+        body: JSON.stringify({ tg_user_id: tgUserId, amount: String(amount), new_balance: String(newBalance) })
+      });
+    } catch(e) {}
+
+    showToast('✅ Начислено ' + amount + ' ₽ → @' + username);
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    adminLoadRecentEvents();
+  } catch(e) {
+    showToast('❌ Ошибка: ' + e.message, true);
+  }
+}
+
+// Экран заявок на оплату (отдельный)
+async function adminLoadPaymentsScreen() {
+  const el = document.getElementById('adminPaymentsList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+  try {
+    const data = await sbFetch('/rest/v1/payment_requests?select=*&order=created_at.desc');
+    if (!data || !data.length) {
+      el.innerHTML = '<div class="empty-state" style="padding:40px 0;"><div class="e-icon">💳</div>Заявок пока нет</div>';
+      return;
+    }
+    const statusMap = { pending: ['⏳ Ожидает', 'status-pending'], approved: ['✅ Одобрена', 'status-approved'], rejected: ['❌ Отклонена', 'status-rejected'] };
+    el.innerHTML = data.map(p => {
+      const [statusText, statusClass] = statusMap[p.status] || ['❓', ''];
+      const timeStr = new Date(p.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+      const amountNum = parseInt(String(p.amount).replace(/\D/g,'')) || 0;
+      return `<div class="admin-payment-item">
+        <div class="admin-payment-header">
+          <div class="admin-payment-user">@${esc(p.username||'?')}</div>
+          <div class="admin-payment-status ${statusClass}">${statusText}</div>
+        </div>
+        <div class="admin-payment-detail">
+          💼 Тариф: <b>${esc(p.tariff||'?')}</b><br>
+          💰 Сумма: <b>${amountNum.toLocaleString('ru')} ₽</b><br>
+          🕐 ${timeStr}
+        </div>
+        ${p.screenshot_url ? `<a href="${esc(p.screenshot_url)}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;background:rgba(124,92,255,0.12);border:1px solid rgba(124,92,255,0.25);color:var(--accent);font-size:12px;font-weight:600;text-decoration:none;margin-bottom:10px;">📎 Посмотреть скриншот</a>` : '<div style="font-size:11px;color:var(--text3);margin-bottom:10px;">📎 Скриншот не прикреплён</div>'}
+        ${p.status === 'pending' ? `<div class="admin-payment-actions">
+          <button class="btn-approve" onclick="adminApprovePayment('${p.id}','${p.tg_user_id}',${amountNum},'${esc(p.username||'')}')">✅ Одобрить</button>
+          <button class="btn-reject" onclick="adminRejectPayment('${p.id}','${p.tg_user_id}','${esc(p.tariff||'')}')">❌ Отклонить</button>
+        </div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><div class="e-icon">❌</div>Ошибка загрузки</div>';
+    console.error('adminLoadPaymentsScreen:', e);
+  }
+}
+
+async function adminApprovePayment(requestId, tgUserId, amount, username) {
+  const balData = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(tgUserId) + '&select=balance&limit=1');
+  const currentBalance = (balData && balData.length) ? (balData[0].balance || 0) : 0;
+  const newBalance = currentBalance + amount;
+  await sbFetch('/rest/v1/user_balances', {
+    method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ tg_user_id: tgUserId, username: username, balance: newBalance })
+  });
+  await sbFetch('/rest/v1/payment_requests?id=eq.' + requestId, {
+    method: 'PATCH', headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: 'approved' })
+  });
+  try {
+    await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-approved', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON, 'apikey': SUPABASE_ANON, 'X-Secret': 'jobic_secret_2024' },
+      body: JSON.stringify({ tg_user_id: tgUserId, amount: String(amount), new_balance: String(newBalance) })
+    });
+  } catch(e) {}
+  showToast('✅ Начислено ' + amount + ' ₽ → @' + username);
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  adminLoadPaymentsScreen();
+}
+
+async function adminRejectPayment(requestId, tgUserId, tariff) {
+  await sbFetch('/rest/v1/payment_requests?id=eq.' + requestId, {
+    method: 'PATCH', headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ status: 'rejected' })
+  });
+  try {
+    const BOT = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot';
+    await fetch(BOT + '/notify-approved', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON, 'apikey': SUPABASE_ANON, 'X-Secret': 'jobic_secret_2024' },
+      body: JSON.stringify({ tg_user_id: tgUserId, amount: '0', new_balance: '0', rejected: true, tariff: tariff })
+    });
+  } catch(e) {}
+  showToast('❌ Заявка отклонена');
+  adminLoadPaymentsScreen();
+}
+
+// Экран пользователей
+let _allUsers = [];
+async function adminLoadUsers() {
+  const el = document.getElementById('adminUsersList');
+  if (!el) return;
+  el.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+  try {
+    const users = await sbFetch('/rest/v1/telegram_users?order=created_at.desc&select=*&limit=100');
+    const balances = await sbFetch('/rest/v1/user_balances?select=tg_user_id,balance');
+    const balMap = {};
+    (balances||[]).forEach(b => { balMap[b.tg_user_id] = b.balance || 0; });
+    _allUsers = (users||[]).map(u => ({ ...u, balance: balMap[u.tg_id] || 0 }));
+    adminRenderUsers(_allUsers);
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><div class="e-icon">❌</div>Ошибка загрузки</div>';
+  }
+}
+
+function adminFilterUsers(query) {
+  const q = query.toLowerCase();
+  const filtered = q ? _allUsers.filter(u =>
+    (u.username||'').toLowerCase().includes(q) ||
+    (u.first_name||'').toLowerCase().includes(q) ||
+    (u.tg_id||'').includes(q)
+  ) : _allUsers;
+  adminRenderUsers(filtered);
+}
+
+function adminRenderUsers(users) {
+  const el = document.getElementById('adminUsersList');
+  if (!el) return;
+  if (!users.length) {
+    el.innerHTML = '<div class="empty-state"><div class="e-icon">👥</div>Пользователи не найдены</div>';
+    return;
+  }
+  el.innerHTML = users.map(u => {
+    const name = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'Без имени';
+    const initials = name[0]?.toUpperCase() || '?';
+    const regDate = u.created_at ? new Date(u.created_at).toLocaleDateString('ru') : '';
+    return `<div class="admin-user-item">
+      <div class="admin-user-avatar">${initials}</div>
+      <div class="admin-user-info">
+        <div class="admin-user-name">${esc(name)} ${u.is_premium ? '⭐' : ''}</div>
+        <div class="admin-user-meta">${u.username ? '@'+esc(u.username) : ''} · ID: ${esc(u.tg_id||'')} · ${regDate}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+        <div class="admin-user-balance">${(u.balance||0).toLocaleString('ru')} ₽</div>
+        <button onclick="adminQuickGrantBalance('${u.tg_id}','${esc(u.username||u.first_name||'')}')" style="padding:4px 10px;border-radius:8px;background:rgba(77,255,154,0.12);border:1px solid rgba(77,255,154,0.25);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;">+ Начислить</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function adminQuickGrantBalance(tgId, username) {
+  const amtStr = prompt('Сколько рублей начислить @' + username + '?');
+  const amt = parseInt(amtStr);
+  if (!amt || amt <= 0) return;
+  const balData = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + encodeURIComponent(tgId) + '&select=balance&limit=1');
+  const currentBalance = (balData && balData.length) ? (balData[0].balance || 0) : 0;
+  const newBalance = currentBalance + amt;
+  await sbFetch('/rest/v1/user_balances', {
+    method: 'POST', headers: { 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ tg_user_id: tgId, username: username, balance: newBalance })
+  });
+  try {
+    await sbFetch('/rest/v1/balance_transactions', {
+      method: 'POST', headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ tg_user_id: tgId, username: username, amount: amt, description: 'Ручное начисление администратором' })
+    });
+  } catch(e) {}
+  try {
+    await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-approved', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON, 'apikey': SUPABASE_ANON, 'X-Secret': 'jobic_secret_2024' },
+      body: JSON.stringify({ tg_user_id: tgId, amount: String(amt), new_balance: String(newBalance) })
+    });
+  } catch(e) {}
+  showToast('✅ Начислено ' + amt + ' ₽ → @' + username);
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  adminLoadUsers();
+}
+
+// Второй вариант adminGiveBalance для экрана Users
+async function adminGiveBalance2() {
+  const usernameEl = document.getElementById('adminBalanceUser2');
+  const amtEl = document.getElementById('adminBalanceAmt2');
+  const userInput = (usernameEl?.value || '').replace('@','').trim().toLowerCase();
+  const amt = parseInt(amtEl?.value || '0');
+  if (!userInput) { showToast('⚠️ Введите @username', true); return; }
+  if (!amt || amt <= 0) { showToast('⚠️ Введите корректную сумму', true); return; }
+  // Переиспользуем логику — заполняем поля основного adminGiveBalance и вызываем
+  const u1 = document.getElementById('adminBalanceUser');
+  const a1 = document.getElementById('adminBalanceAmt');
+  if (u1) u1.value = userInput;
+  if (a1) a1.value = String(amt);
+  await adminGiveBalance();
+  if (usernameEl) usernameEl.value = '';
+  if (amtEl) amtEl.value = '';
+  adminLoadUsers();
+}
+
+// Отдельный экран вакансий
+function adminRenderJobsScreen() {
   const pinnedCount = JOBS.filter(j => j.pinned).length;
+  const el = document.getElementById('adminPinnedCount');
+  if (el) el.textContent = pinnedCount;
   const list = document.getElementById('adminJobList');
-  if (!JOBS.length) { list.innerHTML = '<div class="empty-state">Нет вакансий</div>'; return; }
-  list.innerHTML = `<div style="font-size:11px;color:var(--text3);margin-bottom:10px;padding:6px 10px;background:var(--surface);border-radius:8px;border:1px solid var(--border);">📌 Закреплено в карусели: ${pinnedCount}/5 — нажми 📌 чтобы добавить или убрать</div>` +
-  JOBS.map(j => `
+  if (!list) return;
+  if (!JOBS.length) { list.innerHTML = '<div class="empty-state"><div class="e-icon">💼</div>Нет вакансий</div>'; return; }
+  list.innerHTML = JOBS.map(j => `
     <div class="job-admin-item">
       <div class="job-admin-icon">${j.icon||'🏢'}</div>
       <div class="job-admin-info">
@@ -3044,9 +3464,27 @@ async function renderAdminPanel() {
         <div class="icon-btn del-btn" onclick="deleteJob('${j.id}')">🗑</div>
       </div>
     </div>`).join('');
+}
 
-  // Загружаем заявки на оплату
-  adminLoadPayments();
+function logoutAdmin() {
+  isAdmin = false;
+  document.getElementById('adminMenuText').textContent = 'Войти как администратор';
+  document.getElementById('profileSub').textContent = 'Участник Jobic';
+  navTo('profileScreen', null);
+  showToast('👋 Вы вышли из панели');
+}
+
+async function renderAdminPanel() {
+  JOBS = await loadJobs(true); // force refresh
+  APPLIES = await loadApplies();
+  const pinned = JOBS.filter(j => j.pinned).length;
+  const totalViews = JOBS.reduce((sum, j) => sum + (j.views || 0), 0);
+  document.getElementById('aStatJobs').textContent = JOBS.length;
+  document.getElementById('aStatApplies').textContent = APPLIES.length;
+  document.getElementById('aStatPinned').textContent = pinned;
+  document.getElementById('aStatViews').textContent = formatViews(totalViews);
+  // Загружаем последние события и бейджи
+  adminLoadRecentEvents();
 }
 
 async function togglePin(id) {
@@ -3197,6 +3635,7 @@ const _origNavTo = navTo;
 function _onScreenShown(screenId) {
   if (screenId === 'favScreen') renderFavScreen();
   if (screenId === 'adminScreen' && isAdmin) renderAdminPanel();
+  if (screenId === 'adminJobsScreen') adminRenderJobsScreen();
   if (screenId === 'newsScreen') { loadNews().then(renderNews); }
   if (screenId === 'notificationsScreen') { renderNotifCatChips(); generateNotifications(); }
   if (screenId === 'createScreen' && !isAdmin && isTgAuthorized()) { updatePlanAffordability(); }
@@ -3587,7 +4026,7 @@ async function adminGiveBalance() {
 
 // ── WALLET ──────────────────────────────────────────
 let walletSelectedTariff = 'Стандарт';
-let walletSelectedSum = '1 500';
+let walletSelectedSum = '1500'; // храним как чистое число без пробелов
 let walletScreenshotFile = null;
 
 function walletGoToTariffs() {
@@ -3634,12 +4073,13 @@ function walletSelTariff(el, name, sum) {
   document.querySelectorAll('.wtariff-card').forEach(c => c.classList.remove('wsel'));
   el.classList.add('wsel');
   walletSelectedTariff = name;
-  walletSelectedSum = sum;
+  // Храним сумму как чистое число (убираем пробелы) для корректного parseInt
+  walletSelectedSum = String(sum).replace(/\s/g, '');
   const uEl = document.getElementById('wNotifUser');
   const tEl = document.getElementById('wNotifTariff');
   const sEl = document.getElementById('wNotifSum');
-  if (uEl && window.Telegram?.WebApp?.initDataUnsafe?.user?.username)
-    uEl.textContent = '@' + window.Telegram.WebApp.initDataUnsafe.user.username;
+  const tgU = getTgUser();
+  if (uEl) uEl.textContent = tgU?.username ? '@' + tgU.username : (tgU?.first_name || '@username');
   if (tEl) tEl.textContent = name;
   if (sEl) sEl.textContent = sum + ' ₽';
 }
@@ -3699,12 +4139,20 @@ async function walletConfirmPayment() {
   const userId = tgUser?.id ? String(tgUser.id) : null;
 
   if (!userId) {
-    showToast('⚠️ Войдите в аккаунт перед оплатой');
+    _pendingAuthAction = () => walletConfirmPayment();
+    openModal('tgAuthModal');
     return;
   }
 
   if (!walletScreenshotFile) {
-    showToast('⚠️ Прикрепите скриншот оплаты');
+    showToast('⚠️ Прикрепите скриншот оплаты', true);
+    return;
+  }
+
+  // Сумма как чистое число
+  const amountNum = parseInt(String(walletSelectedSum).replace(/\D/g, '')) || 0;
+  if (amountNum <= 0) {
+    showToast('⚠️ Выберите тариф на вкладке «Тарифы»', true);
     return;
   }
 
@@ -3713,71 +4161,82 @@ async function walletConfirmPayment() {
   btn.textContent = '⏳ Отправляем...';
 
   try {
-    // 1. Загружаем скрин в Supabase Storage
+    // 1. Загружаем скрин в Supabase Storage (bucket: screenshots)
     let screenshotUrl = null;
-    const fileName = 'payments/' + (userId || 'anon') + '_' + Date.now() + '.jpg';
-    const storageRes = await fetch(
-      SUPABASE_URL + '/storage/v1/object/screenshots/' + fileName,
-      {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_ANON,
-          'Authorization': 'Bearer ' + SUPABASE_ANON,
-          'Content-Type': walletScreenshotFile.type || 'image/jpeg',
-          'x-upsert': 'true'
-        },
-        body: walletScreenshotFile
-      }
-    );
-    if (storageRes.ok) {
-      screenshotUrl = SUPABASE_URL + '/storage/v1/object/public/screenshots/' + fileName;
-    }
-
-    // 2. Пишем заявку в payment_requests и получаем id
-    const inserted = await sbFetch('/rest/v1/payment_requests', {
-      method: 'POST',
-      prefer: 'return=representation',
-      headers: { 'Prefer': 'return=representation' },
-      body: JSON.stringify({
-        tg_user_id: userId,
-        username: username,
-        tariff: walletSelectedTariff,
-        amount: walletSelectedSum,
-        screenshot_url: screenshotUrl,
-        status: 'pending'
-      })
-    });
-
-    const requestId = inserted && inserted[0] ? inserted[0].id : null;
-
-    // 3. Шлём уведомление боту (Railway URL)
-    const BOT_SERVER = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot';
-    if (requestId) {
-      try {
-        await fetch(BOT_SERVER + '/notify-payment', {
+    const ext = walletScreenshotFile.name.split('.').pop() || 'jpg';
+    const fileName = 'payments/' + userId + '_' + Date.now() + '.' + ext;
+    try {
+      const storageRes = await fetch(
+        SUPABASE_URL + '/storage/v1/object/screenshots/' + fileName,
+        {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'X-Secret': 'jobic_secret_2024'
+            'apikey': SUPABASE_ANON,
+            'Authorization': 'Bearer ' + SUPABASE_ANON,
+            'Content-Type': walletScreenshotFile.type || 'image/jpeg',
+            'x-upsert': 'true'
           },
-          body: JSON.stringify({
-            request_id: requestId,
-            username: username,
-            tg_user_id: userId,
-            tariff: walletSelectedTariff,
-            amount: walletSelectedSum,
-            screenshot_url: screenshotUrl
-          })
-        });
-      } catch(e) {
-        console.warn('Bot notify failed (non-critical):', e);
+          body: walletScreenshotFile
+        }
+      );
+      if (storageRes.ok) {
+        screenshotUrl = SUPABASE_URL + '/storage/v1/object/public/screenshots/' + fileName;
+      } else {
+        const errText = await storageRes.text();
+        console.warn('Screenshot upload failed:', storageRes.status, errText);
       }
+    } catch(e) {
+      console.warn('Screenshot upload error (non-critical):', e);
+    }
+
+    // 2. Пишем заявку в payment_requests (amount как число!)
+    let requestId = null;
+    try {
+      const inserted = await sbFetch('/rest/v1/payment_requests', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({
+          tg_user_id: userId,
+          username: username,
+          tariff: walletSelectedTariff,
+          amount: amountNum,
+          screenshot_url: screenshotUrl || null,
+          status: 'pending'
+        })
+      });
+      requestId = inserted && inserted[0] ? inserted[0].id : null;
+    } catch(e) {
+      console.warn('payment_requests insert error:', e);
+    }
+
+    // 3. Уведомляем бота (всегда, даже если нет скриншота)
+    const BOT_SERVER = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot';
+    try {
+      await fetch(BOT_SERVER + '/notify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON,
+          'apikey': SUPABASE_ANON,
+          'X-Secret': 'jobic_secret_2024'
+        },
+        body: JSON.stringify({
+          request_id: requestId || '',
+          username: username,
+          tg_user_id: userId,
+          tariff: walletSelectedTariff,
+          amount: String(amountNum),
+          screenshot_url: screenshotUrl || null
+        })
+      });
+    } catch(e) {
+      console.warn('Bot notify failed (non-critical):', e);
     }
 
     showToast('✅ Заявка отправлена! Администратор проверит и начислит баланс.');
     btn.textContent = '✅ Заявка отправлена';
 
-    // Полный сброс UI через 2 секунды
+    // Сброс UI
     setTimeout(() => {
       walletScreenshotFile = null;
       document.getElementById('walletFileInput').value = '';
@@ -3787,9 +4246,10 @@ async function walletConfirmPayment() {
       if (box) box.style.borderColor = '';
       if (btn) { btn.style.display = 'none'; btn.disabled = false; btn.textContent = '✅ Я оплатил — уведомить администратора'; }
     }, 2000);
+
   } catch(e) {
     console.error('Payment error:', e);
-    showToast('❌ Ошибка. Напишите @sapgos напрямую.');
+    showToast('❌ Ошибка. Напишите @sapgos напрямую.', true);
     btn.disabled = false;
     btn.textContent = '✅ Я оплатил — уведомить администратора';
   }
