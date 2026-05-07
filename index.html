@@ -656,6 +656,75 @@
   .search-popular-chip { padding: 6px 13px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
   .search-popular-chip:active { background: rgba(124,92,255,0.15); border-color: rgba(124,92,255,0.35); color: var(--accent); }
 
+  /* ── FORM WIZARD ── */
+  .form-progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 16px; overflow: hidden; }
+  .form-progress-fill { height: 100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .form-step-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .form-step-num { font-size: 11px; color: var(--text3); font-family: var(--font-display); font-weight: 600; letter-spacing: 0.06em; }
+  .form-step-title { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.3px; }
+
+  .field-wrap { margin-bottom: 14px; position: relative; }
+  .field-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.07em; text-transform: uppercase; font-family: var(--font-display); margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .field-label .field-required { color: var(--accent3); font-size: 10px; }
+  .field-label .field-optional { color: var(--text3); font-size: 10px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+  .field-hint { font-size: 11px; color: var(--text3); margin-top: 5px; line-height: 1.5; }
+  .field-hint.hint-error { color: var(--red); }
+  .field-hint.hint-ok { color: var(--green); }
+  .field-counter { font-size: 10px; color: var(--text3); text-align: right; margin-top: 3px; }
+  .field-counter.warn { color: var(--orange); }
+
+  .form-input-new { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1.5px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 15px; font-family: var(--font-body); outline: none; transition: border-color 0.2s, background 0.2s; min-height: 50px; box-sizing: border-box; }
+  .form-input-new:focus { border-color: var(--accent); background: rgba(124,92,255,0.05); }
+  .form-input-new.is-valid { border-color: var(--green); }
+  .form-input-new.is-error { border-color: var(--red); background: rgba(255,92,92,0.04); }
+  .form-input-new::placeholder { color: var(--text3); }
+  .form-textarea-new { resize: none; line-height: 1.6; min-height: 100px; }
+
+  /* Иконки-подсказки категории */
+  .icon-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-top: 8px; }
+  .icon-option { width: 100%; aspect-ratio: 1; border-radius: 12px; background: var(--surface); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; transition: all 0.15s; }
+  .icon-option.selected { background: rgba(124,92,255,0.2); border-color: var(--accent); transform: scale(1.05); }
+  .icon-option:active { transform: scale(0.93); }
+
+  /* Тип занятости */
+  .employment-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .emp-chip { padding: 8px 14px; border-radius: 20px; background: var(--surface); border: 1.5px solid var(--border); color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .emp-chip.selected { background: rgba(124,92,255,0.2); border-color: var(--accent); color: var(--text); }
+
+  /* Кнопка-шаг формы */
+  .form-next-btn { width: 100%; padding: 16px; border-radius: var(--radius); background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; font-size: 16px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); letter-spacing: -0.3px; margin-top: 8px; transition: opacity 0.2s; }
+  .form-next-btn:active { opacity: 0.85; }
+  .form-next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .form-back-btn { width: 100%; padding: 13px; border-radius: var(--radius); background: transparent; border: 1px solid var(--border); color: var(--text2); font-size: 14px; font-weight: 500; cursor: pointer; font-family: var(--font-body); margin-top: 8px; }
+
+  /* Превью вакансии */
+  .job-preview-card { background: linear-gradient(135deg,rgba(124,92,255,0.2),rgba(77,163,255,0.15)); border: 1px solid rgba(124,92,255,0.35); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
+  .job-preview-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; background: rgba(77,255,154,0.15); border: 1px solid rgba(77,255,154,0.3); color: var(--green); font-size: 10px; font-weight: 700; font-family: var(--font-display); margin-bottom: 10px; }
+  .job-preview-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .job-preview-company { font-size: 13px; color: rgba(255,255,255,0.65); margin-bottom: 12px; }
+  .job-preview-salary { font-family: var(--font-display); font-size: 26px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+  .job-preview-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .job-preview-tag { padding: 3px 8px; background: rgba(255,255,255,0.12); border-radius: 6px; font-size: 11px; color: rgba(255,255,255,0.75); }
+
+  /* Степ-индикаторы */
+  .step-indicator { display: flex; gap: 0; margin-bottom: 20px; }
+  .step-indicator-item { flex: 1; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .step-indicator-item:not(:last-child)::after { content:''; position:absolute; top:14px; left:50%; width:100%; height:2px; background:var(--border); z-index:0; }
+  .step-indicator-item.done::after { background: var(--accent); }
+  .step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--text3); font-family: var(--font-display); position: relative; z-index: 1; transition: all 0.3s; }
+  .step-indicator-item.active .step-dot { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .step-indicator-item.done .step-dot { background: var(--green); border-color: var(--green); color: #000; }
+  .step-label-sm { font-size: 9px; color: var(--text3); margin-top: 4px; text-align: center; font-family: var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; }
+  .step-indicator-item.active .step-label-sm { color: var(--accent); }
+
+  /* ── ADMIN CATEGORIES ── */
+  .cat-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
+  .cat-icon { font-size: 20px; width: 36px; text-align: center; }
+  .cat-name { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+  .cat-count { font-size: 11px; color: var(--text3); margin-right: 4px; }
+  .cat-del-btn { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,92,92,0.1); border: 1px solid rgba(255,92,92,0.2); color: var(--red); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  /* ── END FORM CSS ── */
+
   /* ── END WALLET CSS ── */
 </style>
 </head>
@@ -787,56 +856,218 @@
     </div>
     <div class="scroll-area">
       <div id="adminCreateNote"></div>
-      <div class="form-block">
-        <label class="form-label">Информация о вакансии</label>
-        <input class="form-input" id="fTitle" placeholder="Название должности">
-        <input class="form-input" id="fCompany" placeholder="Название компании">
-        <select class="form-select" id="fCity"><option value="">— Выберите город —</option></select>
-        <div class="salary-row">
-          <input class="form-input" id="fSalary" placeholder="Зарплата" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');formatSalaryDisplay(this)" style="margin-bottom:0;">
-          <span class="salary-currency">₽/мес</span>
+
+      <!-- Степ-индикатор -->
+      <div class="step-indicator" id="formStepIndicator">
+        <div class="step-indicator-item active" id="step-ind-0">
+          <div class="step-dot">1</div>
+          <div class="step-label-sm">Основное</div>
         </div>
-        <div class="salary-hint" id="salaryHint">Укажите корректную сумму</div>
-        <select class="form-select" id="fCategory"><option value="">— Выберите категорию —</option></select>
-        <input class="form-input" id="fIcon" placeholder="Иконка компании (эмодзи, напр. 🏢)">
+        <div class="step-indicator-item" id="step-ind-1">
+          <div class="step-dot">2</div>
+          <div class="step-label-sm">Описание</div>
+        </div>
+        <div class="step-indicator-item" id="step-ind-2">
+          <div class="step-dot">3</div>
+          <div class="step-label-sm">Контакты</div>
+        </div>
+        <div class="step-indicator-item" id="step-ind-3">
+          <div class="step-dot">4</div>
+          <div class="step-label-sm">Тариф</div>
+        </div>
       </div>
-      <div class="form-block">
-        <label class="form-label">Описание и требования</label>
-        <textarea class="form-input" id="fDesc" rows="3" placeholder="Опишите вакансию..." style="resize:none;line-height:1.5;"></textarea>
-        <textarea class="form-input" id="fReqs" rows="3" placeholder="Требования (каждое с новой строки)" style="resize:none;line-height:1.5;"></textarea>
-        <textarea class="form-input" id="fConds" rows="3" placeholder="Условия (каждое с новой строки)" style="resize:none;line-height:1.5;"></textarea>
-        <input class="form-input" id="fTags" placeholder="Теги через запятую (React, Python, Удалённо)">
-      </div>
-      <div class="form-block">
-        <label class="form-label">Контакты (куда придут отклики)</label>
-        <input class="form-input" id="fContact" placeholder="@username или телефон">
-      </div>
-      <div id="planSection">
+
+      <!-- ШАГ 1: Основная информация -->
+      <div id="formStep1" class="form-wizard-step">
         <div class="form-block">
-          <label class="form-label">Тарифный план</label>
-          <div class="plan-option sel" data-plan="standard" data-price="299" onclick="selPlan(this)">
-            <div class="plan-icon">⚡</div>
-            <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
-            <div class="plan-price">299 ₽</div>
-            <div class="radio on"></div>
+          <div class="field-wrap">
+            <div class="field-label">Название должности <span class="field-required">Обязательно</span></div>
+            <input class="form-input-new" id="fTitle" placeholder="Например: Senior React Developer"
+              oninput="formLiveValidate('fTitle')" maxlength="80">
+            <div class="field-counter" id="fTitle-counter">0/80</div>
+            <div class="field-hint" id="fTitle-hint">Чем точнее название — тем больше откликов</div>
           </div>
-          <div class="plan-option" data-plan="promo" data-price="799" onclick="selPlan(this)">
-            <div class="plan-icon">🚀</div>
-            <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи</div></div>
-            <div class="plan-price">799 ₽</div>
-            <div class="radio"></div>
+
+          <div class="field-wrap">
+            <div class="field-label">Название компании <span class="field-required">Обязательно</span></div>
+            <input class="form-input-new" id="fCompany" placeholder="Например: Яндекс, ООО «Ромашка»"
+              oninput="formLiveValidate('fCompany')" maxlength="60">
+            <div class="field-hint" id="fCompany-hint">Как ваша компания называется официально</div>
           </div>
-          <div class="plan-option" data-plan="premium" data-price="1990" onclick="selPlan(this)">
-            <div class="plan-icon">👑</div>
-            <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured + email</div></div>
-            <div class="plan-price">1 990 ₽</div>
-            <div class="radio"></div>
+
+          <div class="field-wrap">
+            <div class="field-label">Иконка компании <span class="field-optional">Необязательно</span></div>
+            <div class="icon-grid" id="iconGrid"></div>
+            <input class="form-input-new" id="fIcon" placeholder="Или введите любой эмодзи: 🏢"
+              style="margin-top:8px;" maxlength="4">
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Город / формат <span class="field-required">Обязательно</span></div>
+            <select class="form-select" id="fCity" onchange="formLiveValidate('fCity')" style="margin-bottom:0;">
+              <option value="">— Выберите город —</option>
+            </select>
+            <div class="field-hint" id="fCity-hint"></div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Тип занятости</div>
+            <div class="employment-chips" id="employmentChips">
+              <div class="emp-chip selected" onclick="toggleEmpChip(this)">Полная занятость</div>
+              <div class="emp-chip" onclick="toggleEmpChip(this)">Частичная</div>
+              <div class="emp-chip" onclick="toggleEmpChip(this)">Проектная</div>
+              <div class="emp-chip" onclick="toggleEmpChip(this)">Стажировка</div>
+            </div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Зарплата <span class="field-required">Обязательно</span></div>
+            <div class="salary-row">
+              <input class="form-input-new" id="fSalary" placeholder="150 000" inputmode="numeric"
+                oninput="this.value=this.value.replace(/\D/g,'');formLiveValidate('fSalary')" style="margin-bottom:0;flex:1;">
+              <span class="salary-currency">₽/мес</span>
+            </div>
+            <div class="field-hint" id="fSalary-hint">Укажите реальную сумму — это повышает доверие кандидатов</div>
+            <div class="salary-hint" id="salaryHint">Укажите корректную сумму</div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Категория <span class="field-required">Обязательно</span></div>
+            <select class="form-select" id="fCategory" onchange="formLiveValidate('fCategory')" style="margin-bottom:0;">
+              <option value="">— Выберите категорию —</option>
+            </select>
+            <div class="field-hint" id="fCategory-hint">От категории зависит в каком разделе покажется вакансия</div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Теги <span class="field-optional">Необязательно</span></div>
+            <input class="form-input-new" id="fTags" placeholder="React, Python, Удалённо, Опыт от 2 лет"
+              maxlength="120">
+            <div class="field-hint">Через запятую — по ним соискатели найдут вакансию</div>
           </div>
         </div>
+        <button class="form-next-btn" id="step1NextBtn" onclick="formGoStep(2)">Далее → Описание</button>
       </div>
-      <input type="hidden" id="editJobId" value="">
-      <button class="apply-big" id="submitBtn" onclick="submitJob()">Оплатить и разместить</button>
-      <div style="height:8px;"></div>
+
+      <!-- ШАГ 2: Описание -->
+      <div id="formStep2" class="form-wizard-step" style="display:none;">
+        <div class="form-block">
+          <div class="field-wrap">
+            <div class="field-label">О вакансии <span class="field-required">Обязательно</span></div>
+            <textarea class="form-input-new form-textarea-new" id="fDesc" rows="4"
+              placeholder="Расскажите о проекте, команде и задачах. Чем занимается компания? Что предстоит делать на этой позиции?"
+              oninput="formCountChars('fDesc',800);formLiveValidate('fDesc')" maxlength="800"></textarea>
+            <div class="field-counter" id="fDesc-counter">0/800</div>
+            <div class="field-hint" id="fDesc-hint">Минимум 50 символов — опишите суть работы</div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Требования <span class="field-required">Обязательно</span></div>
+            <textarea class="form-input-new form-textarea-new" id="fReqs" rows="4"
+              placeholder="Каждое требование с новой строки:&#10;— Опыт работы от 2 лет&#10;— Знание Python/Django&#10;— Умение работать в команде"
+              oninput="formCountChars('fReqs',600);formLiveValidate('fReqs')" maxlength="600"></textarea>
+            <div class="field-counter" id="fReqs-counter">0/600</div>
+            <div class="field-hint" id="fReqs-hint">Каждое требование с новой строки — появится как список ✓</div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Условия работы <span class="field-optional">Необязательно</span></div>
+            <textarea class="form-input-new form-textarea-new" id="fConds" rows="3"
+              placeholder="Каждое условие с новой строки:&#10;— Удалённая работа&#10;— ДМС с первого дня&#10;— Гибкий график"
+              oninput="formCountChars('fConds',400)" maxlength="400"></textarea>
+            <div class="field-counter" id="fConds-counter">0/400</div>
+            <div class="field-hint">Условия и бонусы — повышают привлекательность вакансии</div>
+          </div>
+
+          <!-- Превью вакансии в реальном времени -->
+          <div style="margin-top:8px;">
+            <div class="field-label" style="margin-bottom:10px;">👁 Предварительный просмотр</div>
+            <div class="job-preview-card" id="jobPreviewCard">
+              <div class="job-preview-badge">✨ Предпросмотр</div>
+              <div class="job-preview-title" id="previewTitle">Название должности</div>
+              <div class="job-preview-company" id="previewCompany">Компания · Город</div>
+              <div class="job-preview-salary" id="previewSalary">—</div>
+              <div class="job-preview-tags" id="previewTags"></div>
+            </div>
+          </div>
+        </div>
+        <button class="form-next-btn" id="step2NextBtn" onclick="formGoStep(3)">Далее → Контакты</button>
+        <button class="form-back-btn" onclick="formGoStep(1)">← Назад</button>
+      </div>
+
+      <!-- ШАГ 3: Контакты -->
+      <div id="formStep3" class="form-wizard-step" style="display:none;">
+        <div class="form-block">
+          <div style="background:rgba(77,163,255,0.08);border:1px solid rgba(77,163,255,0.2);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;">
+            <div style="font-size:13px;color:var(--accent2);font-weight:600;margin-bottom:6px;">📩 Как работают отклики</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">Когда кандидат нажимает «Откликнуться» — вы получаете уведомление в Telegram с его именем и контактом.</div>
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Telegram для уведомлений <span class="field-required">Обязательно</span></div>
+            <input class="form-input-new" id="fContact" placeholder="@ваш_username"
+              oninput="formLiveValidate('fContact')" maxlength="60">
+            <div class="field-hint" id="fContact-hint">Отклики придут именно сюда — проверьте что username правильный</div>
+          </div>
+
+          <div class="field-wrap" style="padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">✅ После размещения вы сможете:</div>
+            <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+              📩 Получать отклики в Telegram<br>
+              ✏️ Редактировать вакансию в любой момент<br>
+              📊 Видеть статистику просмотров<br>
+              🗑 Удалить когда найдёте сотрудника
+            </div>
+          </div>
+        </div>
+        <button class="form-next-btn" id="step3NextBtn" onclick="formGoStep(4)">Далее → Тариф</button>
+        <button class="form-back-btn" onclick="formGoStep(2)">← Назад</button>
+      </div>
+
+      <!-- ШАГ 4: Тариф и публикация -->
+      <div id="formStep4" class="form-wizard-step" style="display:none;">
+        <div id="planSection">
+          <div class="form-block">
+            <label class="form-label">Выберите тарифный план</label>
+            <div class="plan-option sel" data-plan="standard" data-price="299" onclick="selPlan(this)">
+              <div class="plan-icon">⚡</div>
+              <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
+              <div class="plan-price">299 ₽</div>
+              <div class="radio on"></div>
+            </div>
+            <div class="plan-option" data-plan="promo" data-price="799" onclick="selPlan(this)">
+              <div class="plan-icon">🚀</div>
+              <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи · выделение цветом</div></div>
+              <div class="plan-price">799 ₽</div>
+              <div class="radio"></div>
+            </div>
+            <div class="plan-option" data-plan="premium" data-price="1990" onclick="selPlan(this)">
+              <div class="plan-icon">👑</div>
+              <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured блок · максимум откликов</div></div>
+              <div class="plan-price">1 990 ₽</div>
+              <div class="radio"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Итоговое превью -->
+        <div class="form-block" id="finalPreviewBlock">
+          <label class="form-label">📋 Итоговая вакансия</label>
+          <div class="job-preview-card">
+            <div class="job-preview-badge">✨ Готово к публикации</div>
+            <div class="job-preview-title" id="finalPreviewTitle">—</div>
+            <div class="job-preview-company" id="finalPreviewCompany">—</div>
+            <div class="job-preview-salary" id="finalPreviewSalary">—</div>
+            <div class="job-preview-tags" id="finalPreviewTags"></div>
+          </div>
+        </div>
+
+        <input type="hidden" id="editJobId" value="">
+        <button class="apply-big" id="submitBtn" onclick="submitJob()">Оплатить и разместить</button>
+        <button class="form-back-btn" onclick="formGoStep(3)">← Назад</button>
+        <div style="height:8px;"></div>
+      </div>
+
     </div>
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
@@ -1005,6 +1236,11 @@
             <div class="admin-action-label">Все вакансии</div>
           </div>
 
+          <div class="admin-action-btn" onclick="pushTo('adminCategoriesScreen');adminLoadCategories()" style="background:linear-gradient(135deg,rgba(124,92,255,0.15),rgba(255,92,141,0.1));border:1px solid rgba(124,92,255,0.3);grid-column:span 2;">
+            <div class="admin-action-icon">🏷</div>
+            <div class="admin-action-label">Категории и города</div>
+          </div>
+
         </div>
       </div>
 
@@ -1058,6 +1294,38 @@
         </div>
       </div>
       <div id="adminUsersList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ ADMIN: CATEGORIES SCREEN ═══════ -->
+  <div class="screen hidden" id="adminCategoriesScreen">
+    <div class="tg-safe-top"></div>
+    <div class="detail-header-bar">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div class="detail-bar-title">🏷 Категории и города</div>
+      <button onclick="adminLoadCategories()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px;">↻</button>
+    </div>
+    <div class="scroll-area">
+      <!-- Категории -->
+      <div class="admin-card">
+        <div class="admin-card-title">📂 Категории вакансий</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input class="form-input" id="newCategoryIcon" placeholder="🏢" style="width:60px;min-height:44px;margin:0;text-align:center;font-size:20px;">
+          <input class="form-input" id="newCategoryName" placeholder="Название категории" style="flex:1;min-height:44px;margin:0;" onkeydown="if(event.key==='Enter')adminAddCategory()">
+          <button onclick="adminAddCategory()" style="padding:0 16px;height:44px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;font-family:var(--font-display);">+ Добавить</button>
+        </div>
+        <div id="adminCategoriesList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- Города -->
+      <div class="admin-card">
+        <div class="admin-card-title">📍 Города</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input class="form-input" id="newCityName" placeholder="Название города или «Удалённо»" style="flex:1;min-height:44px;margin:0;" onkeydown="if(event.key==='Enter')adminAddCity()">
+          <button onclick="adminAddCity()" style="padding:0 16px;height:44px;border-radius:var(--radius-sm);background:var(--accent2);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;font-family:var(--font-display);">+ Добавить</button>
+        </div>
+        <div id="adminCitiesList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+      </div>
     </div>
   </div>
 
@@ -1420,11 +1688,32 @@ if (tg) {
   tg.setHeaderColor('#0d0d1a');
   tg.setBackgroundColor('#0d0d1a');
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
-  // Только сохраняем данные — UI обновим в init() когда DOM точно готов
+
+  // Пробуем получить пользователя из initDataUnsafe
   const u = tg.initDataUnsafe?.user;
   if (u && u.id) {
     webTgUser = u;
     try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {}
+    console.log('[TG] User from initDataUnsafe:', u.first_name, u.id);
+  } else {
+    // initDataUnsafe пустой — пробуем разобрать initData вручную
+    try {
+      const initData = tg.initData;
+      if (initData) {
+        const params = new URLSearchParams(initData);
+        const userStr = params.get('user');
+        if (userStr) {
+          const parsed = JSON.parse(decodeURIComponent(userStr));
+          if (parsed && parsed.id) {
+            webTgUser = parsed;
+            try { localStorage.setItem('jobic_user', JSON.stringify(parsed)); } catch(e2) {}
+            console.log('[TG] User from initData manual parse:', parsed.first_name, parsed.id);
+          }
+        }
+      }
+    } catch(parseErr) {
+      console.warn('[TG] initData parse error:', parseErr);
+    }
   }
 }
 
@@ -1533,23 +1822,34 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 const ADMIN_PIN = '1234'; // ← Смените на свой пин
 
 async function sbFetch(path, options = {}) {
-  const res = await fetch(SUPABASE_URL + path, {
-    ...options,
-    headers: {
-      'apikey': SUPABASE_ANON,
-      'Authorization': 'Bearer ' + SUPABASE_ANON,
-      'Content-Type': 'application/json',
-      ...(options.prefer ? { 'Prefer': options.prefer } : {}),
-      ...(options.headers || {})
+  // Таймаут 10 секунд на каждый запрос
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(SUPABASE_URL + path, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        ...(options.prefer ? { 'Prefer': options.prefer } : {}),
+        ...(options.headers || {})
+      }
+    });
+    clearTimeout(timer);
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('Supabase error:', res.status, err);
+      throw new Error(err);
     }
-  });
-  if (!res.ok) {
-    const err = await res.text();
-    console.error('Supabase error:', err);
-    throw new Error(err);
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error('Timeout: сервер не отвечает');
+    throw e;
   }
-  const text = await res.text();
-  return text ? JSON.parse(text) : [];
 }
 
 // ─── JOBS ────────────────────────────────────────
@@ -1559,13 +1859,19 @@ const JOBS_TTL = 30000; // 30 секунд
 async function loadJobs(force = false) {
   if (!force && _jobsCache && (Date.now() - _jobsCacheAt < JOBS_TTL)) return _jobsCache;
   try {
+    // Таймаут 8 секунд — если Supabase не отвечает, показываем дефолтные вакансии
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
     const rows = await sbFetch('/rest/v1/jobs?order=created_at.desc&select=*');
+    clearTimeout(timeout);
     if (!rows || !rows.length) { _jobsCache = getDefaultJobs(); _jobsCacheAt = Date.now(); return _jobsCache; }
-    const seen = new Set(); _jobsCache = rows.map(dbRowToJob).filter(j => { if(seen.has(j.id)) return false; seen.add(j.id); return true; });
+    const seen = new Set();
+    _jobsCache = rows.map(dbRowToJob).filter(j => { if(seen.has(j.id)) return false; seen.add(j.id); return true; });
     _jobsCacheAt = Date.now();
     return _jobsCache;
   } catch(e) {
     console.error('loadJobs error:', e);
+    // При ошибке показываем кеш или дефолтные вакансии — никогда не зависаем
     return _jobsCache || getDefaultJobs();
   }
 }
@@ -2236,9 +2542,18 @@ function navTo(screenId, btnEl) {
 
   // TG Auth guard — для размещения вакансий нужна авторизация через TG
   if (screenId === 'createScreen' && !isAdmin && !isTgAuthorized()) {
-    _pendingAuthAction = () => navTo('createScreen', btnEl);
-    openModal('tgAuthModal');
-    return;
+    // Ещё раз пробуем взять данные из TG перед показом модалки
+    const tgWA = window.Telegram?.WebApp;
+    if (tgWA?.initDataUnsafe?.user?.id) {
+      webTgUser = tgWA.initDataUnsafe.user;
+      try { localStorage.setItem('jobic_user', JSON.stringify(webTgUser)); } catch(e) {}
+    }
+    // Проверяем снова после попытки
+    if (!isTgAuthorized()) {
+      _pendingAuthAction = () => navTo('createScreen', btnEl);
+      openModal('tgAuthModal');
+      return;
+    }
   }
 
   // Reset create for non-admin when going via nav tab
@@ -2264,6 +2579,7 @@ function pushTo(screenId) {
   if (screenId === cur) return;
   if (screenId === 'adminAppliesScreen') openAdminApplies();
   if (screenId === 'adminJobsScreen') adminRenderJobsScreen();
+  if (screenId === 'adminCategoriesScreen') adminLoadCategories();
   if (screenId === 'adminPaymentsScreen') adminLoadPaymentsScreen();
   if (screenId === 'adminUsersScreen') adminLoadUsers();
   if (screenId === 'walletScreen') { walletLoadBalance(); walletStartPolling(); }
@@ -2401,10 +2717,42 @@ async function sendAuthCode() {
     }
 
     _authChatId = data.chatId;
-    document.getElementById('authStep2Hint').innerHTML = `Код отправлен <b>@${username}</b> в Telegram`;
-    document.getElementById('authStep1').style.display = 'none';
-    document.getElementById('authStep2').style.display = 'block';
-    setTimeout(() => document.getElementById('authCode').focus(), 100);
+
+    // Пробуем показать нативный попап TG для ввода кода прямо в Mini App
+    if (tg && tg.showPopup) {
+      try {
+        tg.showPopup({
+          title: '🔐 Код подтверждения',
+          message: 'Введите 6-значный код который мы отправили в Telegram @' + username,
+          buttons: [
+            { id: 'enter_code', type: 'default', text: 'Ввести код' },
+            { id: 'cancel', type: 'cancel' }
+          ]
+        }, (btnId) => {
+          if (btnId === 'enter_code') {
+            // Показываем шаг 2 внутри модалки
+            document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
+            document.getElementById('authStep1').style.display = 'none';
+            document.getElementById('authStep2').style.display = 'block';
+            setTimeout(() => {
+              const codeInput = document.getElementById('authCode');
+              if (codeInput) codeInput.focus();
+            }, 300);
+          }
+        });
+      } catch(e) {
+        // Fallback если showPopup не сработал
+        document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
+        document.getElementById('authStep1').style.display = 'none';
+        document.getElementById('authStep2').style.display = 'block';
+        setTimeout(() => document.getElementById('authCode').focus(), 100);
+      }
+    } else {
+      document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
+      document.getElementById('authStep1').style.display = 'none';
+      document.getElementById('authStep2').style.display = 'block';
+      setTimeout(() => document.getElementById('authCode').focus(), 100);
+    }
 
   } catch(e) {
     // Сетевая ошибка (CORS, нет интернета, функция не задеплоена)
@@ -2494,6 +2842,27 @@ function restoreSession() {
 // Вызывается из init() и после авторизации
 // ══════════════════════════════════════════════
 function applyUserToUI() {
+  // Последняя попытка — если webTgUser ещё не установлен
+  if (!webTgUser) {
+    const tgWA = window.Telegram?.WebApp;
+    if (tgWA?.initDataUnsafe?.user?.id) {
+      webTgUser = tgWA.initDataUnsafe.user;
+      try { localStorage.setItem('jobic_user', JSON.stringify(webTgUser)); } catch(e) {}
+    } else if (tgWA?.initData) {
+      try {
+        const params = new URLSearchParams(tgWA.initData);
+        const userStr = params.get('user');
+        if (userStr) {
+          const parsed = JSON.parse(decodeURIComponent(userStr));
+          if (parsed?.id) {
+            webTgUser = parsed;
+            try { localStorage.setItem('jobic_user', JSON.stringify(parsed)); } catch(e) {}
+          }
+        }
+      } catch(e) {}
+    }
+  }
+
   const user = getTgUser();
   if (!user) return;
 
@@ -2561,9 +2930,23 @@ async function init() {
   saveTelegramUserToDB();
 
   renderSkeletons();
-  JOBS = await loadJobs();
-  APPLIES = await loadApplies();
-  await Promise.all([loadCategories(), loadCities(), loadNews()]);
+
+  // Загружаем всё параллельно — не блокируем UI
+  try {
+    [JOBS, APPLIES] = await Promise.all([loadJobs(), loadApplies()]);
+  } catch(e) {
+    console.warn('Jobs/Applies load error:', e);
+    JOBS = getDefaultJobs();
+    APPLIES = [];
+  }
+
+  // Категории, города, новости параллельно
+  try {
+    await Promise.all([loadCategories(), loadCities(), loadNews()]);
+  } catch(e) {
+    console.warn('Meta load error:', e);
+  }
+
   renderFeatured();
   renderPremiumSection();
   filterJobs();
@@ -3174,6 +3557,8 @@ async function confirmApply() {
 // CREATE / EDIT JOB
 // ═══════════════════════════════════════════════
 function resetCreateForUser() {
+  // Инициализируем wizard
+  setTimeout(formWizardInit, 50);
   document.getElementById('editJobId').value = '';
   document.getElementById('createScreenTitle').textContent = 'Разместить вакансию';
   document.getElementById('createScreenSub').textContent = 'Заполните информацию о позиции';
@@ -3186,8 +3571,8 @@ function resetCreateForUser() {
   document.querySelectorAll('.plan-option').forEach((o, i) => {
     o.classList.toggle('sel', i === 0);
     o.style.opacity = '1';
-    const r = o.querySelector('.radio');
-    if (r) { r.classList.toggle('on', i === 0); r.innerHTML = i === 0 ? '' : ''; }
+    const rBtn = o.querySelector('.radio');
+    if (rBtn) { rBtn.classList.toggle('on', i === 0); r.innerHTML = i === 0 ? '' : ''; }
     const hint = o.querySelector('.plan-lock-hint');
     if (hint) hint.remove();
   });
@@ -3196,6 +3581,7 @@ function resetCreateForUser() {
 }
 
 function openAdminCreate() {
+  setTimeout(formWizardInit, 50);
   document.getElementById('editJobId').value = '';
   document.getElementById('createScreenTitle').textContent = 'Добавить вакансию';
   document.getElementById('createScreenSub').textContent = 'Бесплатно для администратора';
@@ -3229,6 +3615,11 @@ function openEditJob(id) {
   document.getElementById('fTags').value = (j.tags||[]).join(', ');
   document.getElementById('fContact').value = j.contact || '';
   pushTo('createScreen');
+  // При редактировании — показываем первый шаг с заполненными данными
+  setTimeout(() => {
+    formShowStep(1);
+    formUpdatePreview();
+  }, 80);
 }
 
 function clearForm() {
@@ -3284,21 +3675,40 @@ async function _deductBalance(userId, username, amount, description) {
 }
 
 async function submitJob() {
-  if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
-  const title = document.getElementById('fTitle').value.trim();
-  const company = document.getElementById('fCompany').value.trim();
-  const city = document.getElementById('fCity').value;
-  const salaryRaw = document.getElementById('fSalary').value.replace(/\D/g,'');
-  const salary = salaryRaw ? parseInt(salaryRaw).toLocaleString('ru-RU') : '';
-  if (!title || !company) { showToast('⚠️ Заполните название и компанию', true); return; }
+  // Читаем все поля один раз
+  const titleVal   = (document.getElementById('fTitle')?.value || '').trim();
+  const companyVal = (document.getElementById('fCompany')?.value || '').trim();
+  const cityVal    = document.getElementById('fCity')?.value || '';
+  const salaryRaw  = (document.getElementById('fSalary')?.value || '').replace(/\D/g,'');
+  const categoryVal= document.getElementById('fCategory')?.value || '';
+  const contactVal = (document.getElementById('fContact')?.value || '').trim();
+  const descVal    = (document.getElementById('fDesc')?.value || '').trim();
 
-  const editId = document.getElementById('editJobId').value;
-  const tags = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  const reqs = document.getElementById('fReqs').value.split('\n').map(r=>r.trim()).filter(Boolean);
+  // Валидация
+  if (!titleVal)   { showToast('⚠️ Укажите название должности', true); formShowStep(1); return; }
+  if (!companyVal) { showToast('⚠️ Укажите название компании', true); formShowStep(1); return; }
+  if (!cityVal)    { showToast('⚠️ Выберите город', true); formShowStep(1); return; }
+  if (!salaryRaw || parseInt(salaryRaw) < 1000) { showToast('⚠️ Укажите зарплату от 1000 ₽', true); formShowStep(1); return; }
+  if (!categoryVal){ showToast('⚠️ Выберите категорию', true); formShowStep(1); return; }
+  if (!descVal || descVal.length < 20) { showToast('⚠️ Добавьте описание вакансии (минимум 20 символов)', true); formShowStep(2); return; }
+  if (!contactVal) { showToast('⚠️ Укажите контакт для откликов', true); formShowStep(3); return; }
+  if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
+
+  // Формируем итоговые значения
+  const title    = titleVal;
+  const company  = companyVal;
+  const city     = cityVal;
+  const category = categoryVal || 'Общее';
+  const salary   = salaryRaw ? parseInt(salaryRaw).toLocaleString('ru-RU') : '';
+  const salaryNum= parseInt(salaryRaw) || 0;
+
+  const editId   = document.getElementById('editJobId').value;
+  const tags     = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  const employment = getSelectedEmployment ? getSelectedEmployment() : 'Полная занятость';
+  if (employment && employment !== 'Полная занятость' && !tags.includes(employment)) tags.unshift(employment);
+  const reqs  = document.getElementById('fReqs').value.split('\n').map(r=>r.trim()).filter(Boolean);
   const conds = document.getElementById('fConds').value.split('\n').map(c=>c.trim()).filter(Boolean);
-  const icon = document.getElementById('fIcon').value.trim() || '🏢';
-  const category = document.getElementById('fCategory').value || 'Общее';
-  const salaryNum = parseInt(salaryRaw) || 0;
+  const icon  = document.getElementById('fIcon').value.trim() || '🏢';
 
   if (editId) {
     // Редактирование — бесплатно, пользователь уже оплатил
@@ -3470,7 +3880,7 @@ async function adminLoadRecentEvents() {
 
     if (applies && applies.length) {
       applies.forEach(a => {
-        const timeStr = a.created_at ? new Date(a.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : a.date || '';
+        const applyTimeStr = a.created_at ? new Date(a.created_at).toLocaleString('ru', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : a.date || '';
         html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
           <div style="font-size:20px;">📩</div>
           <div style="flex:1;min-width:0;">
@@ -3986,12 +4396,12 @@ window.navTo = function(screenId, btn) {
 function selPlan(el) {
   document.querySelectorAll('.plan-option').forEach(o => {
     o.classList.remove('sel');
-    const r = o.querySelector('.radio');
-    if (r) { r.classList.remove('on'); r.innerHTML = ''; }
+    const rb = o.querySelector('.radio');
+    if (rb) { rb.classList.remove('on'); rb.innerHTML = ''; }
   });
   el.classList.add('sel');
-  const r = el.querySelector('.radio');
-  if (r) r.classList.add('on');
+  const rb2 = el.querySelector('.radio');
+  if (rb2) rb2.classList.add('on');
   _updateSubmitBtnPrice();
 }
 
@@ -4123,6 +4533,337 @@ document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key
 // START
 // ═══════════════════════════════════════════════
 init();
+
+// ══════════════════════════════════════════
+// FORM WIZARD — ПОШАГОВАЯ ФОРМА
+// ══════════════════════════════════════════
+
+let _formCurrentStep = 1;
+const FORM_ICONS = ['🏢','💻','🎨','📱','🚀','🏪','🏭','🔬','📊','🎯','🛒','🚗','🏥','📚','💰','🌐','🎮','✈️','🏗','🔧'];
+
+function formWizardInit() {
+  _formCurrentStep = 1;
+  // Рендерим иконки
+  const grid = document.getElementById('iconGrid');
+  if (grid) grid.innerHTML = FORM_ICONS.map(ico =>
+    `<div class="icon-option" onclick="selectIcon('${ico}')">${ico}</div>`
+  ).join('');
+  // Показываем шаг 1
+  formShowStep(1);
+  // Обновляем превью
+  formUpdatePreview();
+}
+
+function formShowStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('formStep' + i);
+    if (el) el.style.display = i === n ? 'block' : 'none';
+  }
+  // Обновляем индикаторы
+  for (let i = 0; i < 4; i++) {
+    const ind = document.getElementById('step-ind-' + i);
+    if (!ind) continue;
+    ind.classList.remove('active','done');
+    if (i + 1 === n) ind.classList.add('active');
+    else if (i + 1 < n) ind.classList.add('done');
+  }
+  _formCurrentStep = n;
+  // Обновляем финальный превью на шаге 4
+  if (n === 4) formUpdateFinalPreview();
+  // Скролл наверх
+  const sa = document.querySelector('#createScreen .scroll-area');
+  if (sa) sa.scrollTop = 0;
+}
+
+function formGoStep(n) {
+  // Валидация перед переходом
+  if (n > _formCurrentStep) {
+    if (!formValidateStep(_formCurrentStep)) return;
+  }
+  formShowStep(n);
+}
+
+function formValidateStep(step) {
+  if (step === 1) {
+    const title = document.getElementById('fTitle')?.value.trim();
+    const company = document.getElementById('fCompany')?.value.trim();
+    const city = document.getElementById('fCity')?.value;
+    const salary = document.getElementById('fSalary')?.value.trim();
+    const category = document.getElementById('fCategory')?.value;
+    if (!title || title.length < 3) { showToast('⚠️ Укажите название должности (минимум 3 символа)', true); return false; }
+    if (!company || company.length < 2) { showToast('⚠️ Укажите название компании', true); return false; }
+    if (!city) { showToast('⚠️ Выберите город', true); return false; }
+    if (!salary || parseInt(salary) < 1000) { showToast('⚠️ Укажите зарплату (от 1 000 ₽)', true); return false; }
+    if (!category) { showToast('⚠️ Выберите категорию', true); return false; }
+    return true;
+  }
+  if (step === 2) {
+    const desc = document.getElementById('fDesc')?.value.trim();
+    const reqs = document.getElementById('fReqs')?.value.trim();
+    if (!desc || desc.length < 50) { showToast('⚠️ Описание должно быть не менее 50 символов', true); return false; }
+    if (!reqs || reqs.length < 10) { showToast('⚠️ Укажите хотя бы одно требование', true); return false; }
+    return true;
+  }
+  if (step === 3) {
+    const contact = document.getElementById('fContact')?.value.trim();
+    if (!contact || contact.length < 2) { showToast('⚠️ Укажите контакт для получения откликов', true); return false; }
+    return true;
+  }
+  return true;
+}
+
+function formLiveValidate(fieldId) {
+  const el = document.getElementById(fieldId);
+  const hint = document.getElementById(fieldId + '-hint');
+  const counter = document.getElementById(fieldId + '-counter');
+  if (!el) return;
+  const val = el.value.trim();
+
+  if (counter && el.maxLength > 0) {
+    const len = el.value.length;
+    const max = el.maxLength;
+    counter.textContent = len + '/' + max;
+    counter.classList.toggle('warn', len > max * 0.85);
+  }
+
+  // Поле-специфичная валидация
+  let ok = true, hintText = '';
+  if (fieldId === 'fTitle') {
+    if (val.length < 3) { ok = false; hintText = 'Слишком коротко — добавьте деталей'; }
+    else if (val.length > 60) { ok = true; hintText = '✓ Отлично — подробное название'; }
+    else { hintText = '✓ Хорошее название'; }
+  }
+  if (fieldId === 'fCompany') {
+    hintText = val.length > 1 ? '✓ ' + val : 'Как ваша компания называется официально';
+    ok = val.length > 1;
+  }
+  if (fieldId === 'fSalary') {
+    const num = parseInt(val) || 0;
+    if (num < 1000) { ok = false; hintText = 'Минимум 1 000 ₽'; }
+    else if (num > 10000000) { ok = false; hintText = 'Слишком большая сумма'; }
+    else { hintText = '✓ ' + num.toLocaleString('ru') + ' ₽ в месяц'; }
+  }
+  if (fieldId === 'fContact') {
+    if (val && !val.startsWith('@') && !val.match(/^[\+\d]/)) {
+      ok = false; hintText = 'Введите @username или номер телефона';
+    } else if (val.startsWith('@') && val.length > 1) {
+      hintText = '✓ Отклики придут в Telegram @' + val.slice(1);
+    }
+  }
+  if (fieldId === 'fDesc') {
+    if (val.length < 50) hintText = 'Ещё ' + (50 - val.length) + ' символов минимум';
+    else hintText = '✓ Хорошее описание (' + val.length + ' симв.)';
+    ok = val.length >= 50;
+  }
+  if (fieldId === 'fReqs') {
+    const lines = val.split(String.fromCharCode(10)).filter(l => l.trim().length > 1).length;
+    hintText = lines > 0 ? '✓ ' + lines + ' требований' : 'Каждое требование с новой строки';
+    ok = lines > 0;
+  }
+
+  if (hint) { hint.textContent = hintText; hint.className = 'field-hint' + (ok && val ? ' hint-ok' : (!ok && val ? ' hint-error' : '')); }
+  if (val) { el.classList.toggle('is-valid', ok); el.classList.toggle('is-error', !ok); }
+  else { el.classList.remove('is-valid','is-error'); }
+
+  // Live превью
+  formUpdatePreview();
+}
+
+function formCountChars(fieldId, max) {
+  const el = document.getElementById(fieldId);
+  const counter = document.getElementById(fieldId + '-counter');
+  if (!el || !counter) return;
+  const len = el.value.length;
+  counter.textContent = len + '/' + max;
+  counter.classList.toggle('warn', len > max * 0.85);
+  formUpdatePreview();
+}
+
+function selectIcon(ico) {
+  document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+  event.target.classList.add('selected');
+  const input = document.getElementById('fIcon');
+  if (input) input.value = ico;
+}
+
+function toggleEmpChip(el) {
+  // Один выбранный тип
+  document.querySelectorAll('.emp-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function getSelectedEmployment() {
+  const sel = document.querySelector('.emp-chip.selected');
+  return sel ? sel.textContent : 'Полная занятость';
+}
+
+function formUpdatePreview() {
+  const title = document.getElementById('fTitle')?.value || 'Название должности';
+  const company = document.getElementById('fCompany')?.value || 'Компания';
+  const city = document.getElementById('fCity');
+  const cityText = city?.options[city.selectedIndex]?.text || 'Город';
+  const salary = document.getElementById('fSalary')?.value;
+  const tags = document.getElementById('fTags')?.value || '';
+
+  const pt = document.getElementById('previewTitle');
+  const pc = document.getElementById('previewCompany');
+  const ps = document.getElementById('previewSalary');
+  const pTags = document.getElementById('previewTags');
+
+  if (pt) pt.textContent = title || 'Название должности';
+  if (pc) pc.textContent = (company || 'Компания') + ' · ' + cityText;
+  if (ps) ps.textContent = salary ? parseInt(salary).toLocaleString('ru') + ' ₽' : '—';
+  if (pTags) {
+    const tagList = tags.split(',').map(t => t.trim()).filter(Boolean).slice(0,5);
+    pTags.innerHTML = tagList.map(t => `<div class="job-preview-tag">${esc(t)}</div>`).join('');
+  }
+}
+
+function formUpdateFinalPreview() {
+  const title = document.getElementById('fTitle')?.value || '—';
+  const company = document.getElementById('fCompany')?.value || '—';
+  const city = document.getElementById('fCity');
+  const cityText = city?.options[city?.selectedIndex]?.text || '';
+  const salary = document.getElementById('fSalary')?.value;
+  const tags = document.getElementById('fTags')?.value || '';
+
+  const fp = document.getElementById('finalPreviewTitle');
+  const fc = document.getElementById('finalPreviewCompany');
+  const fs = document.getElementById('finalPreviewSalary');
+  const ft = document.getElementById('finalPreviewTags');
+
+  if (fp) fp.textContent = title;
+  if (fc) fc.textContent = company + (cityText ? ' · ' + cityText : '');
+  if (fs) fs.textContent = salary ? parseInt(salary).toLocaleString('ru') + ' ₽/мес' : '—';
+  if (ft) {
+    const tagList = tags.split(',').map(t => t.trim()).filter(Boolean).slice(0,5);
+    ft.innerHTML = tagList.map(t => `<div class="job-preview-tag">${esc(t)}</div>`).join('');
+  }
+}
+
+// ══════════════════════════════════════════
+// ADMIN: КАТЕГОРИИ И ГОРОДА
+// ══════════════════════════════════════════
+async function adminLoadCategories() {
+  // Навигация
+  if (!document.getElementById('adminCategoriesScreen').classList.contains('hidden')) {
+    // уже на экране — просто обновляем
+  }
+
+  // Загружаем категории
+  const catEl = document.getElementById('adminCategoriesList');
+  const citEl = document.getElementById('adminCitiesList');
+
+  try {
+    const cats = await sbFetch('/rest/v1/categories?order=name.asc&select=*');
+    if (!catEl) return;
+    if (!cats || !cats.length) {
+      catEl.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:10px 0;">Категорий пока нет — добавьте первую</div>';
+    } else {
+      // Считаем вакансии по категориям
+      let jobCounts = {};
+      try {
+        const jobs = await sbFetch('/rest/v1/jobs?select=category');
+        (jobs||[]).forEach(j => { jobCounts[j.category] = (jobCounts[j.category]||0) + 1; });
+      } catch(e) {}
+
+      catEl.innerHTML = cats.map(c => `
+        <div class="cat-item">
+          <div class="cat-icon">${c.icon || '📂'}</div>
+          <div class="cat-name">${esc(c.name)}</div>
+          <div class="cat-count">${jobCounts[c.name] || 0} вак.</div>
+          <button class="cat-del-btn" onclick="adminDeleteCategory('${c.id}','${esc(c.name)}')" title="Удалить">🗑</button>
+        </div>`).join('');
+    }
+  } catch(e) {
+    if (catEl) catEl.innerHTML = '<div style="color:var(--red);font-size:13px;">Ошибка загрузки</div>';
+  }
+
+  // Загружаем города
+  try {
+    const cities = await sbFetch('/rest/v1/cities?order=name.asc&select=*');
+    if (!citEl) return;
+    if (!cities || !cities.length) {
+      citEl.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:10px 0;">Городов нет — добавьте первый</div>';
+    } else {
+      citEl.innerHTML = cities.map(c => `
+        <div class="cat-item">
+          <div class="cat-icon">📍</div>
+          <div class="cat-name">${esc(c.name)}</div>
+          <button class="cat-del-btn" onclick="adminDeleteCity('${c.id}','${esc(c.name)}')" title="Удалить">🗑</button>
+        </div>`).join('');
+    }
+  } catch(e) {
+    if (citEl) citEl.innerHTML = '<div style="color:var(--red);font-size:13px;">Ошибка загрузки</div>';
+  }
+}
+
+async function adminAddCategory() {
+  const iconEl = document.getElementById('newCategoryIcon');
+  const nameEl = document.getElementById('newCategoryName');
+  const name = nameEl?.value.trim();
+  const icon = iconEl?.value.trim() || '📂';
+  if (!name) { showToast('⚠️ Введите название категории', true); return; }
+  try {
+    await sbFetch('/rest/v1/categories', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ name, icon })
+    });
+    if (nameEl) nameEl.value = '';
+    if (iconEl) iconEl.value = '';
+    showToast('✅ Категория «' + name + '» добавлена');
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    await loadCategories(); // обновляем глобальный список
+    adminLoadCategories(); // обновляем UI
+  } catch(e) {
+    showToast('❌ Ошибка: ' + (e.message || 'попробуйте снова'), true);
+  }
+}
+
+async function adminDeleteCategory(id, name) {
+  if (!confirm('Удалить категорию «' + name + '»? Вакансии в этой категории останутся.')) return;
+  try {
+    await sbFetch('/rest/v1/categories?id=eq.' + id, { method: 'DELETE' });
+    showToast('🗑 Категория удалена');
+    await loadCategories();
+    adminLoadCategories();
+  } catch(e) {
+    showToast('❌ Ошибка удаления', true);
+  }
+}
+
+async function adminAddCity() {
+  const nameEl = document.getElementById('newCityName');
+  const name = nameEl?.value.trim();
+  if (!name) { showToast('⚠️ Введите название города', true); return; }
+  try {
+    await sbFetch('/rest/v1/cities', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ name })
+    });
+    if (nameEl) nameEl.value = '';
+    showToast('✅ Город «' + name + '» добавлен');
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+    await loadCities();
+    adminLoadCategories();
+  } catch(e) {
+    showToast('❌ Ошибка: ' + (e.message || 'попробуйте снова'), true);
+  }
+}
+
+async function adminDeleteCity(id, name) {
+  if (!confirm('Удалить город «' + name + '»?')) return;
+  try {
+    await sbFetch('/rest/v1/cities?id=eq.' + id, { method: 'DELETE' });
+    showToast('🗑 Город удалён');
+    await loadCities();
+    adminLoadCategories();
+  } catch(e) {
+    showToast('❌ Ошибка удаления', true);
+  }
+}
 
 // ── ADMIN PAYMENTS ──────────────────────────────────
 async function adminLoadPayments() {
@@ -4597,7 +5338,7 @@ function walletRenderTransactions(txs) {
 (function() {
   const tg = window.Telegram?.WebApp;
   if (tg?.initDataUnsafe?.user?.username) {
-    const el = document.getElementById('wNotifUser');
+    let el2 = document.getElementById('wNotifUser');
     if (el) el.textContent = '@' + tg.initDataUnsafe.user.username;
   }
 })();
