@@ -145,46 +145,237 @@
   .salary-filter-val { font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; font-family: var(--font-display); min-width: 70px; text-align: right; }
 
   /* ═══════ LABELS ═══════ */
-  .sec-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: var(--font-display); }
+  .sec-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: var(--font-display); padding-left: 2px; }
 
-  /* ═══════ FEATURED CARD ═══════ */
-  .featured-card { border-radius: var(--radius); padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.15s; }
-  .featured-card:active { transform: scale(0.97); }
-  .feat-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124,92,255,0.4) 0%, rgba(77,163,255,0.3) 100%); border-radius: var(--radius); }
-  .feat-border { position: absolute; inset: 0; border-radius: var(--radius); border: 1px solid rgba(124,92,255,0.4); }
+  /* ═══════ FEATURED CARD — iOS 26 ═══════ */
+  .featured-card {
+    border-radius: 22px; padding: 22px 20px 20px;
+    margin-bottom: 16px; position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.14s cubic-bezier(.4,0,.2,1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .featured-card:active { transform: scale(0.975); }
+  .feat-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(140deg, rgba(100,65,255,0.55) 0%, rgba(60,120,255,0.4) 60%, rgba(77,163,255,0.3) 100%);
+  }
+  .feat-border { position: absolute; inset: 0; border-radius: 22px; border: 0.5px solid rgba(255,255,255,0.2); }
+  .feat-shine {
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
   .feat-content { position: relative; z-index: 1; }
-  .feat-eyebrow { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: var(--font-display); }
-  .feat-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
-  .feat-company { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
-  .feat-bottom { display: flex; align-items: center; justify-content: space-between; }
-  .feat-salary { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -1px; }
-  .feat-salary span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.4); }
-  .feat-btn { padding: 10px 18px; border-radius: 14px; background: rgba(255,255,255,0.95); color: #1a0a3a; font-size: 13px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-body); }
+  .feat-eyebrow {
+    font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.5);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 14px; font-family: var(--font-display);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .feat-eyebrow::before { content: ''; width: 20px; height: 0.5px; background: rgba(255,255,255,0.35); }
+  .feat-title {
+    font-family: var(--font-display); font-size: 21px; font-weight: 800;
+    color: #fff; letter-spacing: -0.7px; margin-bottom: 5px; line-height: 1.15;
+  }
+  .feat-company { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 18px; font-weight: 300; }
+  .feat-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
+  .feat-salary {
+    font-family: var(--font-display); font-size: 28px; font-weight: 900;
+    color: #fff; letter-spacing: -2px; line-height: 1;
+  }
+  .feat-salary span { font-size: 11px; font-weight: 300; color: rgba(255,255,255,0.4); letter-spacing: 0; margin-left: 2px; }
+  .feat-btn {
+    padding: 11px 20px; border-radius: 14px;
+    background: rgba(255,255,255,0.92);
+    color: #1a0a50; font-size: 13px; font-weight: 800;
+    border: none; cursor: pointer;
+    font-family: var(--font-display); letter-spacing: -0.2px;
+    transition: opacity 0.12s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .feat-btn:active { opacity: 0.8; }
 
-  /* ═══════ JOB CARD ═══════ */
-  .job-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; box-shadow: var(--shadow); }
-  .job-card:active { transform: scale(0.97); background: var(--surface2); }
-  .card-accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--radius) var(--radius) 0 0; }
-  .card-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
-  .company-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid var(--border); }
-  .card-meta { flex: 1; min-width: 0; }
-  .card-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-company { font-size: 13px; color: var(--text2); }
-  .badge { padding: 4px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; flex-shrink: 0; font-family: var(--font-display); }
-  .badge-hot { background: rgba(255,92,141,0.2); color: var(--accent3); border: 1px solid rgba(255,92,141,0.3); }
-  .badge-new { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
-  .badge-top { background: rgba(255,200,0,0.15); color: #ffd700; border: 1px solid rgba(255,200,0,0.3); }
-  .badge-orange { background: rgba(255,170,92,0.15); color: var(--orange); border: 1px solid rgba(255,170,92,0.3); }
-  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-  .tag { padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; color: var(--text3); font-weight: 500; }
-  [data-theme="light"] .tag { background: rgba(124,92,255,0.06); }
-  .card-footer { display: flex; align-items: center; justify-content: space-between; }
-  .salary { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-  .salary span { font-size: 11px; font-weight: 400; color: var(--text3); }
-  .card-actions { display: flex; gap: 8px; align-items: center; }
-  .fav-btn { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text3); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
-  .fav-btn.active { background: rgba(255,92,141,0.15); border-color: rgba(255,92,141,0.3); color: var(--accent3); }
-  .more-btn { padding: 9px 16px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); min-height: 38px; }
+  /* ═══════════════════════════════════════
+     JOB CARD — чистый горизонтальный layout
+     ═══════════════════════════════════════ */
+
+  /* Обёртка карточки */
+  .job-card {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 90px;
+  }
+  .job-card:active { transform: scale(0.975); }
+  [data-theme="light"] .job-card {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(0,0,0,0.07);
+  }
+
+  /* Фото — строго 90×90, не сжимается и не растягивается */
+  .card-image-wrap {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+    align-self: stretch;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .card-image-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+  .card-image-badge {
+    position: absolute;
+    top: 6px; left: 6px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 8px; font-weight: 800;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-family: var(--font-display);
+    z-index: 1;
+  }
+
+  /* Правая часть — занимает всё оставшееся место */
+  .card-body {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+  }
+
+  /* Верх: название + компания */
+  .card-top { min-width: 0; }
+  .company-icon { display: none; }
+  .card-meta { min-width: 0; }
+  .card-accent-line { display: none; }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    line-height: 1.3;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-company {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  /* Теги */
+  .card-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .tag {
+    padding: 2px 7px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  [data-theme="light"] .tag {
+    background: rgba(0,0,0,0.04);
+    border-color: rgba(0,0,0,0.08);
+    color: rgba(0,0,0,0.4);
+  }
+
+  /* Низ: зарплата + кнопка избранного */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .salary {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .salary span {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text3);
+    letter-spacing: 0;
+  }
+  .card-actions { display: flex; align-items: center; }
+  .fav-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    color: var(--text3);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fav-btn:active { transform: scale(1.2); }
+  .fav-btn.active {
+    background: rgba(255,92,141,0.12);
+    border-color: rgba(255,92,141,0.25);
+    color: var(--accent3);
+  }
+
+  /* Скрываем старые бейджи (теперь в card-image-badge) */
+  .badge { display: none; }
+  .badge-hot { display: none; }
+  .badge-new { display: none; }
+  .badge-top { display: none; }
+  .badge-orange { display: none; }
 
   /* ═══════ BOTTOM NAV ═══════ */
   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-around; align-items: flex-start; padding: 10px 4px 0; padding-bottom: var(--sab); height: var(--nav-h); background: rgba(13,13,26,0.92); border-top: 1px solid var(--border); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); transition: background 0.3s; }
@@ -407,13 +598,61 @@
 
   /* ═══════ PREMIUM SECTION ═══════ */
   .premium-section { margin-bottom: 8px; }
-  .premium-card { background: linear-gradient(135deg, rgba(255,200,0,0.08), rgba(255,140,0,0.05)); border: 1px solid rgba(255,200,0,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.18s; }
-  .premium-card:active { transform: scale(0.98); }
-  .premium-card-glow { position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,200,0,0.15), transparent 70%); pointer-events: none; }
-  .premium-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; background: linear-gradient(90deg,#ffcc00,#ff8800); color: #000; font-size: 10px; font-weight: 800; font-family: var(--font-display); margin-bottom: 8px; }
-  .premium-title { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.3px; margin-bottom: 4px; }
-  .premium-company { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
-  .premium-salary { font-size: 16px; font-weight: 800; color: #ffcc00; font-family: var(--font-display); }
+  .premium-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: rgba(255,180,0,0.06);
+    border: 1px solid rgba(255,180,0,0.2);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    gap: 0;
+  }
+  .premium-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #ffcc00, #ff8c00);
+  }
+  .premium-card:active { transform: scale(0.975); }
+  .premium-card-glow {
+    position: absolute; top: -20px; right: -20px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(255,200,0,0.1), transparent 70%);
+    pointer-events: none;
+  }
+  /* Левая часть — текст */
+  .premium-card-left {
+    flex: 1; min-width: 0; position: relative; z-index: 1;
+  }
+  .premium-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 8px; border-radius: 5px;
+    background: rgba(255,180,0,0.15);
+    border: 1px solid rgba(255,180,0,0.25);
+    color: #ffcc00; font-size: 9px; font-weight: 800;
+    font-family: var(--font-display); margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .premium-title {
+    font-size: 14px; font-weight: 700; color: var(--text);
+    font-family: var(--font-display); letter-spacing: -0.3px;
+    margin-bottom: 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .premium-company { font-size: 11px; color: var(--text3); font-weight: 400; }
+  /* Правая часть — зарплата */
+  .premium-salary {
+    font-size: 15px; font-weight: 900; color: #ffcc00;
+    font-family: var(--font-display); letter-spacing: -0.5px;
+    white-space: nowrap; flex-shrink: 0;
+    margin-left: 12px; position: relative; z-index: 1;
+  }
 
   /* ═══════ NEWS ADMIN ═══════ */
   .news-admin-btn { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: var(--radius-sm); background: rgba(77,255,154,0.07); border: 1px solid rgba(77,255,154,0.2); color: rgba(77,255,154,0.9); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-family: var(--font-body); width: 100%; text-align: left; }
@@ -900,6 +1139,30 @@
             <div class="icon-grid" id="iconGrid"></div>
             <input class="form-input-new" id="fIcon" placeholder="Или введите любой эмодзи: 🏢"
               style="margin-top:8px;" maxlength="4">
+          </div>
+
+          <div class="field-wrap">
+            <div class="field-label">Фото / баннер вакансии <span class="field-required">Обязательно</span></div>
+            <div id="jobImageUploadBox" onclick="document.getElementById('jobImageInput').click()" style="
+              width:100%; height:140px; border-radius:16px;
+              border:2px dashed rgba(124,92,255,0.35);
+              background:rgba(124,92,255,0.05);
+              display:flex; flex-direction:column; align-items:center; justify-content:center;
+              cursor:pointer; transition:all 0.2s; gap:8px; position:relative; overflow:hidden;
+            ">
+              <div id="jobImagePreview" style="display:none;position:absolute;inset:0;">
+                <img id="jobImagePreviewImg" style="width:100%;height:100%;object-fit:cover;border-radius:14px;">
+                <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;backdrop-filter:blur(8px);">Нажми чтобы изменить</div>
+              </div>
+              <div id="jobImagePlaceholder" style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+                <div style="font-size:32px;">🖼</div>
+                <div style="font-size:13px;font-weight:600;color:var(--accent);">Загрузить фото</div>
+                <div style="font-size:11px;color:var(--text3);">Офис, команда, логотип — до 5 МБ</div>
+              </div>
+            </div>
+            <input type="file" id="jobImageInput" accept="image/*" style="display:none" onchange="handleJobImageSelect(event)">
+            <input type="hidden" id="fImageUrl" value="">
+            <div class="field-hint" id="jobImageHint">Фото делает вакансию заметнее — конверсия выше на 60%</div>
           </div>
 
           <div class="field-wrap">
@@ -2030,7 +2293,8 @@ function dbRowToJob(r) {
     views: r.views || 0,
     applies_count: r.applies_count || 0,
     plan: r.plan || 'standard',
-    expires_at: r.expires_at || null
+    expires_at: r.expires_at || null,
+    image_url: r.image_url || null
   };
 }
 
@@ -2059,6 +2323,7 @@ function jobToDbRow(j) {
     plan: j.plan || 'standard'
   };
   if (j.expires_at) row.expires_at = j.expires_at;
+  if (j.image_url) row.image_url = j.image_url;
   return row;
 }
 
@@ -2317,10 +2582,12 @@ function renderPremiumSection() {
       ${premiumJobs.map(j => `
         <div class="premium-card" onclick="openJob('${j.id}')">
           <div class="premium-card-glow"></div>
-          <div class="premium-badge">👑 PREMIUM</div>
-          <div class="premium-title">${esc(j.title)}</div>
-          <div class="premium-company">${esc(j.company)} · ${esc(j.city)}</div>
-          <div class="premium-salary">${esc(j.salary)} ₽/мес</div>
+          <div class="premium-card-left">
+            <div class="premium-badge">👑 PREMIUM</div>
+            <div class="premium-title">${esc(j.title)}</div>
+            <div class="premium-company">${esc(j.company)} · ${esc(j.city)}</div>
+          </div>
+          <div class="premium-salary">${esc(j.salary)} ₽</div>
         </div>`).join('')}
     </div>`;
 }
@@ -2349,8 +2616,9 @@ function renderFeatured() {
           <div class="featured-card" onclick="openJob('${j.id}')">
             <div class="feat-bg"></div>
             <div class="feat-border"></div>
+            <div class="feat-shine"></div>
             <div class="feat-content">
-              <div class="feat-eyebrow">✦ Рекомендуем</div>
+              <div class="feat-eyebrow">РЕКОМЕНДУЕМ</div>
               <div class="feat-title">${esc(j.title)}</div>
               <div class="feat-company">${esc(j.company)} · ${esc(j.city)}</div>
               <div class="feat-bottom">
@@ -2673,6 +2941,47 @@ async function saveTelegramUserToDB() {
 // TG AUTH GATE
 // ═══════════════════════════════════════════════
 let _authChatId = null;
+let _codePollingTimer = null;
+
+// Polling — проверяем каждые 2 сек не ввёл ли бот код автоматически
+function startCodePolling(chatId) {
+  stopCodePolling();
+  let attempts = 0;
+  const maxAttempts = 30; // 60 секунд
+  _codePollingTimer = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) { stopCodePolling(); return; }
+    try {
+      // Проверяем в таблице auth_codes появился ли код который уже верифицирован
+      // Используем verify-code напрямую если код пришёл через бота
+      const BOT_URL = 'https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot';
+      // Проверяем auth_codes — если запись исчезла значит бот уже верифицировал
+      const res = await fetch(SUPABASE_URL + '/rest/v1/auth_codes?chat_id=eq.' + encodeURIComponent(chatId) + '&select=code,expires_at', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+      });
+      const rows = await res.json();
+      if (!rows || rows.length === 0) {
+        // Запись исчезла — код уже был использован ботом
+        stopCodePolling();
+        return;
+      }
+      // Если код существует, подсвечиваем его пользователю
+      const code = rows[0]?.code;
+      if (code) {
+        const codeInput = document.getElementById('authCode');
+        if (codeInput && !codeInput.value) {
+          // Показываем подсказку с кодом
+          const hint = document.getElementById('authStep2Hint');
+          if (hint) hint.innerHTML = hint.innerHTML + '<br><span style="color:var(--green);font-size:12px;">💡 Код уже в боте — скопируй и вставь</span>';
+        }
+      }
+    } catch(e) { /* ignore */ }
+  }, 2000);
+}
+
+function stopCodePolling() {
+  if (_codePollingTimer) { clearInterval(_codePollingTimer); _codePollingTimer = null; }
+}
 
 async function sendAuthCode() {
   const username = document.getElementById('authUsername').value.trim().replace('@','');
@@ -2734,6 +3043,7 @@ async function sendAuthCode() {
             document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
             document.getElementById('authStep1').style.display = 'none';
             document.getElementById('authStep2').style.display = 'block';
+            startCodePolling(data.chatId);
             setTimeout(() => {
               const codeInput = document.getElementById('authCode');
               if (codeInput) codeInput.focus();
@@ -2745,12 +3055,14 @@ async function sendAuthCode() {
         document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
         document.getElementById('authStep1').style.display = 'none';
         document.getElementById('authStep2').style.display = 'block';
+        startCodePolling(data.chatId);
         setTimeout(() => document.getElementById('authCode').focus(), 100);
       }
     } else {
       document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
       document.getElementById('authStep1').style.display = 'none';
       document.getElementById('authStep2').style.display = 'block';
+      startCodePolling(data.chatId);
       setTimeout(() => document.getElementById('authCode').focus(), 100);
     }
 
@@ -2992,30 +3304,45 @@ function onSalaryFilter(val) {
 // ═══════════════════════════════════════════════
 function jobCardHTML(j) {
   let badgeHtml = '';
-  if (j.pinned) badgeHtml = '<div class="badge badge-top">ТОП</div>';
-  else if (j.badge === 'hot') badgeHtml = '<div class="badge badge-hot">HOT</div>';
-  else if (j.badge === 'new') badgeHtml = '<div class="badge badge-new">NEW</div>';
+  let badgeStyle = '';
+  if (j.pinned) { badgeHtml = 'ТОП'; badgeStyle = 'background:rgba(124,92,255,0.8);color:#fff;'; }
+  else if (j.badge === 'hot') { badgeHtml = '🔥 HOT'; badgeStyle = 'background:rgba(255,92,141,0.8);color:#fff;'; }
+  else if (j.badge === 'new') { badgeHtml = '✦ NEW'; badgeStyle = 'background:rgba(77,255,154,0.8);color:#000;'; }
+
   const isFav = favorites.includes(j.id);
-  return `
-    <div class="job-card" onclick="openJob('${j.id}')">
-      <div class="card-accent-line" style="background:${j.accent||'linear-gradient(90deg,#7c5cff,#4da3ff)'}"></div>
-      <div class="card-top">
-        <div class="company-icon" style="background:${j.iconBg||'rgba(255,255,255,0.07)'}">
+  const iconBg = j.iconBg || 'rgba(124,92,255,0.15)';
+  const iconContent = /^(\p{Emoji})/u.test(j.icon||'') ? j.icon : '<span style="font-size:17px;font-weight:800;color:rgba(255,255,255,0.7)">' + (j.company||'?')[0].toUpperCase() + '</span>';
+  const tags = (j.tags||[]).slice(0,3);
+  const views = formatViews(j.views||0);
+  const applies = j.applies_count || 0;
+
+  // Фото шапки карточки
+  const imageSection = j.image_url
+    ? `<div class="card-image-wrap">
+        <img src="${esc(j.image_url)}" alt="${esc(j.title)}" loading="lazy">
+        ${badgeHtml ? `<div class="card-image-badge" style="${badgeStyle}">${badgeHtml}</div>` : ''}
+       </div>`
+    : `<div class="card-image-wrap">
+        <div class="card-image-placeholder" style="background:${j.accent||'linear-gradient(135deg,rgba(124,92,255,0.3),rgba(77,163,255,0.2))'}">
           ${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}
         </div>
-        <div class="card-meta">
+        ${badgeHtml ? `<div class="card-image-badge" style="${badgeStyle}">${badgeHtml}</div>` : ''}
+       </div>`;
+
+  return `
+    <div class="job-card" onclick="openJob('${j.id}')">
+      ${imageSection}
+      <div class="card-body">
+        <div class="card-top">
           <div class="card-title">${esc(j.title)}</div>
           <div class="card-company">${esc(j.company)} · ${esc(j.city)}</div>
         </div>
-        ${badgeHtml}
-      </div>
-      <div class="card-tags">${(j.tags||[]).map(t=>`<div class="tag">${esc(t)}</div>`).join('')}</div>
-      <div class="card-footer">
-        <div class="salary">${esc(j.salary)} <span>₽/мес</span></div>
-        <div class="card-actions">
-          <span class="views-counter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${formatViews(j.views||0)}</span>
-          <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${j.id}',this)" title="${isFav?'Убрать из избранного':'Добавить в избранное'}">${isFav?'❤️':'♡'}</button>
-          <button class="more-btn">Подробнее</button>
+        ${tags.length ? `<div class="card-tags">${tags.slice(0,3).map(t => '<div class="tag">' + esc(t) + '</div>').join('')}</div>` : ''}
+        <div class="card-footer">
+          <div class="salary">${esc(j.salary)} <span>₽/мес</span></div>
+          <div class="card-actions">
+            <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${j.id}',this)">${isFav?'❤️':'♡'}</button>
+          </div>
         </div>
       </div>
     </div>`;
@@ -3692,6 +4019,12 @@ async function submitJob() {
   if (!categoryVal){ showToast('⚠️ Выберите категорию', true); formShowStep(1); return; }
   if (!descVal || descVal.length < 20) { showToast('⚠️ Добавьте описание вакансии (минимум 20 символов)', true); formShowStep(2); return; }
   if (!contactVal) { showToast('⚠️ Укажите контакт для откликов', true); formShowStep(3); return; }
+  if (!isAdmin && !_jobImageFile && !document.getElementById('fImageUrl')?.value) {
+    showToast('⚠️ Добавьте фото вакансии — это обязательно', true); formShowStep(1);
+    const box = document.getElementById('jobImageUploadBox');
+    if (box) { box.style.borderColor = 'rgba(255,92,141,0.6)'; box.style.background = 'rgba(255,92,141,0.05)'; }
+    return;
+  }
   if (!isAdmin && !isTgAuthorized()) { openModal('tgAuthModal'); return; }
 
   // Формируем итоговые значения
@@ -3701,6 +4034,10 @@ async function submitJob() {
   const category = categoryVal || 'Общее';
   const salary   = salaryRaw ? parseInt(salaryRaw).toLocaleString('ru-RU') : '';
   const salaryNum= parseInt(salaryRaw) || 0;
+
+  // Загружаем фото если есть новое
+  const tgUserForUpload = getTgUser();
+  const uploadedImageUrl = _jobImageFile ? await uploadJobImage(tgUserForUpload?.id || 'admin') : (document.getElementById('fImageUrl')?.value || null);
 
   const editId   = document.getElementById('editJobId').value;
   const tags     = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
@@ -3716,7 +4053,8 @@ async function submitJob() {
     if (idx !== -1) {
       JOBS[idx] = { ...JOBS[idx], title, company, city, salary, salaryNum, category, icon,
         about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds, tags,
-        contact: document.getElementById('fContact').value.trim() };
+        contact: document.getElementById('fContact').value.trim(),
+        image_url: uploadedImageUrl || JOBS[idx].image_url || null };
       await updateJob(JOBS[idx]);
     }
     showToast('✅ Вакансия обновлена!');
@@ -4541,8 +4879,77 @@ init();
 let _formCurrentStep = 1;
 const FORM_ICONS = ['🏢','💻','🎨','📱','🚀','🏪','🏭','🔬','📊','🎯','🛒','🚗','🏥','📚','💰','🌐','🎮','✈️','🏗','🔧'];
 
+let _jobImageFile = null;
+
+function handleJobImageSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('⚠️ Файл слишком большой — максимум 5 МБ', true);
+    return;
+  }
+  _jobImageFile = file;
+  // Показываем превью
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.getElementById('jobImagePreviewImg');
+    const preview = document.getElementById('jobImagePreview');
+    const placeholder = document.getElementById('jobImagePlaceholder');
+    if (img) img.src = e.target.result;
+    if (preview) preview.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+    // Зелёная рамка — фото выбрано
+    const box = document.getElementById('jobImageUploadBox');
+    if (box) { box.style.borderColor = 'rgba(77,255,154,0.5)'; box.style.background = 'rgba(77,255,154,0.05)'; }
+    const hint = document.getElementById('jobImageHint');
+    if (hint) { hint.textContent = '✅ Фото выбрано — будет загружено при публикации'; hint.className = 'field-hint hint-ok'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function uploadJobImage(tgUserId) {
+  if (!_jobImageFile) return null;
+  try {
+    const ext = _jobImageFile.name.split('.').pop() || 'jpg';
+    const fileName = 'jobs/' + tgUserId + '_' + Date.now() + '.' + ext;
+    const res = await fetch(SUPABASE_URL + '/storage/v1/object/job-images/' + fileName, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': _jobImageFile.type || 'image/jpeg',
+        'x-upsert': 'true'
+      },
+      body: _jobImageFile
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.warn('Image upload failed:', err);
+      return null;
+    }
+    return SUPABASE_URL + '/storage/v1/object/public/job-images/' + fileName;
+  } catch(e) {
+    console.warn('Image upload error:', e);
+    return null;
+  }
+}
+
 function formWizardInit() {
   _formCurrentStep = 1;
+  _jobImageFile = null;
+  // Сбрасываем превью фото
+  const preview = document.getElementById('jobImagePreview');
+  const placeholder = document.getElementById('jobImagePlaceholder');
+  const box = document.getElementById('jobImageUploadBox');
+  const hint = document.getElementById('jobImageHint');
+  if (preview) preview.style.display = 'none';
+  if (placeholder) placeholder.style.display = 'flex';
+  if (box) { box.style.borderColor = 'rgba(124,92,255,0.35)'; box.style.background = 'rgba(124,92,255,0.05)'; }
+  if (hint) { hint.textContent = 'Фото делает вакансию заметнее — конверсия выше на 60%'; hint.className = 'field-hint'; }
+  const imgInput = document.getElementById('jobImageInput');
+  if (imgInput) imgInput.value = '';
+  const fImageUrl = document.getElementById('fImageUrl');
+  if (fImageUrl) fImageUrl.value = '';
   // Рендерим иконки
   const grid = document.getElementById('iconGrid');
   if (grid) grid.innerHTML = FORM_ICONS.map(ico =>
