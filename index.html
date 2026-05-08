@@ -1546,7 +1546,7 @@
           Если не писали боту раньше — сначала нажмите <b style="color:var(--text2);">/start</b>
         </div>
 
-        <button class="modal-btn-cancel" onclick="_pendingAuthAction=null;closeModal('tgAuthModal')">Отмена</button>
+        <button class="modal-btn-cancel" onclick="_pendingAuthAction=null;stopAutoCodePolling();closeModal('tgAuthModal')">Отмена</button>
       </div>
 
       <!-- Шаг 2: ввод кода -->
@@ -2673,6 +2673,86 @@ async function saveTelegramUserToDB() {
 // TG AUTH GATE
 // ═══════════════════════════════════════════════
 let _authChatId = null;
+let _autoCodeTimer = null;
+
+// Автополлинг — проверяем auth_codes каждые 2 сек
+// Как только код появился — вставляем и авторизуем автоматически
+function startAutoCodePolling(chatId) {
+  stopAutoCodePolling();
+  let attempts = 0;
+  const maxAttempts = 45; // 90 секунд максимум
+
+  _autoCodeTimer = setInterval(async () => {
+    attempts++;
+    if (attempts > maxAttempts) {
+      stopAutoCodePolling();
+      const hint = document.getElementById('authStep2Hint');
+      if (hint) hint.innerHTML = 'Код не пришёл автоматически.<br>Введите его вручную из бота 👇';
+      return;
+    }
+
+    try {
+      // Читаем код напрямую из Supabase
+      const res = await fetch(
+        SUPABASE_URL + '/rest/v1/auth_codes?chat_id=eq.' + encodeURIComponent(chatId) + '&select=code&limit=1',
+        {
+          headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': 'Bearer ' + SUPABASE_ANON
+          }
+        }
+      );
+      const rows = await res.json();
+
+      if (Array.isArray(rows) && rows.length > 0 && rows[0].code) {
+        const code = rows[0].code;
+        stopAutoCodePolling();
+
+        // Вставляем код в поле
+        const codeInput = document.getElementById('authCode');
+        if (codeInput) codeInput.value = code;
+        // Обновляем подсказку
+        const hintEl = document.getElementById('authStep2Hint');
+        if (hintEl) hintEl.innerHTML = '✅ Код получен! Выполняем вход...';
+
+        // Небольшая пауза чтобы пользователь увидел что произошло
+        setTimeout(async () => {
+          // Вызываем verify напрямую с кодом из поллинга
+          const errEl = document.getElementById('authStep2Error');
+          const btn = document.getElementById('authVerifyBtn');
+          if (errEl) errEl.textContent = '';
+          if (btn) { btn.disabled = true; btn.textContent = 'Входим...'; }
+          try {
+            const verifyRes = await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/verify-code', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON, 'apikey': SUPABASE_ANON },
+              body: JSON.stringify({ chatId: chatId, code: code })
+            });
+            let data = {};
+            try { data = await verifyRes.json(); } catch(e) {}
+            if (verifyRes.ok && data.user) {
+              onTelegramWebAuth(data.user);
+            } else {
+              if (errEl) errEl.textContent = data.message || 'Ошибка входа. Попробуйте вручную.';
+              if (btn) { btn.disabled = false; btn.textContent = 'Войти'; }
+            }
+          } catch(e) {
+            if (btn) { btn.disabled = false; btn.textContent = 'Войти'; }
+          }
+        }, 600);
+      }
+    } catch(e) {
+      // Игнорируем ошибки — продолжаем поллинг
+    }
+  }, 2000);
+}
+
+function stopAutoCodePolling() {
+  if (_autoCodeTimer) {
+    clearInterval(_autoCodeTimer);
+    _autoCodeTimer = null;
+  }
+}
 
 async function sendAuthCode() {
   const username = document.getElementById('authUsername').value.trim().replace('@','');
@@ -2718,41 +2798,15 @@ async function sendAuthCode() {
 
     _authChatId = data.chatId;
 
-    // Пробуем показать нативный попап TG для ввода кода прямо в Mini App
-    if (tg && tg.showPopup) {
-      try {
-        tg.showPopup({
-          title: '🔐 Код подтверждения',
-          message: 'Введите 6-значный код который мы отправили в Telegram @' + username,
-          buttons: [
-            { id: 'enter_code', type: 'default', text: 'Ввести код' },
-            { id: 'cancel', type: 'cancel' }
-          ]
-        }, (btnId) => {
-          if (btnId === 'enter_code') {
-            // Показываем шаг 2 внутри модалки
-            document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
-            document.getElementById('authStep1').style.display = 'none';
-            document.getElementById('authStep2').style.display = 'block';
-            setTimeout(() => {
-              const codeInput = document.getElementById('authCode');
-              if (codeInput) codeInput.focus();
-            }, 300);
-          }
-        });
-      } catch(e) {
-        // Fallback если showPopup не сработал
-        document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
-        document.getElementById('authStep1').style.display = 'none';
-        document.getElementById('authStep2').style.display = 'block';
-        setTimeout(() => document.getElementById('authCode').focus(), 100);
-      }
-    } else {
-      document.getElementById('authStep2Hint').innerHTML = 'Код отправлен <b>@' + username + '</b> в Telegram';
-      document.getElementById('authStep1').style.display = 'none';
-      document.getElementById('authStep2').style.display = 'block';
-      setTimeout(() => document.getElementById('authCode').focus(), 100);
-    }
+    // Показываем шаг 2
+    document.getElementById('authStep2Hint').innerHTML =
+      'Код отправлен <b>@' + username + '</b> в Telegram.<br>' +
+      '<span style="color:var(--green);font-size:12px;">⏳ Ожидаем автоматического входа...</span>';
+    document.getElementById('authStep1').style.display = 'none';
+    document.getElementById('authStep2').style.display = 'block';
+
+    // Запускаем автополлинг — проверяем код каждые 2 сек
+    startAutoCodePolling(data.chatId);
 
   } catch(e) {
     // Сетевая ошибка (CORS, нет интернета, функция не задеплоена)
@@ -2809,6 +2863,7 @@ function onTelegramWebAuth(user) {
   if (!user || !user.id) { console.warn('onTelegramWebAuth: no user'); return; }
   webTgUser = user;
   try { localStorage.setItem('jobic_user', JSON.stringify(user)); } catch(e) {}
+  stopAutoCodePolling();
   closeModal('tgAuthModal');
   showToast('✅ Привет, ' + (user.first_name || 'друг') + '!');
   // Единая функция — обновляет имя, аватар, приветствие
@@ -2927,31 +2982,12 @@ async function init() {
   loadFavTimestamps();
   loadWatchedCategories();
 
-  // ── Telegram данные — все возможные источники ──
-  // Источник 1: initDataUnsafe (стандартный)
+  // ── Telegram данные (приоритет над localStorage) ──
   const tgUser = tg?.initDataUnsafe?.user;
   if (tgUser?.id) {
     webTgUser = tgUser;
     try { localStorage.setItem('jobic_user', JSON.stringify(tgUser)); } catch(e) {}
   }
-
-  // Источник 2: ручной парсинг строки initData
-  if (!webTgUser?.id && tg?.initData) {
-    try {
-      const p = new URLSearchParams(tg.initData);
-      const us = p.get('user');
-      if (us) {
-        const parsed = JSON.parse(decodeURIComponent(us));
-        if (parsed?.id) {
-          webTgUser = parsed;
-          try { localStorage.setItem('jobic_user', JSON.stringify(parsed)); } catch(e) {}
-        }
-      }
-    } catch(e) {}
-  }
-
-  // Источник 3: localStorage (уже загружен в restoreSession выше)
-  // webTgUser уже установлен если был в localStorage
 
   // ── Применяем данные пользователя к UI (DOM уже готов) ──
   applyUserToUI();
