@@ -2927,12 +2927,31 @@ async function init() {
   loadFavTimestamps();
   loadWatchedCategories();
 
-  // ── Telegram данные (приоритет над localStorage) ──
+  // ── Telegram данные — все возможные источники ──
+  // Источник 1: initDataUnsafe (стандартный)
   const tgUser = tg?.initDataUnsafe?.user;
   if (tgUser?.id) {
     webTgUser = tgUser;
     try { localStorage.setItem('jobic_user', JSON.stringify(tgUser)); } catch(e) {}
   }
+
+  // Источник 2: ручной парсинг строки initData
+  if (!webTgUser?.id && tg?.initData) {
+    try {
+      const p = new URLSearchParams(tg.initData);
+      const us = p.get('user');
+      if (us) {
+        const parsed = JSON.parse(decodeURIComponent(us));
+        if (parsed?.id) {
+          webTgUser = parsed;
+          try { localStorage.setItem('jobic_user', JSON.stringify(parsed)); } catch(e) {}
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Источник 3: localStorage (уже загружен в restoreSession выше)
+  // webTgUser уже установлен если был в localStorage
 
   // ── Применяем данные пользователя к UI (DOM уже готов) ──
   applyUserToUI();
