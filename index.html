@@ -2535,21 +2535,28 @@ function navTo(screenId, btnEl) {
 
   // TG Auth guard — для размещения нужна авторизация
   if (screenId === 'createScreen' && !isAdmin) {
-    // Пробуем все возможные источники данных пользователя
+    // Считаем авторизованным если: есть webTgUser ИЛИ открыто внутри TG ИЛИ есть в localStorage
     const tgWA = window.Telegram?.WebApp;
-    if (tgWA?.initDataUnsafe?.user?.id) {
-      webTgUser = tgWA.initDataUnsafe.user;
-      try { localStorage.setItem('jobic_user', JSON.stringify(webTgUser)); } catch(e) {}
-    } else if (tgWA?.initData) {
-      try {
-        const p = new URLSearchParams(tgWA.initData);
-        const u = JSON.parse(decodeURIComponent(p.get('user')||'{}'));
-        if (u?.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e2) {} }
-      } catch(e) {}
+    // Пробуем получить данные из всех источников
+    if (!webTgUser?.id) {
+      if (tgWA?.initDataUnsafe?.user?.id) {
+        webTgUser = tgWA.initDataUnsafe.user;
+        try { localStorage.setItem('jobic_user', JSON.stringify(webTgUser)); } catch(e) {}
+      } else if (tgWA?.initData) {
+        try {
+          const p = new URLSearchParams(tgWA.initData);
+          const u = JSON.parse(decodeURIComponent(p.get('user')||'{}'));
+          if (u?.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
+        } catch(e) {}
+      } else {
+        try {
+          const saved = localStorage.getItem('jobic_user');
+          if (saved) { const u = JSON.parse(saved); if (u?.id) webTgUser = u; }
+        } catch(e) {}
+      }
     }
-    // Если открыто внутри Telegram — разрешаем без явной авторизации
-    const isInsideTelegram = !!(tgWA?.initData || tgWA?.initDataUnsafe?.user);
-    if (!isTgAuthorized() && !isInsideTelegram) {
+    // Проверяем — если пользователь есть хоть откуда-то, пускаем
+    if (!webTgUser?.id) {
       _pendingAuthAction = () => navTo('createScreen', btnEl);
       openModal('tgAuthModal');
       return;
