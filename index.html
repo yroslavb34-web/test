@@ -1496,7 +1496,17 @@
         <div class="wtariff-card" onclick="walletSelTariff(this,'Старт','900')"><div class="wtariff-row"><div><div class="wtariff-name">Старт</div><div class="wtariff-desc">1 вакансия · 30 дней</div></div><div class="wtariff-price">900 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">1 вакансия</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill">Стандартный вид</span></div></div>
         <div class="wtariff-card popular" onclick="walletSelTariff(this,'Стандарт','1 500')"><div class="wpop-badge">⚡ ПОПУЛЯРНЫЙ</div><div class="wtariff-row"><div><div class="wtariff-name">Стандарт</div><div class="wtariff-desc">3 вакансии · 30 дней</div></div><div class="wtariff-price">1 500 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">3 вакансии</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Выделение</span></div></div>
         <div class="wtariff-card" onclick="walletSelTariff(this,'Про','5 000')"><div class="wtariff-row"><div><div class="wtariff-name">Про</div><div class="wtariff-desc">10 вакансий · 30 дней · Закреп</div></div><div class="wtariff-price">5 000 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">10 вакансий</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Закреп</span><span class="wfeat-pill acc">Выделение</span><span class="wfeat-pill acc">Значок PRO</span></div></div>
-        <button class="wbtn-select" onclick="(function(){if(!document.querySelector('.wtariff-card.wsel')){showToast('⚠️ Сначала выберите тариф',true);return;}walletTab('flow', document.querySelectorAll('.wallet-tab')[1]);})()">Перейти к оплате →</button>
+        <button class="wbtn-select" onclick="(function(){
+  if(!document.querySelector('.wtariff-card.wsel')){showToast('⚠️ Сначала выберите тариф',true);return;}
+  if(!webTgUser?.id){
+    try{const s=localStorage.getItem('jobic_user');if(s){const u=JSON.parse(s);if(u?.id)webTgUser=u;}}catch(e){}
+  }
+  if(!webTgUser?.id){
+    _pendingAuthAction=()=>{walletTab('flow',document.querySelectorAll('.wallet-tab')[1]);};
+    openModal('tgAuthModal');return;
+  }
+  walletTab('flow',document.querySelectorAll('.wallet-tab')[1]);
+})()">Перейти к оплате →</button>
         <div class="wtariff-note">После оплаты баланс начисляется вручную администратором.<br>Поддержка: <a href="https://t.me/sapgos">@sapgos</a></div>
       </div>
     </div>
@@ -2533,35 +2543,7 @@ function navTo(screenId, btnEl) {
   // Admin guard
   if (screenId === 'adminScreen' && !isAdmin) { openAdminLogin(); return; }
 
-  // TG Auth guard — для размещения нужна авторизация
-  if (screenId === 'createScreen' && !isAdmin) {
-    // Считаем авторизованным если: есть webTgUser ИЛИ открыто внутри TG ИЛИ есть в localStorage
-    const tgWA = window.Telegram?.WebApp;
-    // Пробуем получить данные из всех источников
-    if (!webTgUser?.id) {
-      if (tgWA?.initDataUnsafe?.user?.id) {
-        webTgUser = tgWA.initDataUnsafe.user;
-        try { localStorage.setItem('jobic_user', JSON.stringify(webTgUser)); } catch(e) {}
-      } else if (tgWA?.initData) {
-        try {
-          const p = new URLSearchParams(tgWA.initData);
-          const u = JSON.parse(decodeURIComponent(p.get('user')||'{}'));
-          if (u?.id) { webTgUser = u; try { localStorage.setItem('jobic_user', JSON.stringify(u)); } catch(e) {} }
-        } catch(e) {}
-      } else {
-        try {
-          const saved = localStorage.getItem('jobic_user');
-          if (saved) { const u = JSON.parse(saved); if (u?.id) webTgUser = u; }
-        } catch(e) {}
-      }
-    }
-    // Проверяем — если пользователь есть хоть откуда-то, пускаем
-    if (!webTgUser?.id) {
-      _pendingAuthAction = () => navTo('createScreen', btnEl);
-      openModal('tgAuthModal');
-      return;
-    }
-  }
+  // Кнопка Разместить открыта для всех — авторизация проверяется при публикации
 
   // Reset create for non-admin when going via nav tab
   if (screenId === 'createScreen' && !isAdmin) {
