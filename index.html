@@ -3635,7 +3635,7 @@ function resetCreateForUser() {
     o.classList.toggle('sel', i === 0);
     o.style.opacity = '1';
     const rBtn = o.querySelector('.radio');
-    if (rBtn) { rBtn.classList.toggle('on', i === 0); r.innerHTML = i === 0 ? '' : ''; }
+    if (rBtn) { rBtn.classList.toggle('on', i === 0); }
     const hint = o.querySelector('.plan-lock-hint');
     if (hint) hint.remove();
   });
