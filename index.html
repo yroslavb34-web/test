@@ -5,12 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jobic — биржа труда в Telegram</title>
-<meta name="description" content="Jobic — находи работу и размещай вакансии прямо в Telegram. Сотни вакансий без регистрации. Отклик в 1 клик.">
+<title>Jobic — биржа труда в Telegram | Поиск работы без регистрации</title>
+<meta name="description" content="Jobic — найди работу прямо в Telegram. IT-вакансии, дизайн, маркетинг, удалёнка. Отклик в 1 клик, без регистрации. Работодатели: разместите вакансию за 3 минуты.">
+<meta name="keywords" content="поиск работы, вакансии, IT вакансии, telegram вакансии, удалённая работа, job board, работа в москве, работа онлайн, разместить вакансию">
+<meta name="author" content="Jobic">
+<meta name="robots" content="index, follow">
+<meta name="language" content="ru">
+<link rel="canonical" href="https://jobic.pro/">
+
+<!-- Open Graph -->
 <meta property="og:title" content="Jobic — биржа труда в Telegram">
-<meta property="og:description" content="Находи работу и размещай вакансии прямо в Telegram.">
+<meta property="og:description" content="Найди работу прямо в Telegram. IT-вакансии, дизайн, маркетинг. Отклик в 1 клик без регистрации.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jobic.pro">
+<meta property="og:image" content="https://jobic.pro/og-image.png">
+<meta property="og:site_name" content="Jobic">
+<meta property="og:locale" content="ru_RU">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jobic — биржа труда в Telegram">
+<meta name="twitter:description" content="Найди работу прямо в Telegram. IT-вакансии без регистрации.">
+<meta name="twitter:image" content="https://jobic.pro/og-image.png">
+
+<!-- Schema.org WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Jobic",
+  "url": "https://jobic.pro",
+  "description": "Биржа труда в Telegram. Поиск работы и размещение вакансий без регистрации.",
+  "inLanguage": "ru",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://jobic.pro/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- Schema.org Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Jobic",
+  "url": "https://jobic.pro",
+  "logo": "https://jobic.pro/icon-192.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "availableLanguage": "Russian",
+    "url": "https://t.me/sapgos"
+  },
+  "sameAs": [
+    "https://t.me/JOBlK_bot"
+  ]
+}
+</script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0d1a">
 <link rel="apple-touch-icon" href="https://em-content.zobj.net/source/apple/391/briefcase_1f4bc.png">
@@ -264,46 +317,49 @@
   /* ═══════ BOTTOM NAV ═══════ */
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-    display: flex; justify-content: space-around; align-items: center;
-    padding: 8px 12px; padding-bottom: calc(var(--sab) + 2px);
+    display: flex; justify-content: space-around; align-items: flex-start;
+    padding: 10px 8px 0;
+    padding-bottom: var(--sab);
     height: var(--nav-h);
-    background: rgba(255,255,255,0.96);
-    border-top: 1px solid rgba(0,0,0,0.06);
-    backdrop-filter: blur(40px) saturate(180%);
-    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    background: rgba(255,255,255,0.97);
+    border-top: 1px solid rgba(0,0,0,0.07);
+    backdrop-filter: blur(50px) saturate(200%);
+    -webkit-backdrop-filter: blur(50px) saturate(200%);
     transition: background 0.3s;
   }
   [data-theme="dark"] .bottom-nav {
-    background: rgba(8,8,20,0.95);
+    background: rgba(8,8,20,0.97);
     border-top-color: rgba(255,255,255,0.08);
   }
   /* light nav handled above */
   .nav-btn {
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-    cursor: pointer; padding: 7px 14px; border-radius: 16px;
-    transition: all 0.18s; border: none; background: none;
-    min-width: 44px; min-height: 44px; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 6px 12px 8px; border-radius: 14px;
+    transition: all 0.15s; border: none; background: none;
+    min-width: 56px; justify-content: center;
     -webkit-tap-highlight-color: transparent;
     position: relative;
   }
-  /* Центральная кнопка + */
-  .nav-btn.nav-plus {
-    background: #111; border-radius: 18px; padding: 8px 18px;
+  /* Центральная кнопка Разместить — выделенная */
+  .nav-btn[class-plus] {
+    background: #111 !important;
+    border-radius: 18px !important;
+    padding: 8px 14px !important;
   }
-  [data-theme="dark"] .nav-btn.nav-plus { background: #fff; }
-  .nav-btn.nav-plus .nav-icon { color: #fff; font-size: 20px; }
-  [data-theme="dark"] .nav-btn.nav-plus .nav-icon { color: #111; }
-  .nav-btn.nav-plus .nav-label { color: rgba(255,255,255,0.6); }
-  .nav-btn.active { background: transparent; }
-  .nav-btn.active::after {
-    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-    width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
-  }
+  [data-theme="dark"] .nav-btn[class-plus] { background: #fff !important; }
+  .nav-btn[class-plus] .nav-icon { color: #fff !important; font-size: 16px !important; }
+  [data-theme="dark"] .nav-btn[class-plus] .nav-icon { color: #111 !important; }
+  .nav-btn[class-plus] .nav-label { color: rgba(255,255,255,0.7) !important; font-size: 8px !important; }
+  .nav-btn.active { background: rgba(108,71,255,0.08); }
+  .nav-btn.active .nav-icon { color: var(--accent) !important; }
   .nav-btn.active .nav-label { color: var(--accent); }
-  .nav-icon { font-size: 21px; line-height: 1; color: var(--text3); }
-  .nav-btn.active .nav-icon { color: var(--accent); }
-  .nav-label { font-size: 8.5px; font-weight: 600; color: var(--text3); letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--font-display); display: none; }
-  .nav-btn.active .nav-label { display: block; }
+  [data-theme="dark"] .nav-btn.active { background: rgba(124,92,255,0.15); }
+  .nav-icon { font-size: 20px; line-height: 1; color: rgba(0,0,0,0.3); transition: color 0.15s; }
+  [data-theme="dark"] .nav-icon { color: rgba(255,255,255,0.3); }
+  .nav-label { font-size: 9px; font-weight: 500; color: var(--text3); letter-spacing: 0.02em; text-transform: uppercase; font-family: var(--font-display); display: block; margin-top: 2px; }
+  .nav-btn.active .nav-label { color: var(--accent); }
+  [data-theme="dark"] .bottom-nav .nav-label { color: rgba(255,255,255,0.35); }
+  [data-theme="dark"] .nav-btn.active .nav-label { color: var(--accent); }
   .nav-btn.active .nav-label { color: var(--accent); }
 
   /* ═══════ DETAIL SCREEN ═══════ */
@@ -901,7 +957,7 @@
     <div class="bottom-nav">
       <button class="nav-btn active" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-fav-badge" id="favBadge1"></span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -925,7 +981,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn active" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1197,7 +1253,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn active" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
+      <button class="nav-btn active" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1219,7 +1275,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn active" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1275,7 +1331,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn active" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -3157,14 +3213,7 @@ async function init() {
 
   // Показываем онбординг новым пользователям
   checkOnboarding();
-  // Подсвечиваем кнопку + в nav
-  document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
-    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('createScreen')) {
-      btn.style.background = document.documentElement.getAttribute('data-theme') === 'dark' ? '#fff' : '#111';
-      btn.style.borderRadius = '18px';
-      btn.style.padding = '7px 18px';
-    }
-  });
+  // nav-plus buttons стилизованы через CSS attr-selector [class-plus]
 }
 
 function updateProfileStats() {
