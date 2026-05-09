@@ -5,7 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jobic</title>
+<title>Jobic — биржа труда в Telegram</title>
+<meta name="description" content="Jobic — находи работу и размещай вакансии прямо в Telegram. Сотни вакансий без регистрации. Отклик в 1 клик.">
+<meta property="og:title" content="Jobic — биржа труда в Telegram">
+<meta property="og:description" content="Находи работу и размещай вакансии прямо в Telegram.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jobic.pro">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d0d1a">
 <link rel="apple-touch-icon" href="https://em-content.zobj.net/source/apple/391/briefcase_1f4bc.png">
@@ -19,6 +24,33 @@
 
   /* ═══════ THEME VARIABLES ═══════ */
   :root {
+    --bg: #f5f5f0;
+    --bg2: #ebebе6;
+    --surface: #ffffff;
+    --surface2: rgba(0,0,0,0.04);
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.12);
+    --text: #111111;
+    --text2: rgba(17,17,17,0.6);
+    --text3: rgba(17,17,17,0.38);
+    --accent: #6c47ff;
+    --accent2: #4da3ff;
+    --accent3: #ff5c8d;
+    --green: #00c87a;
+    --red: #ff3b30;
+    --orange: #ff9500;
+    --radius: 20px;
+    --radius-sm: 12px;
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Onest', sans-serif;
+    --sat: env(safe-area-inset-top, 59px);
+    --sab: env(safe-area-inset-bottom, 34px);
+    --nav-h: calc(60px + var(--sab));
+    --shadow: 0 4px 20px rgba(0,0,0,0.08);
+    --card-bg: #ffffff;
+  }
+
+  [data-theme="dark"] {
     --bg: #0d0d1a;
     --bg2: #12122a;
     --surface: rgba(255,255,255,0.06);
@@ -28,36 +60,8 @@
     --text: #ffffff;
     --text2: rgba(255,255,255,0.55);
     --text3: rgba(255,255,255,0.3);
-    --accent: #7c5cff;
-    --accent2: #4da3ff;
-    --accent3: #ff5c8d;
-    --green: #4dff9a;
-    --red: #ff5c5c;
-    --orange: #ffaa5c;
-    --radius: 20px;
-    --radius-sm: 12px;
-    --font-display: 'Unbounded', sans-serif;
-    --font-body: 'Onest', sans-serif;
-    --sat: env(safe-area-inset-top, 59px);
-    --sab: env(safe-area-inset-bottom, 34px);
-    --nav-h: calc(60px + var(--sab));
-    --shadow: 0 8px 32px rgba(0,0,0,0.3);
-    /* card bg for light theme */
     --card-bg: rgba(255,255,255,0.06);
-  }
-
-  [data-theme="light"] {
-    --bg: #f0f0f8;
-    --bg2: #e4e4f0;
-    --surface: rgba(255,255,255,0.85);
-    --surface2: rgba(255,255,255,0.95);
-    --border: rgba(0,0,0,0.09);
-    --border2: rgba(0,0,0,0.15);
-    --text: #1a1a2e;
-    --text2: rgba(26,26,46,0.6);
-    --text3: rgba(26,26,46,0.35);
-    --card-bg: rgba(255,255,255,0.9);
-    --shadow: 0 8px 32px rgba(124,92,255,0.1);
+    --shadow: 0 8px 32px rgba(0,0,0,0.3);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -90,8 +94,10 @@
     background: radial-gradient(circle, rgba(77,163,255,0.15) 0%, transparent 70%);
     bottom: 100px; right: -60px; border-radius: 50%;
   }
-  [data-theme="light"] .bg-mesh::before { background: radial-gradient(circle, rgba(124,92,255,0.12) 0%, transparent 70%); }
-  [data-theme="light"] .bg-mesh::after { background: radial-gradient(circle, rgba(77,163,255,0.08) 0%, transparent 70%); }
+  [data-theme="dark"] .bg-mesh::before { background: radial-gradient(circle, rgba(124,92,255,0.22) 0%, transparent 70%); }
+  [data-theme="dark"] .bg-mesh::after { background: radial-gradient(circle, rgba(77,163,255,0.15) 0%, transparent 70%); }
+  .bg-mesh::before { background: radial-gradient(circle, rgba(108,71,255,0.06) 0%, transparent 70%); }
+  .bg-mesh::after { background: radial-gradient(circle, rgba(77,163,255,0.04) 0%, transparent 70%); }
 
   /* ═══════ SCREENS ═══════ */
   .screen {
@@ -117,7 +123,7 @@
   .header { padding: 12px 20px 10px; position: relative; z-index: 1; flex-shrink: 0; }
   .header-row { display: flex; align-items: center; justify-content: space-between; }
   .greeting { font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
-  .logo { font-family: var(--font-display); font-size: 32px; font-weight: 900; letter-spacing: -1.5px; background: linear-gradient(135deg, var(--text) 0%, var(--text2) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .logo { font-family: var(--font-display); font-size: 32px; font-weight: 900; letter-spacing: -1.5px; color: var(--text); }
   .logo span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .tagline { font-size: 13px; color: var(--text3); margin-top: 3px; font-weight: 400; }
 
@@ -127,7 +133,7 @@
 
   /* ═══════ SEARCH ═══════ */
   .search-wrap { padding: 0 0 12px; }
-  .search-box { display: flex; align-items: center; gap: 10px; padding: 13px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .search-box { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
   .search-icon { font-size: 15px; flex-shrink: 0; }
   .search-input { background: none; border: none; outline: none; color: var(--text); font-family: var(--font-body); font-size: 14px; width: 100%; font-weight: 400; }
   .search-input::placeholder { color: var(--text3); }
@@ -135,8 +141,9 @@
   /* ═══════ FILTERS ═══════ */
   .filter-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; margin-bottom: 8px; }
   .filter-row::-webkit-scrollbar { display: none; }
-  .pill { flex-shrink: 0; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; font-family: var(--font-body); cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text2); transition: all 0.2s; }
-  .pill.active { background: rgba(124,92,255,0.25); border-color: var(--accent); color: var(--text); }
+  .pill { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; font-family: var(--font-body); cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text3); transition: all 0.18s; }
+  .pill.active { background: #111; border-color: #111; color: #fff; }
+  [data-theme="dark"] .pill.active { background: rgba(124,92,255,0.25); border-color: var(--accent); color: var(--text); }
 
   /* Salary filter */
   .salary-filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
@@ -148,51 +155,155 @@
   .sec-label { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-family: var(--font-display); }
 
   /* ═══════ FEATURED CARD ═══════ */
-  .featured-card { border-radius: var(--radius); padding: 20px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.15s; }
+  .featured-card { border-radius: 22px; overflow: hidden; margin-bottom: 16px; cursor: pointer; transition: transform 0.15s cubic-bezier(.4,0,.2,1); background: #fff; box-shadow: 0 4px 24px rgba(0,0,0,0.09); -webkit-tap-highlight-color: transparent; }
   .featured-card:active { transform: scale(0.97); }
-  .feat-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124,92,255,0.4) 0%, rgba(77,163,255,0.3) 100%); border-radius: var(--radius); }
-  .feat-border { position: absolute; inset: 0; border-radius: var(--radius); border: 1px solid rgba(124,92,255,0.4); }
-  .feat-content { position: relative; z-index: 1; }
-  .feat-eyebrow { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; font-family: var(--font-display); }
-  .feat-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 4px; }
-  .feat-company { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 14px; }
+  /* Фото-шапка featured */
+  .feat-img-top {
+    width: 100%; height: 130px;
+    background: linear-gradient(140deg, #1a0a40 0%, #3a1a8a 50%, #0d2040 100%);
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 13px;
+  }
+  .feat-img-top::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%);
+  }
+  .feat-img-icon {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; position: relative; z-index: 1;
+  }
+  .feat-img-badge {
+    position: absolute; top: 11px; right: 11px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 0.5px solid rgba(255,255,255,0.25);
+    color: #fff; font-size: 9px; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.05em; font-family: var(--font-display);
+    z-index: 2;
+  }
+  .feat-bg { display: none; }
+  .feat-border { display: none; }
+  .feat-content { padding: 14px 15px 13px; }
+  .feat-eyebrow { display: none; }
+  .feat-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; margin-bottom: 3px; }
+  .feat-company { font-size: 11px; color: var(--text3); margin-bottom: 11px; }
   .feat-bottom { display: flex; align-items: center; justify-content: space-between; }
-  .feat-salary { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+  .feat-salary { font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--text); letter-spacing: -1px; line-height: 1; }
   .feat-salary span { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.4); }
-  .feat-btn { padding: 10px 18px; border-radius: 14px; background: rgba(255,255,255,0.95); color: #1a0a3a; font-size: 13px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-body); }
+  .feat-btn { padding: 10px 18px; border-radius: 12px; background: #111; color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; font-family: var(--font-display); letter-spacing: -0.2px; transition: opacity 0.15s; }
 
   /* ═══════ JOB CARD ═══════ */
-  .job-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; box-shadow: var(--shadow); }
-  .job-card:active { transform: scale(0.97); background: var(--surface2); }
-  .card-accent-line { position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--radius) var(--radius) 0 0; }
-  .card-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
-  .company-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; border: 1px solid var(--border); }
-  .card-meta { flex: 1; min-width: 0; }
-  .card-title { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-company { font-size: 13px; color: var(--text2); }
+  .job-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.15s cubic-bezier(.4,0,.2,1), box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    min-height: 88px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .job-card:active { transform: scale(0.976); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .card-accent-line { display: none; }
+  /* Горизонтальная карточка */
+  .card-img-wrap {
+    width: 88px; min-width: 88px; max-width: 88px;
+    align-self: stretch;
+    position: relative; overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .card-img-badge {
+    position: absolute; top: 6px; left: 6px;
+    padding: 2px 7px; border-radius: 5px;
+    font-size: 8px; font-weight: 800; letter-spacing: 0.05em;
+    font-family: var(--font-display);
+  }
+  .badge-hot-img { background: #ff5c8d; color: #fff; }
+  .badge-new-img { background: #00c87a; color: #fff; }
+  .badge-top-img { background: #6c47ff; color: #fff; }
+  .card-body-wrap {
+    flex: 1; min-width: 0;
+    padding: 12px 13px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .card-top { display: flex; flex-direction: column; gap: 0; margin-bottom: 4px; }
+  .company-icon { display: none; }
+  .card-meta { min-width: 0; margin-bottom: 4px; }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.25; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: var(--font-display); letter-spacing: -0.3px; }
+  .card-company { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .badge { padding: 4px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; flex-shrink: 0; font-family: var(--font-display); }
   .badge-hot { background: rgba(255,92,141,0.2); color: var(--accent3); border: 1px solid rgba(255,92,141,0.3); }
   .badge-new { background: rgba(77,255,154,0.15); color: var(--green); border: 1px solid rgba(77,255,154,0.25); }
   .badge-top { background: rgba(255,200,0,0.15); color: #ffd700; border: 1px solid rgba(255,200,0,0.3); }
   .badge-orange { background: rgba(255,170,92,0.15); color: var(--orange); border: 1px solid rgba(255,170,92,0.3); }
-  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-  .tag { padding: 3px 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 6px; font-size: 10px; color: var(--text3); font-weight: 500; }
+  .card-tags { display: flex; gap: 4px; flex-wrap: nowrap; overflow: hidden; margin-bottom: 0; }
+  .tag { padding: 2px 7px; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.07); border-radius: 5px; font-size: 9.5px; color: var(--text3); font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  [data-theme="dark"] .tag { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.1); }
   [data-theme="light"] .tag { background: rgba(124,92,255,0.06); }
-  .card-footer { display: flex; align-items: center; justify-content: space-between; }
-  .salary { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 2px; }
+  .salary { font-family: var(--font-display); font-size: 14px; font-weight: 900; color: var(--text); letter-spacing: -0.6px; line-height: 1; }
   .salary span { font-size: 11px; font-weight: 400; color: var(--text3); }
   .card-actions { display: flex; gap: 8px; align-items: center; }
-  .fav-btn { width: 38px; height: 38px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); color: var(--text3); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .fav-btn { width: 28px; height: 28px; border-radius: 9px; background: rgba(0,0,0,0.04); border: 1px solid var(--border); color: var(--text3); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+  [data-theme="dark"] .fav-btn { background: rgba(255,255,255,0.06); }
   .fav-btn.active { background: rgba(255,92,141,0.15); border-color: rgba(255,92,141,0.3); color: var(--accent3); }
-  .more-btn { padding: 9px 16px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text2); font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--font-body); min-height: 38px; }
+  .more-btn { padding: 5px 11px; border-radius: 8px; background: rgba(108,71,255,0.08); border: 1px solid rgba(108,71,255,0.15); color: var(--accent); font-size: 10px; font-weight: 700; cursor: pointer; font-family: var(--font-display); letter-spacing: -0.1px; transition: all 0.15s; white-space: nowrap; }
+  [data-theme="dark"] .more-btn { background: rgba(124,92,255,0.15); border-color: rgba(124,92,255,0.25); }
 
   /* ═══════ BOTTOM NAV ═══════ */
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-around; align-items: flex-start; padding: 10px 4px 0; padding-bottom: var(--sab); height: var(--nav-h); background: rgba(13,13,26,0.92); border-top: 1px solid var(--border); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); transition: background 0.3s; }
-  [data-theme="light"] .bottom-nav { background: rgba(240,240,248,0.92); }
-  .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 16px; border-radius: 14px; transition: all 0.2s; border: none; background: none; min-width: 44px; min-height: 44px; justify-content: center; }
-  .nav-btn.active { background: rgba(124,92,255,0.15); }
-  .nav-icon { font-size: 22px; line-height: 1; }
-  .nav-label { font-size: 9px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; font-family: var(--font-display); }
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 8px 12px; padding-bottom: calc(var(--sab) + 2px);
+    height: var(--nav-h);
+    background: rgba(255,255,255,0.96);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    transition: background 0.3s;
+  }
+  [data-theme="dark"] .bottom-nav {
+    background: rgba(8,8,20,0.95);
+    border-top-color: rgba(255,255,255,0.08);
+  }
+  /* light nav handled above */
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    cursor: pointer; padding: 7px 14px; border-radius: 16px;
+    transition: all 0.18s; border: none; background: none;
+    min-width: 44px; min-height: 44px; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  /* Центральная кнопка + */
+  .nav-btn.nav-plus {
+    background: #111; border-radius: 18px; padding: 8px 18px;
+  }
+  [data-theme="dark"] .nav-btn.nav-plus { background: #fff; }
+  .nav-btn.nav-plus .nav-icon { color: #fff; font-size: 20px; }
+  [data-theme="dark"] .nav-btn.nav-plus .nav-icon { color: #111; }
+  .nav-btn.nav-plus .nav-label { color: rgba(255,255,255,0.6); }
+  .nav-btn.active { background: transparent; }
+  .nav-btn.active::after {
+    content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
+  }
+  .nav-btn.active .nav-label { color: var(--accent); }
+  .nav-icon { font-size: 21px; line-height: 1; color: var(--text3); }
+  .nav-btn.active .nav-icon { color: var(--accent); }
+  .nav-label { font-size: 8.5px; font-weight: 600; color: var(--text3); letter-spacing: 0.04em; text-transform: uppercase; font-family: var(--font-display); display: none; }
+  .nav-btn.active .nav-label { display: block; }
   .nav-btn.active .nav-label { color: var(--accent); }
 
   /* ═══════ DETAIL SCREEN ═══════ */
@@ -281,10 +392,10 @@
   /* ═══════ MODAL ═══════ */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .modal-overlay.show { opacity: 1; pointer-events: all; }
-  .modal-box { background: #1a1a2e; border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 340px; }
-  .modal-sheet { background: #1a1a2e; border: 1px solid var(--border2); border-radius: var(--radius) var(--radius) 0 0; padding: 24px; width: 100%; position: absolute; bottom: 0; left: 0; right: 0; max-height: 90vh; overflow-y: auto; }
-  [data-theme="light"] .modal-sheet { background: #fff; }
-  [data-theme="light"] .modal-box { background: #fff; }
+  .modal-box { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 340px; }
+  .modal-sheet { background: #fff; border: 1px solid var(--border); border-radius: var(--radius) var(--radius) 0 0; padding: 24px; width: 100%; position: absolute; bottom: 0; left: 0; right: 0; max-height: 90vh; overflow-y: auto; }
+  [data-theme="dark"] .modal-sheet { background: #1a1a2e; }
+  [data-theme="dark"] .modal-box { background: #1a1a2e; }
   .modal-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.3px; }
   .modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 20px; }
   .pin-input { width: 100%; padding: 16px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 24px; font-family: var(--font-display); letter-spacing: 8px; text-align: center; outline: none; margin-bottom: 12px; }
@@ -348,8 +459,9 @@
 
   /* ═══════ SKELETON LOADING ═══════ */
   @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
-  .skeleton { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; border-radius: 8px; }
-  .skeleton-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+  .skeleton { background: linear-gradient(90deg, #f0f0eb 25%, #e8e8e3 50%, #f0f0eb 75%); background-size: 800px 100%; animation: shimmer 1.4s infinite linear; border-radius: 8px; }
+  [data-theme="dark"] .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%); background-size: 800px 100%; }
+  .skeleton-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 0; margin-bottom: 10px; height: 88px; display: flex; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
   .sk-line { height: 12px; margin-bottom: 8px; }
   .sk-line.tall { height: 18px; }
   .sk-line.short { width: 55%; }
@@ -407,13 +519,26 @@
 
   /* ═══════ PREMIUM SECTION ═══════ */
   .premium-section { margin-bottom: 8px; }
-  .premium-card { background: linear-gradient(135deg, rgba(255,200,0,0.08), rgba(255,140,0,0.05)); border: 1px solid rgba(255,200,0,0.2); border-radius: var(--radius); padding: 16px; margin-bottom: 10px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.18s; }
+  .premium-card {
+    background: #fff;
+    border: 1px solid rgba(255,180,0,0.2);
+    border-radius: 20px; padding: 14px 15px;
+    margin-bottom: 8px; position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.15s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 2px 12px rgba(255,180,0,0.08);
+    display: flex; align-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .premium-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #ffcc00, #ff9500);
+  }
   .premium-card:active { transform: scale(0.98); }
   .premium-card-glow { position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(255,200,0,0.15), transparent 70%); pointer-events: none; }
-  .premium-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; background: linear-gradient(90deg,#ffcc00,#ff8800); color: #000; font-size: 10px; font-weight: 800; font-family: var(--font-display); margin-bottom: 8px; }
-  .premium-title { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.3px; margin-bottom: 4px; }
-  .premium-company { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
-  .premium-salary { font-size: 16px; font-weight: 800; color: #ffcc00; font-family: var(--font-display); }
+  .premium-badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 5px; background: rgba(255,180,0,0.15); border: 1px solid rgba(255,180,0,0.25); color: #b8860b; font-size: 9px; font-weight: 800; font-family: var(--font-display); margin-bottom: 5px; letter-spacing: 0.05em; }
+  .premium-title { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--font-display); letter-spacing: -0.3px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .premium-company { font-size: 11px; color: var(--text3); }
+  .premium-salary { font-size: 15px; font-weight: 900; color: #b8860b; font-family: var(--font-display); letter-spacing: -0.5px; white-space: nowrap; flex-shrink: 0; margin-left: auto; padding-left: 10px; }
 
   /* ═══════ NEWS ADMIN ═══════ */
   .news-admin-btn { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: var(--radius-sm); background: rgba(77,255,154,0.07); border: 1px solid rgba(77,255,154,0.2); color: rgba(77,255,154,0.9); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 10px; font-family: var(--font-body); width: 100%; text-align: left; }
@@ -601,7 +726,7 @@
 
   /* ── HOME HEADER УЛУЧШЕНИЯ ── */
   .home-greeting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
-  .home-user-name { font-size: 13px; font-weight: 500; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .home-user-name { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; }
   .home-avatar-mini { width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg,var(--accent),var(--accent2)); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; font-family: var(--font-display); flex-shrink: 0; cursor: pointer; }
 
   /* ── PROFILE УЛУЧШЕНИЯ ── */
@@ -776,7 +901,7 @@
     <div class="bottom-nav">
       <button class="nav-btn active" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-fav-badge" id="favBadge1"></span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -800,7 +925,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn active" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1072,7 +1197,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn active" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn active" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1094,7 +1219,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
       <button class="nav-btn active" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1150,7 +1275,7 @@
     <div class="bottom-nav">
       <button class="nav-btn" onclick="navTo('homeScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Главная</span></button>
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
-      <button class="nav-btn" onclick="navTo('createScreen', this)"><span class="nav-icon">➕</span><span class="nav-label">Разместить</span></button>
+      <button class="nav-btn" onclick="navTo('createScreen', this)" style=""><span class="nav-icon" style="font-size:18px;">＋</span><span class="nav-label" style="display:block;color:rgba(255,255,255,0.6);">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
       <button class="nav-btn active" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
     </div>
@@ -1695,8 +1820,8 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-  try { tg.setHeaderColor('#0d0d1a'); } catch(e) {}
-  try { tg.setBackgroundColor('#0d0d1a'); } catch(e) {}
+  try { tg.setHeaderColor('#f5f5f0'); } catch(e) {}
+  try { tg.setBackgroundColor('#f5f5f0'); } catch(e) {}
   if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
 
   // Источник 1: initDataUnsafe.user
@@ -1784,15 +1909,15 @@ function obFinish() {
 // ═══════════════════════════════════════════════
 // THEME
 // ═══════════════════════════════════════════════
-let darkMode = true;
+let darkMode = false;
 function toggleTheme() {
   darkMode = !darkMode;
-  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-  document.querySelectorAll('.theme-btn').forEach(b => b.textContent = darkMode ? '🌙' : '☀️');
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+  document.querySelectorAll('.theme-btn').forEach(b => b.textContent = darkMode ? '☀️' : '🌙');
   if (tg) {
-    const c = darkMode ? '#0d0d1a' : '#f0f0f8';
-    tg.setHeaderColor(c);
-    tg.setBackgroundColor(c);
+    const c = darkMode ? '#0d0d1a' : '#f5f5f0';
+    try { tg.setHeaderColor(c); } catch(e) {}
+    try { tg.setBackgroundColor(c); } catch(e) {}
   }
   showToast(darkMode ? '🌙 Тёмная тема' : '☀️ Светлая тема');
 }
@@ -2319,11 +2444,12 @@ function renderPremiumSection() {
     <div class="premium-section">
       ${premiumJobs.map(j => `
         <div class="premium-card" onclick="openJob('${j.id}')">
-          <div class="premium-card-glow"></div>
-          <div class="premium-badge">👑 PREMIUM</div>
-          <div class="premium-title">${esc(j.title)}</div>
-          <div class="premium-company">${esc(j.company)} · ${esc(j.city)}</div>
-          <div class="premium-salary">${esc(j.salary)} ₽/мес</div>
+          <div style="flex:1;min-width:0;position:relative;z-index:1;">
+            <div class="premium-badge">👑 PREMIUM</div>
+            <div class="premium-title">${esc(j.title)}</div>
+            <div class="premium-company">${esc(j.company)} · ${esc(j.city)}</div>
+          </div>
+          <div class="premium-salary">${esc(j.salary)} ₽</div>
         </div>`).join('')}
     </div>`;
 }
@@ -2350,14 +2476,15 @@ function renderFeatured() {
       <div class="carousel-track" id="carouselTrack">
         ${pinned.map(j => `
           <div class="featured-card" onclick="openJob('${j.id}')">
-            <div class="feat-bg"></div>
-            <div class="feat-border"></div>
+            <div class="feat-img-top">
+              <div class="feat-img-badge">⭐ ТОП ВАКАНСИЯ</div>
+              <div class="feat-img-icon">${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}</div>
+            </div>
             <div class="feat-content">
-              <div class="feat-eyebrow">✦ Рекомендуем</div>
               <div class="feat-title">${esc(j.title)}</div>
               <div class="feat-company">${esc(j.company)} · ${esc(j.city)}</div>
               <div class="feat-bottom">
-                <div class="feat-salary">${esc(j.salary)} <span>₽/мес</span></div>
+                <div class="feat-salary">${esc(j.salary)} <span style="font-size:10px;font-weight:400;color:var(--text3);">₽/мес</span></div>
                 <div class="feat-apply-wrap">
                   <button class="feat-btn" onclick="event.stopPropagation();featuredApply('${j.id}')">Откликнуться</button>
                 </div>
@@ -3030,6 +3157,14 @@ async function init() {
 
   // Показываем онбординг новым пользователям
   checkOnboarding();
+  // Подсвечиваем кнопку + в nav
+  document.querySelectorAll('.bottom-nav .nav-btn').forEach(btn => {
+    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes('createScreen')) {
+      btn.style.background = document.documentElement.getAttribute('data-theme') === 'dark' ? '#fff' : '#111';
+      btn.style.borderRadius = '18px';
+      btn.style.padding = '7px 18px';
+    }
+  });
 }
 
 function updateProfileStats() {
@@ -3054,31 +3189,55 @@ function onSalaryFilter(val) {
 // RENDER JOB CARDS
 // ═══════════════════════════════════════════════
 function jobCardHTML(j) {
-  let badgeHtml = '';
-  if (j.pinned) badgeHtml = '<div class="badge badge-top">ТОП</div>';
-  else if (j.badge === 'hot') badgeHtml = '<div class="badge badge-hot">HOT</div>';
-  else if (j.badge === 'new') badgeHtml = '<div class="badge badge-new">NEW</div>';
+  // Бейдж поверх фото
+  let badgeText = '', badgeCls = '';
+  if (j.pinned) { badgeText = 'ТОП'; badgeCls = 'badge-top-img'; }
+  else if (j.badge === 'hot') { badgeText = 'HOT'; badgeCls = 'badge-hot-img'; }
+  else if (j.badge === 'new') { badgeText = 'NEW'; badgeCls = 'badge-new-img'; }
+
   const isFav = favorites.includes(j.id);
+  const tags = (j.tags||[]).slice(0, 3);
+
+  // Цвет блока иконки по категории
+  const catColors = {
+    'IT': 'linear-gradient(135deg,#f0eeff,#ddd8ff)',
+    'Дизайн': 'linear-gradient(135deg,#fff0f4,#ffdde6)',
+    'Маркетинг': 'linear-gradient(135deg,#fff8e8,#ffeec0)',
+    'Финансы': 'linear-gradient(135deg,#e8fff4,#c0f0da)',
+    'Управление': 'linear-gradient(135deg,#e8f4ff,#c0daff)',
+  };
+  const darkCatColors = {
+    'IT': 'rgba(108,71,255,0.2)',
+    'Дизайн': 'rgba(255,92,141,0.2)',
+    'Маркетинг': 'rgba(255,149,0,0.2)',
+    'Финансы': 'rgba(0,200,122,0.2)',
+    'Управление': 'rgba(77,163,255,0.2)',
+  };
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const imgBg = isDark
+    ? (darkCatColors[j.category] || 'rgba(124,92,255,0.2)')
+    : (catColors[j.category] || 'linear-gradient(135deg,#f0eeff,#ddd8ff)');
+
+  const icon = /^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase();
+
   return `
     <div class="job-card" onclick="openJob('${j.id}')">
-      <div class="card-accent-line" style="background:${j.accent||'linear-gradient(90deg,#7c5cff,#4da3ff)'}"></div>
-      <div class="card-top">
-        <div class="company-icon" style="background:${j.iconBg||'rgba(255,255,255,0.07)'}">
-          ${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}
-        </div>
-        <div class="card-meta">
+      <div class="card-img-wrap" style="background:${imgBg}">
+        <span style="font-size:30px;line-height:1;">${icon}</span>
+        ${badgeText ? `<div class="card-img-badge ${badgeCls}">${badgeText}</div>` : ''}
+      </div>
+      <div class="card-body-wrap">
+        <div class="card-top">
           <div class="card-title">${esc(j.title)}</div>
           <div class="card-company">${esc(j.company)} · ${esc(j.city)}</div>
         </div>
-        ${badgeHtml}
-      </div>
-      <div class="card-tags">${(j.tags||[]).map(t=>`<div class="tag">${esc(t)}</div>`).join('')}</div>
-      <div class="card-footer">
-        <div class="salary">${esc(j.salary)} <span>₽/мес</span></div>
-        <div class="card-actions">
-          <span class="views-counter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${formatViews(j.views||0)}</span>
-          <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${j.id}',this)" title="${isFav?'Убрать из избранного':'Добавить в избранное'}">${isFav?'❤️':'♡'}</button>
-          <button class="more-btn">Подробнее</button>
+        ${tags.length ? `<div class="card-tags">${tags.map(t => '<div class="tag">' + esc(t) + '</div>').join('')}</div>` : ''}
+        <div class="card-footer">
+          <div class="salary">${esc(j.salary)} <span style="font-size:9px;font-weight:400;color:var(--text3);">₽/мес</span></div>
+          <div style="display:flex;gap:5px;align-items:center;">
+            <button class="fav-btn ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${j.id}',this)">${isFav?'❤️':'♡'}</button>
+            <button class="more-btn" onclick="event.stopPropagation();openJob('${j.id}')">Открыть</button>
+          </div>
         </div>
       </div>
     </div>`;
