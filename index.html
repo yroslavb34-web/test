@@ -538,6 +538,282 @@
     background: rgba(91,63,255,0.15); color: #A78BFF;
   }
 
+
+  /* ═══════════════════════════════
+     FEATURE: AI Description Button
+     ═══════════════════════════════ */
+  .ai-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: var(--r-md);
+    background: linear-gradient(135deg, #5B3FFF, #3B8BEB);
+    color: #fff; font-size: 12px; font-weight: 700;
+    border: none; cursor: pointer;
+    font-family: var(--font-display); letter-spacing: -0.2px;
+    transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+    box-shadow: 0 4px 14px rgba(91,63,255,0.3);
+    white-space: nowrap;
+  }
+  .ai-btn:active { transform: scale(0.94); box-shadow: none; }
+  .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .ai-btn-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .ai-label { font-size: 11px; color: var(--text3); }
+
+  @keyframes aiPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .ai-loading { animation: aiPulse 1s ease-in-out infinite; }
+
+  /* ═══════════════════════════════
+     FEATURE: Resume Screen
+     ═══════════════════════════════ */
+  .resume-screen-header {
+    padding: var(--s3) var(--s5) var(--s2);
+    flex-shrink: 0; position: relative;
+    display: flex; align-items: center; gap: var(--s3);
+  }
+  .resume-hero {
+    background: linear-gradient(135deg, var(--accent-soft), rgba(59,139,235,0.08));
+    border: 1.5px solid rgba(91,63,255,0.12);
+    border-radius: var(--r-xl); padding: var(--s5);
+    margin-bottom: var(--s4); position: relative; overflow: hidden;
+  }
+  .resume-hero::before {
+    content: ''; position: absolute;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(91,63,255,0.12) 0%, transparent 70%);
+    top: -60px; right: -60px; pointer-events: none;
+  }
+  .resume-avatar {
+    width: 72px; height: 72px; border-radius: 22px;
+    background: linear-gradient(135deg, var(--accent), #3B8BEB);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 700; color: #fff;
+    font-family: var(--font-display); margin-bottom: var(--s3);
+    box-shadow: 0 8px 24px rgba(91,63,255,0.25);
+  }
+  .resume-name {
+    font-family: var(--font-display); font-size: 20px; font-weight: 700;
+    color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px;
+  }
+  .resume-role {
+    font-size: var(--t-sm); color: var(--text3); margin-bottom: var(--s3);
+  }
+  .resume-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .resume-tag {
+    padding: 4px 10px; border-radius: var(--r-full);
+    background: rgba(91,63,255,0.1); border: 1px solid rgba(91,63,255,0.15);
+    color: var(--accent); font-size: 11px; font-weight: 600;
+  }
+  .resume-section {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: var(--s4);
+    margin-bottom: var(--s3); box-shadow: var(--shadow-xs);
+  }
+  .resume-section-title {
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: var(--s3); display: flex; align-items: center; gap: 6px;
+  }
+  .resume-field {
+    margin-bottom: var(--s3);
+  }
+  .resume-field:last-child { margin-bottom: 0; }
+  .resume-field-label {
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    font-family: var(--font-display); margin-bottom: 5px;
+  }
+  .resume-field-input {
+    width: 100%; padding: 12px var(--s3);
+    background: var(--surface2); border: 1.5px solid var(--border);
+    border-radius: var(--r-md); color: var(--text);
+    font-size: var(--t-sm); font-family: var(--font-body);
+    outline: none; transition: border-color 0.18s, box-shadow 0.18s;
+    resize: none;
+  }
+  .resume-field-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-mid);
+  }
+  .resume-field-input::placeholder { color: var(--text4); }
+  .resume-save-btn {
+    width: 100%; padding: 16px; border-radius: var(--r-lg);
+    background: var(--accent); color: #fff;
+    font-size: 15px; font-weight: 700;
+    border: none; cursor: pointer; font-family: var(--font-display);
+    letter-spacing: -0.3px; margin-top: var(--s2);
+    box-shadow: var(--shadow-accent);
+    transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  .resume-save-btn:active { transform: scale(0.97); box-shadow: none; }
+  .resume-empty {
+    text-align: center; padding: var(--s8) var(--s5);
+  }
+  .resume-empty-icon { font-size: 48px; margin-bottom: var(--s4); opacity: 0.4; }
+  .resume-empty-title {
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px;
+  }
+  .resume-empty-sub { font-size: var(--t-sm); color: var(--text3); margin-bottom: var(--s5); }
+  .resume-create-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 24px; border-radius: var(--r-lg);
+    background: var(--accent); color: #fff;
+    font-size: 14px; font-weight: 700;
+    border: none; cursor: pointer; font-family: var(--font-display);
+    box-shadow: var(--shadow-accent);
+    transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  .resume-create-btn:active { transform: scale(0.96); box-shadow: none; }
+
+  /* ═══════════════════════════════
+     FEATURE: Employer Dashboard
+     ═══════════════════════════════ */
+  .dashboard-header {
+    padding: var(--s3) var(--s5) var(--s2); flex-shrink: 0;
+    display: flex; align-items: center; gap: var(--s3);
+  }
+  .dash-stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: var(--s2); margin-bottom: var(--s4);
+  }
+  .dash-stat {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: var(--s4);
+    box-shadow: var(--shadow-xs); position: relative; overflow: hidden;
+  }
+  .dash-stat::before {
+    content: ''; position: absolute;
+    width: 80px; height: 80px; border-radius: 50%;
+    top: -20px; right: -20px; opacity: 0.08;
+  }
+  .dash-stat.accent::before { background: var(--accent); opacity: 0.12; }
+  .dash-stat.green::before { background: var(--green); opacity: 0.15; }
+  .dash-stat.orange::before { background: var(--orange); opacity: 0.15; }
+  .dash-stat.rose::before { background: var(--rose); opacity: 0.12; }
+  .dash-stat-icon {
+    font-size: 20px; margin-bottom: 10px; display: block;
+  }
+  .dash-stat-num {
+    font-family: var(--font-display); font-size: 28px; font-weight: 900;
+    color: var(--text); letter-spacing: -1.5px; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .dash-stat-label {
+    font-size: 11px; color: var(--text3); font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .dash-stat-delta {
+    font-size: 11px; font-weight: 700; margin-top: 4px;
+  }
+  .dash-stat-delta.up { color: var(--green); }
+  .dash-stat-delta.down { color: var(--red); }
+
+  .dash-vacancy-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: var(--s4);
+    margin-bottom: var(--s2); box-shadow: var(--shadow-xs);
+    cursor: pointer; transition: all 0.18s ease;
+  }
+  .dash-vacancy-card:active { transform: scale(0.985); }
+  .dash-vacancy-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; margin-bottom: var(--s3);
+  }
+  .dash-vacancy-title {
+    font-family: var(--font-display); font-size: 14px; font-weight: 700;
+    color: var(--text); letter-spacing: -0.3px; margin-bottom: 3px;
+  }
+  .dash-vacancy-sub { font-size: 12px; color: var(--text3); }
+  .dash-status {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: var(--r-full);
+    font-size: 10px; font-weight: 700; font-family: var(--font-display);
+    letter-spacing: 0.04em; flex-shrink: 0;
+  }
+  .dash-status.active { background: var(--green-soft); color: var(--green); }
+  .dash-status.expired { background: var(--surface2); color: var(--text3); }
+  .dash-metrics {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px; padding-top: var(--s3);
+    border-top: 1px solid var(--border);
+  }
+  .dash-metric { text-align: center; }
+  .dash-metric-num {
+    font-family: var(--font-display); font-size: 16px; font-weight: 900;
+    color: var(--text); letter-spacing: -0.5px; line-height: 1;
+    margin-bottom: 2px;
+  }
+  .dash-metric-label { font-size: 10px; color: var(--text3); }
+
+  /* Mini chart bar */
+  .dash-chart {
+    display: flex; align-items: flex-end; gap: 3px;
+    height: 32px; margin: var(--s3) 0 var(--s2);
+  }
+  .dash-bar {
+    flex: 1; border-radius: 3px 3px 0 0;
+    background: var(--accent-mid); min-height: 4px;
+    transition: height 0.4s cubic-bezier(0.34,1.2,0.64,1);
+    position: relative;
+  }
+  .dash-bar.today { background: var(--accent); }
+  .dash-chart-labels {
+    display: flex; justify-content: space-between;
+    font-size: 9px; color: var(--text4);
+    font-family: var(--font-display);
+  }
+
+  /* Empty dashboard state */
+  .dash-empty {
+    text-align: center; padding: var(--s7) var(--s5);
+    background: var(--surface); border: 1.5px dashed var(--border);
+    border-radius: var(--r-xl); margin-bottom: var(--s4);
+  }
+  .dash-empty-icon { font-size: 40px; margin-bottom: var(--s3); opacity: 0.35; }
+  .dash-empty-title {
+    font-family: var(--font-display); font-size: 16px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px; letter-spacing: -0.4px;
+  }
+  .dash-empty-sub { font-size: var(--t-sm); color: var(--text3); margin-bottom: var(--s4); }
+  .dash-post-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 11px 20px; border-radius: var(--r-lg);
+    background: var(--accent); color: #fff;
+    font-size: 13px; font-weight: 700;
+    border: none; cursor: pointer; font-family: var(--font-display);
+    box-shadow: var(--shadow-accent);
+    transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  .dash-post-btn:active { transform: scale(0.95); box-shadow: none; }
+
+  /* Applicant card in dashboard */
+  .applicant-card {
+    display: flex; align-items: center; gap: var(--s3);
+    padding: var(--s3) 0; border-bottom: 1px solid var(--border);
+  }
+  .applicant-card:last-child { border-bottom: none; padding-bottom: 0; }
+  .applicant-avatar {
+    width: 40px; height: 40px; border-radius: var(--r-md);
+    background: linear-gradient(135deg, var(--accent-soft), rgba(59,139,235,0.15));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: var(--accent);
+    font-family: var(--font-display); flex-shrink: 0;
+  }
+  .applicant-info { flex: 1; min-width: 0; }
+  .applicant-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .applicant-meta { font-size: 11px; color: var(--text3); }
+  .applicant-contact {
+    padding: 6px 12px; border-radius: var(--r-md);
+    background: rgba(59,139,235,0.08); border: 1px solid rgba(59,139,235,0.15);
+    color: var(--accent2); font-size: 11px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    font-family: var(--font-body);
+    transition: all 0.15s ease;
+  }
+  .applicant-contact:active { transform: scale(0.94); }
+
   /* ═══════ BOTTOM NAV ═══════ */
   .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
@@ -1461,6 +1737,10 @@
               oninput="formLiveValidate('fTitle')" maxlength="80">
             <div class="field-counter" id="fTitle-counter">0/80</div>
             <div class="field-hint" id="fTitle-hint">Чем точнее название — тем больше откликов</div>
+            <div class="ai-btn-wrap" style="margin-top:4px;">
+              <button class="ai-btn" onclick="aiGenerateDescription()" id="aiDescBtn">✦ Заполнить описание с AI</button>
+              <span class="ai-label">Введи название → AI напишет остальное</span>
+            </div>
           </div>
 
           <div class="field-wrap">
@@ -1711,6 +1991,8 @@
       </div>
       <div class="sec-label">Меню</div>
       <div class="menu-item" style="border-color:rgba(77,255,154,0.3);background:rgba(77,255,154,0.05);" onclick="pushTo('walletScreen')"><span class="menu-item-icon">💰</span><span class="menu-item-text">Кошелёк <span id="walletBalanceBadge" style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(77,255,154,0.15);color:var(--green);border:1px solid rgba(77,255,154,0.3);font-family:var(--font-display)">0 ₽</span></span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" style="border-color:rgba(91,63,255,0.2);background:rgba(91,63,255,0.04);" onclick="pushTo('resumeScreen');renderResume()"><span class="menu-item-icon">📄</span><span class="menu-item-text">Моё резюме <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(91,63,255,0.1);color:var(--accent);font-weight:700;margin-left:6px;font-family:var(--font-display);">NEW</span></span><span class="menu-item-arrow">›</span></div>
+      <div class="menu-item" style="border-color:rgba(0,185,107,0.2);background:rgba(0,185,107,0.04);" onclick="pushTo('dashboardScreen');renderDashboard()"><span class="menu-item-icon">📊</span><span class="menu-item-text">Дашборд работодателя <span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(0,185,107,0.1);color:var(--green);font-weight:700;margin-left:6px;font-family:var(--font-display);">NEW</span></span><span class="menu-item-arrow">›</span></div>
       <div class="menu-item" onclick="openAppliedScreen()"><span class="menu-item-icon">💼</span><span class="menu-item-text">Мои отклики</span><span class="menu-item-arrow">›</span></div>
       <div class="menu-item" onclick="openMyJobApplies()"><span class="menu-item-icon">📩</span><span class="menu-item-text">Отклики на мои вакансии</span><span class="menu-item-arrow">›</span></div>
       <div class="menu-item" onclick="navTo('favScreen', null)"><span class="menu-item-icon">❤️</span><span class="menu-item-text">Избранные вакансии</span><span class="menu-item-arrow">›</span></div>
@@ -2097,6 +2379,39 @@
     <div class="scroll-area">
       <button class="news-admin-btn" onclick="openNewsModal()">➕ Добавить новость</button>
       <div id="adminNewsList"><div class="loading-wrap"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+
+  <!-- ═══════ RESUME SCREEN ═══════ -->
+  <div class="screen hidden" id="resumeScreen">
+    <div class="tg-safe-top"></div>
+    <div class="resume-screen-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Моё резюме</div>
+      </div>
+      <button class="ai-btn" onclick="aiGenerateResumeSummary()" id="aiResumeSummaryBtn">✦ AI</button>
+    </div>
+    <div class="scroll-area" id="resumeContent">
+      <!-- Контент загружается через JS -->
+      <div class="loading-wrap"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════ EMPLOYER DASHBOARD ═══════ -->
+  <div class="screen hidden" id="dashboardScreen">
+    <div class="tg-safe-top"></div>
+    <div class="dashboard-header">
+      <button class="back-btn" onclick="goBack()">←</button>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.3px;">Дашборд работодателя</div>
+        <div style="font-size:11px;color:var(--text3);">Аналитика по вашим вакансиям</div>
+      </div>
+      <button onclick="dashboardRefresh()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px;font-family:var(--font-body);">↻ Обновить</button>
+    </div>
+    <div class="scroll-area" id="dashboardContent">
+      <div class="loading-wrap"><div class="spinner"></div></div>
     </div>
   </div>
 
@@ -6083,6 +6398,521 @@ async function walletLoadBalance() {
     walletRenderVacancies([]);
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FEATURE 1: AI DESCRIPTION GENERATOR
+// ═══════════════════════════════════════════════════════════════════════════
+async function aiGenerateDescription() {
+  const title = document.getElementById('fTitle')?.value?.trim();
+  const company = document.getElementById('fCompany')?.value?.trim();
+  const city = document.getElementById('fCity')?.value || '';
+  const category = document.getElementById('fCategory')?.value || '';
+  const salary = document.getElementById('fSalary')?.value || '';
+
+  if (!title || title.length < 3) {
+    showToast('⚠️ Сначала введи название должности', true);
+    return;
+  }
+
+  const btn = document.getElementById('aiDescBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="ai-loading">✦</span> Генерирую...';
+  }
+
+  const prompt = `Ты HR-эксперт. Напиши профессиональное описание вакансии на русском языке.
+
+Вакансия: ${title}
+${company ? 'Компания: ' + company : ''}
+${city ? 'Город: ' + city : ''}
+${category ? 'Категория: ' + category : ''}
+${salary ? 'Зарплата: ' + salary + ' ₽/мес' : ''}
+
+Напиши ТОЛЬКО три блока в таком точном формате (без лишнего текста):
+
+О ВАКАНСИИ:
+[2-3 предложения о роли и компании. Живо и привлекательно.]
+
+ТРЕБОВАНИЯ:
+- [требование 1]
+- [требование 2]
+- [требование 3]
+- [требование 4]
+- [требование 5]
+
+УСЛОВИЯ:
+- [условие 1]
+- [условие 2]
+- [условие 3]
+- [условие 4]
+
+Пиши конкретно и по делу. Не используй воду и клише.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || '';
+
+    if (!text) throw new Error('empty response');
+
+    // Парсим блоки
+    const aboutMatch = text.match(/О ВАКАНСИИ:\s*([\s\S]+?)(?=ТРЕБОВАНИЯ:|$)/i);
+    const reqsMatch  = text.match(/ТРЕБОВАНИЯ:\s*([\s\S]+?)(?=УСЛОВИЯ:|$)/i);
+    const condsMatch = text.match(/УСЛОВИЯ:\s*([\s\S]+?)$/i);
+
+    if (aboutMatch?.[1]) {
+      const descEl = document.getElementById('fDesc');
+      if (descEl) {
+        descEl.value = aboutMatch[1].trim();
+        formCountChars('fDesc', 800);
+        formLiveValidate('fDesc');
+      }
+    }
+
+    if (reqsMatch?.[1]) {
+      const reqEl = document.getElementById('fReqs');
+      if (reqEl) {
+        reqEl.value = reqsMatch[1].trim().replace(/^-\s*/gm, '').trim();
+        formCountChars('fReqs', 600);
+        formLiveValidate('fReqs');
+      }
+    }
+
+    if (condsMatch?.[1]) {
+      const condEl = document.getElementById('fConds');
+      if (condEl) {
+        condEl.value = condsMatch[1].trim().replace(/^-\s*/gm, '').trim();
+        formCountChars('fConds', 400);
+      }
+    }
+
+    // Переходим на шаг 2 чтобы показать результат
+    formGoStep(2);
+    showToast('✦ AI заполнил описание!');
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+  } catch(e) {
+    console.error('AI generate error:', e);
+    showToast('❌ Ошибка AI. Попробуй ещё раз.', true);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '✦ Заполнить описание с AI';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FEATURE 2: RESUME — Профиль соискателя
+// ═══════════════════════════════════════════════════════════════════════════
+const RESUME_KEY = 'jobic_resume_v1';
+
+function loadResume() {
+  try {
+    const s = localStorage.getItem(RESUME_KEY);
+    return s ? JSON.parse(s) : null;
+  } catch(e) { return null; }
+}
+
+function saveResume(data) {
+  try { localStorage.setItem(RESUME_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function renderResume() {
+  const el = document.getElementById('resumeContent');
+  if (!el) return;
+
+  const resume = loadResume();
+  const tgUser = getTgUser();
+  const name = tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username : '';
+  const initial = name ? name[0].toUpperCase() : '?';
+
+  if (!resume) {
+    el.innerHTML = `
+      <div class="resume-empty">
+        <div class="resume-empty-icon">📄</div>
+        <div class="resume-empty-title">Резюме не создано</div>
+        <div class="resume-empty-sub">Заполни профиль — работодатели смогут найти тебя сами. Займёт 3 минуты.</div>
+        <button class="resume-create-btn" onclick="renderResumeForm()">✦ Создать резюме</button>
+      </div>`;
+    return;
+  }
+
+  // Показываем заполненное резюме
+  el.innerHTML = `
+    <div class="resume-hero">
+      <div class="resume-avatar">${initial}</div>
+      <div class="resume-name">${esc(resume.name || name || 'Пользователь')}</div>
+      <div class="resume-role">${esc(resume.role || 'Специалист')}</div>
+      <div class="resume-tags">
+        ${(resume.skills || []).slice(0,5).map(s => `<div class="resume-tag">${esc(s)}</div>`).join('')}
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">👤 О себе</div>
+      <div style="font-size:var(--t-sm);color:var(--text2);line-height:1.7;">${esc(resume.about || '—')}</div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">💼 Опыт работы</div>
+      <div style="font-size:var(--t-sm);color:var(--text2);line-height:1.7;white-space:pre-wrap;">${esc(resume.experience || '—')}</div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">🎓 Образование</div>
+      <div style="font-size:var(--t-sm);color:var(--text2);line-height:1.7;">${esc(resume.education || '—')}</div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">📍 Контакт и локация</div>
+      <div style="font-size:var(--t-sm);color:var(--text2);">
+        ${resume.city ? '📍 ' + esc(resume.city) + '<br>' : ''}
+        ${resume.salary_from ? '💰 от ' + Number(resume.salary_from).toLocaleString('ru') + ' ₽/мес<br>' : ''}
+        ${resume.telegram ? '✈️ ' + esc(resume.telegram) : ''}
+      </div>
+    </div>
+
+    <button class="resume-save-btn" onclick="renderResumeForm()" style="background:var(--surface);color:var(--text);border:1.5px solid var(--border);box-shadow:var(--shadow-xs);">
+      ✏️ Редактировать
+    </button>
+    <div style="height:8px;"></div>`;
+}
+
+function renderResumeForm() {
+  const el = document.getElementById('resumeContent');
+  if (!el) return;
+  const resume = loadResume() || {};
+  const tgUser = getTgUser();
+  const name = tgUser ? [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ') || tgUser.username || '' : '';
+
+  el.innerHTML = `
+    <div class="resume-section">
+      <div class="resume-section-title">👤 Основное</div>
+      <div class="resume-field">
+        <div class="resume-field-label">Имя и фамилия</div>
+        <input class="resume-field-input" id="rv_name" value="${esc(resume.name || name)}" placeholder="Иван Иванов">
+      </div>
+      <div class="resume-field">
+        <div class="resume-field-label">Желаемая должность</div>
+        <input class="resume-field-input" id="rv_role" value="${esc(resume.role || '')}" placeholder="Frontend Developer, Дизайнер...">
+      </div>
+      <div class="resume-field">
+        <div class="resume-field-label">Ключевые навыки (через запятую)</div>
+        <input class="resume-field-input" id="rv_skills" value="${esc((resume.skills||[]).join(', '))}" placeholder="React, TypeScript, Figma...">
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">📝 О себе</div>
+      <div class="resume-field">
+        <textarea class="resume-field-input" id="rv_about" rows="4"
+          placeholder="Кратко о себе — опыт, что умеешь, что ищешь...">${esc(resume.about || '')}</textarea>
+      </div>
+      <button class="ai-btn" onclick="aiGenerateResumeSummary()" id="aiResumeSummaryBtn" style="width:100%;justify-content:center;margin-top:4px;">
+        ✦ Написать AI-саммари
+      </button>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">💼 Опыт работы</div>
+      <div class="resume-field">
+        <textarea class="resume-field-input" id="rv_experience" rows="5"
+          placeholder="Компания — Должность — Период&#10;Основные задачи и достижения...">${esc(resume.experience || '')}</textarea>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">🎓 Образование</div>
+      <div class="resume-field">
+        <input class="resume-field-input" id="rv_education" value="${esc(resume.education || '')}"
+          placeholder="Университет, специальность, год окончания">
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <div class="resume-section-title">📍 Контакт и ожидания</div>
+      <div class="resume-field">
+        <div class="resume-field-label">Город / Формат</div>
+        <input class="resume-field-input" id="rv_city" value="${esc(resume.city || '')}" placeholder="Москва / Удалённо">
+      </div>
+      <div class="resume-field">
+        <div class="resume-field-label">Зарплата от (₽)</div>
+        <input class="resume-field-input" id="rv_salary" type="number" value="${resume.salary_from || ''}" placeholder="150000">
+      </div>
+      <div class="resume-field">
+        <div class="resume-field-label">Telegram для связи</div>
+        <input class="resume-field-input" id="rv_telegram" value="${esc(resume.telegram || (tgUser?.username ? '@'+tgUser.username : ''))}" placeholder="@username">
+      </div>
+    </div>
+
+    <button class="resume-save-btn" onclick="saveResumeForm()">💾 Сохранить резюме</button>
+    <div style="height:8px;"></div>`;
+}
+
+function saveResumeForm() {
+  const data = {
+    name:       document.getElementById('rv_name')?.value?.trim() || '',
+    role:       document.getElementById('rv_role')?.value?.trim() || '',
+    skills:     (document.getElementById('rv_skills')?.value || '').split(',').map(s=>s.trim()).filter(Boolean),
+    about:      document.getElementById('rv_about')?.value?.trim() || '',
+    experience: document.getElementById('rv_experience')?.value?.trim() || '',
+    education:  document.getElementById('rv_education')?.value?.trim() || '',
+    city:       document.getElementById('rv_city')?.value?.trim() || '',
+    salary_from: parseInt(document.getElementById('rv_salary')?.value || '0') || 0,
+    telegram:   document.getElementById('rv_telegram')?.value?.trim() || '',
+    updated_at: new Date().toISOString()
+  };
+  saveResume(data);
+  renderResume();
+  showToast('✅ Резюме сохранено!');
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+
+async function aiGenerateResumeSummary() {
+  const role = document.getElementById('rv_role')?.value?.trim() || '';
+  const skills = document.getElementById('rv_skills')?.value?.trim() || '';
+  const experience = document.getElementById('rv_experience')?.value?.trim() || '';
+
+  if (!role && !skills) {
+    showToast('⚠️ Заполни должность и навыки сначала', true);
+    return;
+  }
+
+  const btn = document.getElementById('aiResumeSummaryBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="ai-loading">✦</span> Пишу...'; }
+
+  const prompt = `Напиши краткое профессиональное "О себе" для резюме на русском языке (3-4 предложения).
+
+Должность: ${role}
+Навыки: ${skills}
+${experience ? 'Опыт: ' + experience.slice(0, 200) : ''}
+
+Пиши от первого лица. Живо, конкретно, без клише. Только текст, без заголовков.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data?.content?.[0]?.text?.trim() || '';
+    if (text) {
+      const el = document.getElementById('rv_about');
+      if (el) el.value = text;
+      showToast('✦ AI написал саммари!');
+    }
+  } catch(e) {
+    showToast('❌ Ошибка AI', true);
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '✦ Написать AI-саммари'; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FEATURE 3: EMPLOYER DASHBOARD
+// ═══════════════════════════════════════════════════════════════════════════
+async function renderDashboard() {
+  const el = document.getElementById('dashboardContent');
+  if (!el) return;
+  el.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>';
+
+  const tgUser = getTgUser();
+  const myId = tgUser?.id ? String(tgUser.id) : null;
+
+  // Загружаем мои вакансии и отклики
+  let myJobs = [], myAppliesData = [];
+  try {
+    const allJobs = await loadJobs(true);
+    myJobs = allJobs.filter(j => j.creator_id === myId || (isAdmin && myId === String(534663313)));
+  } catch(e) {}
+  try {
+    const allApplies = await loadApplies();
+    myAppliesData = allApplies.filter(a =>
+      myJobs.some(j => String(j.id) === String(a.jobId))
+    );
+  } catch(e) {}
+
+  if (!myId && !isAdmin) {
+    el.innerHTML = `
+      <div style="padding:var(--s5);text-align:center;">
+        <div style="font-size:40px;margin-bottom:var(--s4);opacity:0.35;">🔐</div>
+        <div style="font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px;">Войдите в аккаунт</div>
+        <div style="font-size:var(--t-sm);color:var(--text3);margin-bottom:var(--s5);">Дашборд доступен после авторизации</div>
+        <button onclick="_pendingAuthAction=()=>{pushTo('dashboardScreen');renderDashboard();};openModal('tgAuthModal')"
+          class="dash-post-btn">✈️ Войти через Telegram</button>
+      </div>`;
+    return;
+  }
+
+  // Считаем метрики
+  const totalViews = myJobs.reduce((s, j) => s + (j.views || 0), 0);
+  const totalApplies = myAppliesData.length;
+  const activeJobs = myJobs.filter(j => {
+    if (!j.expires_at) return true;
+    return new Date(j.expires_at) > new Date();
+  }).length;
+  const applyRate = totalViews > 0 ? ((totalApplies / totalViews) * 100).toFixed(1) : '0';
+
+  // Данные для мини-графика (последние 7 дней)
+  const now = Date.now();
+  const days = Array.from({length: 7}, (_, i) => {
+    const d = new Date(now - (6-i) * 86400000);
+    return { label: d.toLocaleDateString('ru', {weekday:'short'}), count: 0 };
+  });
+  myAppliesData.forEach(a => {
+    const daysAgo = Math.floor((now - a.ts) / 86400000);
+    if (daysAgo >= 0 && daysAgo < 7) days[6 - daysAgo].count++;
+  });
+  const maxCount = Math.max(...days.map(d => d.count), 1);
+
+  const html = `
+    <!-- Сводная статистика -->
+    <div class="dash-stat-grid">
+      <div class="dash-stat accent">
+        <span class="dash-stat-icon">💼</span>
+        <div class="dash-stat-num">${myJobs.length}</div>
+        <div class="dash-stat-label">Всего вакансий</div>
+        <div class="dash-stat-delta up">${activeJobs} активных</div>
+      </div>
+      <div class="dash-stat green">
+        <span class="dash-stat-icon">📩</span>
+        <div class="dash-stat-num">${totalApplies}</div>
+        <div class="dash-stat-label">Откликов</div>
+        <div class="dash-stat-delta up">за всё время</div>
+      </div>
+      <div class="dash-stat orange">
+        <span class="dash-stat-icon">👁</span>
+        <div class="dash-stat-num">${totalViews >= 1000 ? (totalViews/1000).toFixed(1)+'K' : totalViews}</div>
+        <div class="dash-stat-label">Просмотров</div>
+      </div>
+      <div class="dash-stat rose">
+        <span class="dash-stat-icon">📈</span>
+        <div class="dash-stat-num">${applyRate}%</div>
+        <div class="dash-stat-label">Конверсия</div>
+        <div class="dash-stat-delta ${parseFloat(applyRate) >= 2 ? 'up' : ''}">${parseFloat(applyRate) >= 2 ? '↑ Хорошо' : 'откликов / просмотры'}</div>
+      </div>
+    </div>
+
+    <!-- Мини-график откликов за 7 дней -->
+    <div class="resume-section">
+      <div class="resume-section-title">📊 Отклики за 7 дней</div>
+      <div class="dash-chart">
+        ${days.map((d, i) => `
+          <div class="dash-bar ${i === 6 ? 'today' : ''}"
+            style="height:${Math.max(8, (d.count / maxCount) * 100)}%"
+            title="${d.count} откликов"></div>
+        `).join('')}
+      </div>
+      <div class="dash-chart-labels">
+        ${days.map(d => `<span>${d.label}</span>`).join('')}
+      </div>
+    </div>
+
+    <!-- Мои вакансии -->
+    <div class="sec-label">Мои вакансии</div>
+    ${myJobs.length === 0 ? `
+      <div class="dash-empty">
+        <div class="dash-empty-icon">💼</div>
+        <div class="dash-empty-title">Нет вакансий</div>
+        <div class="dash-empty-sub">Разместите первую вакансию и начните получать отклики</div>
+        <button class="dash-post-btn" onclick="goBack();setTimeout(()=>navTo('createScreen',null),300);">
+          ✦ Разместить вакансию
+        </button>
+      </div>
+    ` : myJobs.map(j => {
+      const jobApplies = myAppliesData.filter(a => String(a.jobId) === String(j.id));
+      const isActive = !j.expires_at || new Date(j.expires_at) > new Date();
+      const daysLeft = j.expires_at
+        ? Math.max(0, Math.ceil((new Date(j.expires_at) - new Date()) / 86400000))
+        : null;
+
+      return `
+        <div class="dash-vacancy-card">
+          <div class="dash-vacancy-header">
+            <div>
+              <div class="dash-vacancy-title">${esc(j.title)}</div>
+              <div class="dash-vacancy-sub">${esc(j.company)} · ${esc(j.city)}</div>
+            </div>
+            <div class="dash-status ${isActive ? 'active' : 'expired'}">
+              ${isActive ? '● Активна' : '○ Истекла'}
+            </div>
+          </div>
+          ${daysLeft !== null ? `<div style="font-size:11px;color:${daysLeft <= 3 ? 'var(--orange)' : 'var(--text3)'};margin-bottom:var(--s3);">⏱ Осталось дней: ${daysLeft}</div>` : ''}
+          <div class="dash-metrics">
+            <div class="dash-metric">
+              <div class="dash-metric-num">${j.views || 0}</div>
+              <div class="dash-metric-label">Просмотров</div>
+            </div>
+            <div class="dash-metric">
+              <div class="dash-metric-num">${jobApplies.length}</div>
+              <div class="dash-metric-label">Откликов</div>
+            </div>
+            <div class="dash-metric">
+              <div class="dash-metric-num">${j.views ? ((jobApplies.length / j.views) * 100).toFixed(1) : 0}%</div>
+              <div class="dash-metric-label">Конверсия</div>
+            </div>
+          </div>
+          ${jobApplies.length > 0 ? `
+            <div style="margin-top:var(--s3);border-top:1px solid var(--border);padding-top:var(--s3);">
+              <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;font-family:var(--font-display);margin-bottom:var(--s2);">Последние отклики</div>
+              ${jobApplies.slice(0,3).map(a => `
+                <div class="applicant-card">
+                  <div class="applicant-avatar">${(a.name||'?')[0].toUpperCase()}</div>
+                  <div class="applicant-info">
+                    <div class="applicant-name">${esc(a.name || 'Аноним')}</div>
+                    <div class="applicant-meta">${esc(a.date || '')}</div>
+                  </div>
+                  <div class="applicant-contact" onclick="contactUser('${esc(a.contact)}')">
+                    Написать
+                  </div>
+                </div>
+              `).join('')}
+              ${jobApplies.length > 3 ? `
+                <div style="font-size:12px;color:var(--accent);font-weight:600;text-align:center;padding:var(--s2) 0;cursor:pointer;"
+                  onclick="pushTo('myJobAppliesScreen')">
+                  Ещё ${jobApplies.length - 3} откликов →
+                </div>` : ''}
+            </div>
+          ` : `
+            <div style="margin-top:var(--s3);padding:var(--s3);border-radius:var(--r-md);background:var(--surface2);text-align:center;">
+              <div style="font-size:12px;color:var(--text3);">Откликов пока нет</div>
+            </div>
+          `}
+        </div>
+      `;
+    }).join('')}
+
+    <button class="dash-post-btn" style="width:100%;justify-content:center;margin-top:var(--s2);"
+      onclick="goBack();setTimeout(()=>navTo('createScreen',null),300);">
+      ✦ Разместить ещё вакансию
+    </button>
+    <div style="height:8px;"></div>
+  `;
+
+  el.innerHTML = html;
+}
+
+async function dashboardRefresh() {
+  _jobsCache = null;
+  await renderDashboard();
+  showToast('↻ Данные обновлены');
+}
+
 // ── END WALLET JS ──────────────────────────────────
 </script>
 </body>
