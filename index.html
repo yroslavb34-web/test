@@ -1259,6 +1259,177 @@
   .notif-cat-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text2); font-size: 12px; cursor: pointer; transition: all 0.15s; margin: 4px 4px 4px 0; }
   .notif-cat-chip.active { background: rgba(124,92,255,0.15); border-color: rgba(124,92,255,0.35); color: var(--accent); }
 
+
+  /* ═══ PAYMENT REDESIGN ═══ */
+
+  /* Статус заявки */
+  .pay-status-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: var(--r-full);
+    font-size: 12px; font-weight: 700; font-family: var(--font-display);
+    letter-spacing: 0.03em;
+  }
+  .pay-status-pending  { background: rgba(245,124,0,0.12); color: var(--orange); border: 1px solid rgba(245,124,0,0.2); }
+  .pay-status-approved { background: var(--green-soft); color: var(--green); border: 1px solid rgba(0,185,107,0.2); }
+  .pay-status-rejected { background: rgba(229,57,53,0.1); color: var(--red); border: 1px solid rgba(229,57,53,0.2); }
+
+  /* Реквизиты — красивая карточка */
+  .pay-req-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); overflow: hidden;
+    box-shadow: var(--shadow-sm); margin: var(--s3) 0;
+  }
+  .pay-req-header {
+    background: linear-gradient(135deg, #0F0B28, #1e1060);
+    padding: var(--s3) var(--s4);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pay-req-header-icon { font-size: 20px; }
+  .pay-req-header-text { font-size: 13px; font-weight: 700; color: #fff; font-family: var(--font-display); letter-spacing: -0.2px; }
+  .pay-req-header-sub  { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 1px; }
+  .pay-req-rows { padding: var(--s3) var(--s4) var(--s2); }
+  .pay-req-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s2) 0; border-bottom: 1px solid var(--border);
+  }
+  .pay-req-row:last-child { border-bottom: none; }
+  .pay-req-lbl { font-size: 12px; color: var(--text3); }
+  .pay-req-val {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pay-copy-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 13px; color: var(--accent); padding: 2px 4px;
+    border-radius: 4px; transition: all 0.15s;
+  }
+  .pay-copy-btn:active { transform: scale(0.85); }
+  .pay-req-warn {
+    margin: var(--s2) var(--s4) var(--s3);
+    background: rgba(245,124,0,0.08);
+    border: 1px solid rgba(245,124,0,0.18);
+    border-radius: var(--r-md); padding: 10px 12px;
+    font-size: 12px; color: var(--orange); line-height: 1.5;
+  }
+
+  /* Поле ввода номера перевода */
+  .pay-ref-wrap {
+    margin: var(--s3) 0;
+  }
+  .pay-ref-label {
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: var(--font-display); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pay-ref-input {
+    width: 100%; padding: 13px var(--s4);
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-md); color: var(--text);
+    font-size: 15px; font-family: var(--font-body); outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    letter-spacing: 0.02em;
+  }
+  .pay-ref-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-mid);
+  }
+  .pay-ref-input::placeholder { color: var(--text4); }
+  .pay-ref-hint { font-size: 11px; color: var(--text3); margin-top: 5px; line-height: 1.5; }
+
+  /* Шаги оплаты — новый стиль */
+  .pay-step {
+    display: flex; gap: var(--s3); margin-bottom: var(--s2);
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: var(--s3) var(--s4);
+    box-shadow: var(--shadow-xs);
+  }
+  .pay-step-num {
+    width: 32px; height: 32px; border-radius: var(--r-md);
+    background: var(--accent-soft); border: 1.5px solid rgba(91,63,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    color: var(--accent); flex-shrink: 0; margin-top: 1px;
+  }
+  .pay-step-num.done {
+    background: var(--green-soft); border-color: rgba(0,185,107,0.2);
+    color: var(--green);
+  }
+  .pay-step-body { flex: 1; min-width: 0; }
+  .pay-step-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .pay-step-desc { font-size: 12px; color: var(--text3); line-height: 1.55; }
+
+  /* Кнопка "Я оплатил" */
+  .pay-confirm-btn {
+    width: 100%; padding: 16px; border-radius: var(--r-lg);
+    background: var(--green); color: #fff;
+    font-size: 15px; font-weight: 700;
+    border: none; cursor: pointer; font-family: var(--font-display);
+    letter-spacing: -0.3px; margin-top: var(--s3);
+    box-shadow: 0 6px 20px rgba(0,185,107,0.3);
+    transition: all 0.2s cubic-bezier(0.34,1.2,0.64,1);
+  }
+  .pay-confirm-btn:active { transform: scale(0.97); box-shadow: none; }
+  .pay-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* История платежей */
+  .pay-history-item {
+    display: flex; align-items: center; gap: var(--s3);
+    padding: var(--s3) 0; border-bottom: 1px solid var(--border);
+  }
+  .pay-history-item:last-child { border-bottom: none; }
+  .pay-history-icon {
+    width: 40px; height: 40px; border-radius: var(--r-md); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+  }
+  .pay-history-info { flex: 1; min-width: 0; }
+  .pay-history-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .pay-history-date  { font-size: 11px; color: var(--text3); }
+  .pay-history-amount {
+    font-family: var(--font-display); font-size: 14px;
+    font-weight: 700; color: var(--text); flex-shrink: 0;
+  }
+
+  /* Тарифы — выбранный */
+  .wtariff-card.wsel {
+    border-color: var(--accent) !important;
+    background: var(--accent-soft) !important;
+    box-shadow: 0 0 0 1px var(--accent), var(--shadow-sm) !important;
+  }
+  .wtariff-card:active { transform: scale(0.975); }
+
+  /* Таб кошелька */
+  .wallet-tabs { display: flex; gap: 6px; margin-bottom: var(--s4); }
+  .wallet-tab {
+    flex: 1; padding: 9px var(--s3); border-radius: var(--r-md);
+    font-size: 12px; font-weight: 600; font-family: var(--font-display);
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text3);
+    transition: all 0.18s ease; text-align: center;
+    letter-spacing: -0.1px;
+  }
+  .wallet-tab.wt-active {
+    background: var(--accent-soft); border-color: rgba(91,63,255,0.25);
+    color: var(--accent);
+  }
+
+  /* Уведомление о статусе */
+  .pay-status-banner {
+    border-radius: var(--r-lg); padding: var(--s4);
+    margin-bottom: var(--s3);
+    display: flex; align-items: flex-start; gap: var(--s3);
+  }
+  .pay-status-banner.pending {
+    background: rgba(245,124,0,0.07); border: 1.5px solid rgba(245,124,0,0.18);
+  }
+  .pay-status-banner.approved {
+    background: var(--green-soft); border: 1.5px solid rgba(0,185,107,0.2);
+  }
+  .pay-status-icon { font-size: 24px; flex-shrink: 0; margin-top: 1px; }
+  .pay-status-text { flex: 1; }
+  .pay-status-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .pay-status-desc  { font-size: 12px; color: var(--text3); line-height: 1.55; }
+
   /* ═══════ PRIVACY SCREEN ═══════ */
   .privacy-section { margin-bottom: 20px; }
   .privacy-heading { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-display); margin-bottom: 8px; }
@@ -2323,49 +2494,196 @@
     <div class="tg-safe-top"></div>
     <div class="detail-header-bar">
       <button class="back-btn" onclick="goBack()">←</button>
-      <div class="detail-bar-title">💰 Кошелёк</div>
+      <div class="detail-bar-title">Кошелёк</div>
+      <button onclick="walletLoadBalance()" style="background:none;border:none;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;padding:0 6px;font-family:var(--font-body);">↻</button>
     </div>
     <div class="scroll-area">
+
+      <!-- ТАБЫ -->
       <div class="wallet-tabs">
-        <button class="wallet-tab wt-active" onclick="walletTab('main',this)">💰 Кошелёк</button>
-        <button class="wallet-tab" onclick="walletTab('flow',this)">📋 Как оплатить</button>
+        <button class="wallet-tab wt-active" onclick="walletTab('main',this)">💰 Баланс</button>
         <button class="wallet-tab" onclick="walletTab('tariffs',this)">🚀 Тарифы</button>
+        <button class="wallet-tab" onclick="walletTab('flow',this)">📋 Оплата</button>
       </div>
+
+      <!-- ═══ PANE: БАЛАНС ═══ -->
       <div class="wpane wt-active" id="wp-main">
-        <div class="wlt-card"><div class="wlt-card-inner"><div class="wlt-label">💰 Мой баланс</div><div class="wlt-amount" id="walletBalance">0 <span>₽</span></div><button class="wlt-btn" onclick="walletGoToTariffs()">Пополнить баланс</button></div></div>
-        <div class="sec-label" style="margin-top:14px">Активные вакансии</div>
-        <div class="wvac-card" id="walletVacancies"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">Нет активных вакансий</div></div>
-        <div class="sec-label" style="margin-top:2px">История транзакций</div>
-        <div class="wtx-card" id="walletTransactions"><div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0">История пуста</div></div>
-        <div class="wsupport-row">Вопросы по оплате: <a href="https://t.me/sapgos">@sapgos</a></div>
+
+        <!-- Карточка баланса -->
+        <div class="wlt-card">
+          <div class="wlt-card-inner">
+            <div class="wlt-label">Мой баланс</div>
+            <div class="wlt-amount" id="walletBalance">0 <span>₽</span></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="wlt-btn" onclick="walletGoToTariffs()">＋ Пополнить</button>
+              <button class="wlt-btn" onclick="walletTab('flow',document.querySelectorAll('.wallet-tab')[2])"
+                style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);">
+                📋 Как оплатить
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Статус последней заявки -->
+        <div id="lastPaymentStatus"></div>
+
+        <!-- Активные вакансии -->
+        <div class="sec-label" style="margin-top:4px;">Активные вакансии</div>
+        <div class="resume-section" id="walletVacancies" style="padding:var(--s3) var(--s4);">
+          <div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0;">Нет активных вакансий</div>
+        </div>
+
+        <!-- История транзакций -->
+        <div class="sec-label">История платежей</div>
+        <div class="resume-section" id="walletTransactions" style="padding:var(--s3) var(--s4);">
+          <div style="font-size:12px;color:var(--text3);text-align:center;padding:8px 0;">История пуста</div>
+        </div>
+
+        <div style="text-align:center;font-size:12px;color:var(--text3);margin-top:var(--s3);">
+          Вопросы по оплате: <a href="https://t.me/sapgos" style="color:var(--accent);font-weight:600;">@sapgos</a>
+        </div>
       </div>
-      <div class="wpane" id="wp-flow">
-        <div class="sec-label">Как пополнить баланс</div>
-        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">1</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Выберите тариф</div><div class="wstep-desc">Перейдите во вкладку «Тарифы» и выберите подходящий пакет размещения</div></div></div>
-        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">2</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Переведите оплату</div><div class="wstep-desc">Сделайте перевод по реквизитам ЮМани</div><div class="wreq-box"><div class="wreq-row"><span class="wreq-lbl">Номер телефона</span><span class="wreq-val">+7 977 820 97 44</span></div><div class="wreq-row"><span class="wreq-lbl">Банк</span><span class="wreq-val">ЮМани</span></div><div class="wreq-row"><span class="wreq-lbl">Получатель</span><span class="wreq-val">Ярослав.Б</span></div><div class="wreq-hint">⚠️ В комментарии к переводу укажите ваш @username в Telegram</div></div></div></div>
-        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">3</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Прикрепите скриншот чека</div><div class="wstep-desc">Сделайте скрин подтверждения оплаты и загрузите его</div><div class="wupload-box" id="walletUploadBox" onclick="walletUploadScreenshot()"><div class="wupload-icon">📎</div><div class="wupload-text" id="walletUploadText">Нажмите, чтобы прикрепить скриншот</div></div><input type="file" id="walletFileInput" accept="image/*" style="display:none" onchange="walletHandleFile(event)"><button id="walletPaidBtn" onclick="walletConfirmPayment()" style="display:none;width:100%;margin-top:14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,#4dff9a,#00c97a);color:#000;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);letter-spacing:-0.3px;">✅ Я оплатил — уведомить администратора</button></div></div>
-        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num">4</div><div class="wstep-line"></div></div><div class="wstep-body"><div class="wstep-title">Уведомление уходит автоматически</div><div class="wstep-desc">Администратор @sapgos получит сообщение со скриншотом через бота</div><div class="wnotif-box">🔔 Новая оплата<br>👤 <b id="wNotifUser">@username</b> · Тариф: <span id="wNotifTariff">Стандарт</span><br>💳 Сумма: <span id="wNotifSum">1 500 ₽</span><br>📎 [скриншот прикреплён]</div></div></div>
-        <div class="wflow-step"><div class="wstep-left"><div class="wstep-num done">✓</div></div><div class="wstep-body"><div class="wstep-title">Баланс зачислен</div><div class="wstep-desc">Администратор проверяет перевод и вручную начисляет баланс. Обычно в течение нескольких часов.</div></div></div>
-        <div class="wsupport-row" style="margin-top:8px">Вопросы: <a href="https://t.me/sapgos">@sapgos</a></div>
-      </div>
+
+      <!-- ═══ PANE: ТАРИФЫ ═══ -->
       <div class="wpane" id="wp-tariffs">
-        <div class="sec-label">Выберите тариф</div>
-        <div class="wtariff-card" onclick="walletSelTariff(this,'Старт','900')"><div class="wtariff-row"><div><div class="wtariff-name">Старт</div><div class="wtariff-desc">1 вакансия · 30 дней</div></div><div class="wtariff-price">900 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">1 вакансия</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill">Стандартный вид</span></div></div>
-        <div class="wtariff-card popular" onclick="walletSelTariff(this,'Стандарт','1 500')"><div class="wpop-badge">⚡ ПОПУЛЯРНЫЙ</div><div class="wtariff-row"><div><div class="wtariff-name">Стандарт</div><div class="wtariff-desc">3 вакансии · 30 дней</div></div><div class="wtariff-price">1 500 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">3 вакансии</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Выделение</span></div></div>
-        <div class="wtariff-card" onclick="walletSelTariff(this,'Про','5 000')"><div class="wtariff-row"><div><div class="wtariff-name">Про</div><div class="wtariff-desc">10 вакансий · 30 дней · Закреп</div></div><div class="wtariff-price">5 000 <span class="cur">₽</span></div></div><div class="wtariff-feats"><span class="wfeat-pill">10 вакансий</span><span class="wfeat-pill">30 дней</span><span class="wfeat-pill acc">Закреп</span><span class="wfeat-pill acc">Выделение</span><span class="wfeat-pill acc">Значок PRO</span></div></div>
-        <button class="wbtn-select" onclick="(function(){
-  if(!document.querySelector('.wtariff-card.wsel')){showToast('⚠️ Сначала выберите тариф',true);return;}
-  if(!webTgUser?.id){
-    try{const s=localStorage.getItem('jobic_user');if(s){const u=JSON.parse(s);if(u?.id)webTgUser=u;}}catch(e){}
-  }
-  if(!webTgUser?.id){
-    _pendingAuthAction=()=>{walletTab('flow',document.querySelectorAll('.wallet-tab')[1]);};
-    openModal('tgAuthModal');return;
-  }
-  walletTab('flow',document.querySelectorAll('.wallet-tab')[1]);
-})()">Перейти к оплате →</button>
-        <div class="wtariff-note">После оплаты баланс начисляется вручную администратором.<br>Поддержка: <a href="https://t.me/sapgos">@sapgos</a></div>
+
+        <!-- Тариф Старт -->
+        <div class="wtariff-card" onclick="walletSelTariff(this,'Старт','900')">
+          <div class="wtariff-row">
+            <div>
+              <div class="wtariff-name">Старт</div>
+              <div class="wtariff-desc">1 вакансия · 30 дней активности</div>
+            </div>
+            <div class="wtariff-price">900 <span class="cur">₽</span></div>
+          </div>
+          <div class="wtariff-feats">
+            <span class="wfeat-pill">1 вакансия</span>
+            <span class="wfeat-pill">30 дней</span>
+            <span class="wfeat-pill">Стандартный вид</span>
+          </div>
+        </div>
+
+        <!-- Тариф Стандарт (популярный) -->
+        <div class="wtariff-card popular" onclick="walletSelTariff(this,'Стандарт','1500')">
+          <div class="wpop-badge">⚡ ПОПУЛЯРНЫЙ</div>
+          <div class="wtariff-row">
+            <div>
+              <div class="wtariff-name">Стандарт</div>
+              <div class="wtariff-desc">3 вакансии · 30 дней · Выделение цветом</div>
+            </div>
+            <div class="wtariff-price">1 500 <span class="cur">₽</span></div>
+          </div>
+          <div class="wtariff-feats">
+            <span class="wfeat-pill">3 вакансии</span>
+            <span class="wfeat-pill">30 дней</span>
+            <span class="wfeat-pill acc">Выделение</span>
+          </div>
+        </div>
+
+        <!-- Тариф Про -->
+        <div class="wtariff-card" onclick="walletSelTariff(this,'Про','5000')">
+          <div class="wtariff-row">
+            <div>
+              <div class="wtariff-name">Про</div>
+              <div class="wtariff-desc">10 вакансий · 30 дней · Топ выдачи</div>
+            </div>
+            <div class="wtariff-price">5 000 <span class="cur">₽</span></div>
+          </div>
+          <div class="wtariff-feats">
+            <span class="wfeat-pill">10 вакансий</span>
+            <span class="wfeat-pill">30 дней</span>
+            <span class="wfeat-pill acc">Закреп в топе</span>
+            <span class="wfeat-pill acc">Значок PRO</span>
+          </div>
+        </div>
+
+        <!-- Кнопка перейти к оплате -->
+        <button class="pay-confirm-btn" style="background:var(--accent);box-shadow:var(--shadow-accent);" onclick="walletGoToPayment()">
+          Перейти к оплате →
+        </button>
+        <div style="text-align:center;font-size:11px;color:var(--text3);margin-top:var(--s3);line-height:1.6;">
+          Баланс зачисляется после подтверждения перевода.<br>
+          Поддержка: <a href="https://t.me/sapgos" style="color:var(--accent2);font-weight:600;">@sapgos</a>
+        </div>
       </div>
+
+      <!-- ═══ PANE: ОПЛАТА ═══ -->
+      <div class="wpane" id="wp-flow">
+
+        <!-- Выбранный тариф -->
+        <div id="paySelectedTariff" style="margin-bottom:var(--s3);"></div>
+
+        <!-- Шаг 1: Реквизиты -->
+        <div class="pay-step">
+          <div class="pay-step-num done">1</div>
+          <div class="pay-step-body">
+            <div class="pay-step-title">Переведите оплату</div>
+            <div class="pay-step-desc">Сделайте перевод на номер ЮМани и укажите @username в комментарии</div>
+          </div>
+        </div>
+
+        <!-- Карточка реквизитов -->
+        <div class="pay-req-card">
+          <div class="pay-req-header">
+            <div class="pay-req-header-icon">💳</div>
+            <div>
+              <div class="pay-req-header-text">Реквизиты ЮМани</div>
+              <div class="pay-req-header-sub">Перевод физ. лицу · мгновенно</div>
+            </div>
+          </div>
+          <div class="pay-req-rows">
+            <div class="pay-req-row">
+              <span class="pay-req-lbl">Номер телефона</span>
+              <span class="pay-req-val">
+                +7 977 820 97 44
+                <button class="pay-copy-btn" onclick="copyPayReq('+7 977 820 97 44')">📋</button>
+              </span>
+            </div>
+            <div class="pay-req-row">
+              <span class="pay-req-lbl">Банк</span>
+              <span class="pay-req-val">ЮМани</span>
+            </div>
+            <div class="pay-req-row">
+              <span class="pay-req-lbl">Получатель</span>
+              <span class="pay-req-val">Ярослав.Б</span>
+            </div>
+            <div class="pay-req-row" id="payAmountRow" style="display:none;">
+              <span class="pay-req-lbl">Сумма</span>
+              <span class="pay-req-val" id="payAmountVal" style="color:var(--accent);">—</span>
+            </div>
+          </div>
+          <div class="pay-req-warn">
+            ⚠️ В комментарии к переводу обязательно укажите ваш @username в Telegram — иначе не сможем идентифицировать платёж
+          </div>
+        </div>
+
+        <!-- Шаг 2: Подтверждение -->
+        <div class="pay-step">
+          <div class="pay-step-num">2</div>
+          <div class="pay-step-body">
+            <div class="pay-step-title">Нажмите «Я оплатил»</div>
+            <div class="pay-step-desc">После перевода нажмите кнопку — мы получим уведомление и быстро подтвердим</div>
+          </div>
+        </div>
+
+        <!-- Кнопка подтверждения -->
+        <button class="pay-confirm-btn" id="walletPaidBtn" onclick="walletConfirmPaymentNew()">
+          ✅ Я оплатил — отправить заявку
+        </button>
+
+        <div style="text-align:center;padding:var(--s3) 0 var(--s2);">
+          <div style="font-size:11px;color:var(--text3);line-height:1.7;">
+            После проверки получите уведомление в Telegram от бота.<br>
+            Среднее время подтверждения: <strong style="color:var(--green);">5–30 минут</strong> в рабочее время.
+          </div>
+        </div>
+
+        <div style="text-align:center;font-size:12px;color:var(--text3);padding-bottom:var(--s2);">
+          Вопрос по оплате?
+          <a href="https://t.me/sapgos" style="color:var(--accent);font-weight:600;">Написать @sapgos</a>
+        </div>
+      </div>
+
     </div>
   </div>
   <!-- ═══════ END WALLET SCREEN ═══════ -->
@@ -6063,24 +6381,8 @@ function walletTab(name, tabEl) {
   if (tabEl) tabEl.classList.add('wt-active');
   // При переходе на «Как оплатить» обновляем превью уведомления
   if (name === 'flow') {
-    const tEl = document.getElementById('wNotifTariff');
-    const sEl = document.getElementById('wNotifSum');
-    if (tEl) tEl.textContent = walletSelectedTariff;
-    if (sEl) sEl.textContent = walletSelectedSum + ' ₽';
-    const uEl = document.getElementById('wNotifUser');
-    if (uEl) {
-      const u = getTgUser();
-      uEl.textContent = u?.username ? '@' + u.username : (u?.first_name || '@username');
-    }
-    // Сбрасываем поле загрузки при каждом открытии вкладки оплаты
-    walletScreenshotFile = null;
-    try { document.getElementById('walletFileInput').value = ''; } catch(e) {}
-    const textEl = document.getElementById('walletUploadText');
-    if (textEl) textEl.textContent = 'Нажмите, чтобы прикрепить скриншот';
-    const box = document.getElementById('walletUploadBox');
-    if (box) box.style.borderColor = '';
-    const paidBtn = document.getElementById('walletPaidBtn');
-    if (paidBtn) { paidBtn.style.display = 'none'; paidBtn.disabled = false; paidBtn.textContent = '✅ Я оплатил — уведомить администратора'; }
+    // Обновляем выбранный тариф во флоу оплаты
+    updatePayFlowTariff();
   }
 }
 
@@ -6088,15 +6390,7 @@ function walletSelTariff(el, name, sum) {
   document.querySelectorAll('.wtariff-card').forEach(c => c.classList.remove('wsel'));
   el.classList.add('wsel');
   walletSelectedTariff = name;
-  // Храним сумму как чистое число (убираем пробелы) для корректного parseInt
-  walletSelectedSum = String(sum).replace(/\s/g, '');
-  const uEl = document.getElementById('wNotifUser');
-  const tEl = document.getElementById('wNotifTariff');
-  const sEl = document.getElementById('wNotifSum');
-  const tgU = getTgUser();
-  if (uEl) uEl.textContent = tgU?.username ? '@' + tgU.username : (tgU?.first_name || '@username');
-  if (tEl) tEl.textContent = name;
-  if (sEl) sEl.textContent = sum + ' ₽';
+  walletSelectedSum = String(sum).replace(/[^\d]/g, '');
 }
 
 function walletUploadScreenshot() {
@@ -6358,6 +6652,8 @@ async function walletLoadBalance() {
 
   const userId = String(tgUser.id);
   try {
+    // Загружаем статус последней заявки
+    walletLoadLastPaymentStatus();
     // Баланс
     const data = await sbFetch('/rest/v1/user_balances?tg_user_id=eq.' + userId + '&select=balance');
     walletUpdateBalance((data && data.length) ? (data[0].balance || 0) : 0);
@@ -6911,6 +7207,241 @@ async function dashboardRefresh() {
   _jobsCache = null;
   await renderDashboard();
   showToast('↻ Данные обновлены');
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// WALLET REDESIGN — новые функции
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Копирование реквизитов
+function copyPayReq(text) {
+  navigator.clipboard?.writeText(text).then(() => {
+    showToast('📋 Скопировано: ' + text);
+  }).catch(() => {
+    showToast('📋 ' + text);
+  });
+  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+// Переход к оплате с проверкой тарифа
+function walletGoToPayment() {
+  const sel = document.querySelector('.wtariff-card.wsel');
+  if (!sel) {
+    showToast('⚠️ Сначала выберите тариф', true);
+    return;
+  }
+  // Показываем авторизацию если нужно
+  if (!webTgUser?.id) {
+    try {
+      const s = localStorage.getItem('jobic_user');
+      if (s) { const u = JSON.parse(s); if (u?.id) webTgUser = u; }
+    } catch(e) {}
+  }
+  if (!webTgUser?.id) {
+    _pendingAuthAction = () => walletGoToPayment();
+    openModal('tgAuthModal');
+    return;
+  }
+  // Переключаем на таб Оплата
+  const tabs = document.querySelectorAll('.wallet-tab');
+  walletTab('flow', tabs[2]);
+}
+
+// Обновляем отображение выбранного тарифа во флоу оплаты
+function updatePayFlowTariff() {
+  const el = document.getElementById('paySelectedTariff');
+  const amountRow = document.getElementById('payAmountRow');
+  const amountVal  = document.getElementById('payAmountVal');
+  if (!el) return;
+
+  if (!walletSelectedTariff || !walletSelectedSum) {
+    el.innerHTML = `
+      <div style="background:rgba(245,124,0,0.07);border:1.5px solid rgba(245,124,0,0.18);
+        border-radius:var(--r-md);padding:var(--s3) var(--s4);margin-bottom:var(--s2);
+        font-size:13px;color:var(--orange);">
+        ⚠️ Тариф не выбран — <span style="cursor:pointer;font-weight:700;text-decoration:underline;"
+          onclick="walletTab('tariffs',document.querySelectorAll('.wallet-tab')[1])">выберите тариф</span>
+      </div>`;
+    if (amountRow) amountRow.style.display = 'none';
+    return;
+  }
+
+  const sum = parseInt(String(walletSelectedSum).replace(/\D/g, '')) || 0;
+  el.innerHTML = `
+    <div style="background:var(--accent-soft);border:1.5px solid rgba(91,63,255,0.2);
+      border-radius:var(--r-md);padding:var(--s3) var(--s4);margin-bottom:var(--s2);
+      display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:0.04em;
+          font-family:var(--font-display);text-transform:uppercase;margin-bottom:2px;">Выбранный тариф</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);font-family:var(--font-display);
+          letter-spacing:-0.3px;">${esc(walletSelectedTariff)}</div>
+      </div>
+      <div style="font-family:var(--font-display);font-size:20px;font-weight:900;
+        color:var(--accent);letter-spacing:-1px;">${sum.toLocaleString('ru')} ₽</div>
+    </div>`;
+
+  if (amountRow) amountRow.style.display = 'flex';
+  if (amountVal) amountVal.textContent = sum.toLocaleString('ru') + ' ₽';
+}
+
+// Новая функция подтверждения оплаты (без скриншота, с номером транзакции)
+async function walletConfirmPaymentNew() {
+  const tgUser = getTgUser();
+  const username = tgUser?.username || tgUser?.first_name || 'unknown';
+  const userId   = tgUser?.id ? String(tgUser.id) : null;
+
+  if (!userId) {
+    _pendingAuthAction = () => walletConfirmPaymentNew();
+    openModal('tgAuthModal');
+    return;
+  }
+
+  if (!walletSelectedTariff || !walletSelectedSum) {
+    showToast('⚠️ Сначала выберите тариф', true);
+    walletTab('tariffs', document.querySelectorAll('.wallet-tab')[1]);
+    return;
+  }
+
+  const refNum = '';  // Больше не запрашиваем у пользователя
+  const amountNum = parseInt(String(walletSelectedSum).replace(/\D/g, '')) || 0;
+
+  const btn = document.getElementById('walletPaidBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Отправляем заявку...'; }
+
+  try {
+    // Пишем заявку в payment_requests
+    let requestId = null;
+    try {
+      const inserted = await sbFetch('/rest/v1/payment_requests', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=representation' },
+        body: JSON.stringify({
+          tg_user_id: userId,
+          username: username,
+          tariff: walletSelectedTariff,
+          amount: amountNum,
+          ref_number: refNum || null,
+          screenshot_url: null,
+          status: 'pending'
+        })
+      });
+      requestId = inserted?.[0]?.id || null;
+    } catch(e) { console.warn('payment_requests:', e); }
+
+    // Уведомляем бота
+    try {
+      await fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPABASE_ANON,
+          'apikey': SUPABASE_ANON,
+          'X-Secret': 'jobic_secret_2024'
+        },
+        body: JSON.stringify({
+          request_id: requestId || '',
+          username: username,
+          tg_user_id: userId,
+          tariff: walletSelectedTariff,
+          amount: String(amountNum),
+          ref_number: refNum || null,
+          screenshot_url: null,
+          first_name: tgUser?.first_name || '',
+          last_name: tgUser?.last_name || ''
+        })
+      });
+    } catch(e) { console.warn('Bot notify:', e); }
+
+    // Показываем статус ожидания
+    showToast('✅ Заявка отправлена! Ждите подтверждения.');
+    if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+
+    // Показываем статус в главном экране кошелька
+    walletShowPendingStatus(walletSelectedTariff, amountNum);
+
+    // Сбрасываем поля
+    const refInput = document.getElementById('payRefInput');
+    if (refInput) refInput.value = '';
+
+    // Переходим на баланс
+    setTimeout(() => {
+      walletTab('main', document.querySelectorAll('.wallet-tab')[0]);
+    }, 1200);
+
+  } catch(e) {
+    console.error('Payment error:', e);
+    showToast('❌ Ошибка. Напишите @sapgos', true);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '✅ Я оплатил — отправить заявку';
+    }
+  }
+}
+
+// Показываем статус ожидания в балансе
+function walletShowPendingStatus(tariff, amount) {
+  const el = document.getElementById('lastPaymentStatus');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="pay-status-banner pending" style="margin-bottom:var(--s3);">
+      <div class="pay-status-icon">⏳</div>
+      <div class="pay-status-text">
+        <div class="pay-status-title">Заявка на проверке</div>
+        <div class="pay-status-desc">
+          Тариф «${esc(tariff)}» · ${amount.toLocaleString('ru')} ₽<br>
+          Подтвердим в течение 1–2 часов. Получите уведомление в Telegram.
+        </div>
+      </div>
+    </div>`;
+}
+
+// Загружаем и показываем статус последней заявки
+async function walletLoadLastPaymentStatus() {
+  const tgUser = getTgUser();
+  if (!tgUser?.id) return;
+  const el = document.getElementById('lastPaymentStatus');
+  if (!el) return;
+
+  try {
+    const rows = await sbFetch(
+      '/rest/v1/payment_requests?tg_user_id=eq.' + String(tgUser.id) +
+      '&order=created_at.desc&limit=1&select=*'
+    );
+    const last = rows?.[0];
+    if (!last) return;
+
+    const timeStr = new Date(last.created_at).toLocaleString('ru', {
+      day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
+
+    if (last.status === 'pending') {
+      el.innerHTML = `
+        <div class="pay-status-banner pending" style="margin-bottom:var(--s3);">
+          <div class="pay-status-icon">⏳</div>
+          <div class="pay-status-text">
+            <div class="pay-status-title">Заявка на проверке</div>
+            <div class="pay-status-desc">
+              Тариф «${esc(last.tariff)}» · ${parseInt(last.amount).toLocaleString('ru')} ₽ · ${timeStr}<br>
+              Ждём подтверждения. Уведомление придёт в Telegram.
+            </div>
+          </div>
+        </div>`;
+    } else if (last.status === 'approved') {
+      el.innerHTML = `
+        <div class="pay-status-banner approved" style="margin-bottom:var(--s3);">
+          <div class="pay-status-icon">✅</div>
+          <div class="pay-status-text">
+            <div class="pay-status-title">Последний платёж одобрен</div>
+            <div class="pay-status-desc">
+              Тариф «${esc(last.tariff)}» · ${parseInt(last.amount).toLocaleString('ru')} ₽ · ${timeStr}
+            </div>
+          </div>
+        </div>`;
+    }
+  } catch(e) { /* silent */ }
 }
 
 // ── END WALLET JS ──────────────────────────────────
