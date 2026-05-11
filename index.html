@@ -7412,9 +7412,10 @@ async function walletConfirmPaymentNew() {
     // Пишем заявку в payment_requests
     let requestId = null;
     try {
-      const inserted = await sbFetch('/rest/v1/payment_requests', {
+      // Шаг 1: INSERT
+      await sbFetch('/rest/v1/payment_requests', {
         method: 'POST',
-        headers: { 'Prefer': 'return=representation' },
+        headers: { 'Prefer': 'return=minimal' },
         body: JSON.stringify({
           tg_user_id: userId,
           username: username,
@@ -7425,7 +7426,12 @@ async function walletConfirmPaymentNew() {
           status: 'pending'
         })
       });
-      requestId = inserted?.[0]?.id || null;
+      // Шаг 2: SELECT — получаем ID только что созданной записи
+      const rows = await sbFetch(
+        '/rest/v1/payment_requests?tg_user_id=eq.' + encodeURIComponent(userId) +
+        '&status=eq.pending&order=created_at.desc&limit=1&select=id'
+      );
+      requestId = rows?.[0]?.id || null;
     } catch(e) { console.warn('payment_requests:', e); }
 
     // Уведомляем бота
