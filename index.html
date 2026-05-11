@@ -1749,6 +1749,122 @@
   /* ── END FORM CSS ── */
 
   /* ── END WALLET CSS ── */
+
+  /* ═══════ COMPANY LOGO ═══════ */
+  .card-logo-wrap {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; position: relative;
+  }
+  [data-theme="dark"] .card-logo-wrap { background: rgba(255,255,255,0.08); }
+  .company-logo-img {
+    width: 46px; height: 46px; object-fit: contain;
+    border-radius: 10px; padding: 5px;
+    background: #fff;
+  }
+  .company-logo-fallback {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700; color: #fff;
+    font-family: var(--font-display);
+  }
+
+  /* ═══════ COMPANY RATING ═══════ */
+  .company-rating-row {
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 2px;
+  }
+  .rating-stars-mini { display: flex; gap: 1px; }
+  .star-mini { font-size: 9px; line-height: 1; }
+  .company-rating-num { font-size: 10px; color: var(--text3); font-weight: 600; }
+
+  /* ═══════ REVIEWS SECTION ═══════ */
+  .reviews-section { margin-top: 8px; }
+  .reviews-title {
+    font-size: 10px; font-weight: 600; color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 12px; font-family: var(--font-display);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .review-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); padding: 14px;
+    margin-bottom: 10px; box-shadow: var(--shadow-xs);
+  }
+  .review-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .review-stars { display: flex; gap: 2px; font-size: 14px; }
+  .review-date { font-size: 10px; color: var(--text3); }
+  .review-text { font-size: 13px; color: var(--text2); line-height: 1.55; }
+  .review-author { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  .add-review-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 10px 16px; border-radius: var(--r-md);
+    background: var(--accent-soft); border: 1.5px solid rgba(91,63,255,0.18);
+    color: var(--accent); font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: var(--font-display);
+    transition: all 0.18s ease; margin-bottom: 12px;
+    width: 100%;
+  }
+  .add-review-btn:active { transform: scale(0.96); }
+  [data-theme="dark"] .add-review-btn {
+    background: rgba(91,63,255,0.12); border-color: rgba(91,63,255,0.25);
+  }
+  .avg-rating-block {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: var(--r-lg);
+    margin-bottom: 12px; box-shadow: var(--shadow-xs);
+  }
+  .avg-rating-big {
+    font-family: var(--font-display); font-size: 28px; font-weight: 900;
+    color: var(--text); letter-spacing: -1px; line-height: 1;
+  }
+  .avg-rating-info { flex: 1; }
+  .avg-rating-stars { font-size: 18px; line-height: 1; margin-bottom: 3px; }
+  .avg-rating-count { font-size: 11px; color: var(--text3); }
+
+  /* ═══════ REVIEW MODAL ═══════ */
+  .star-picker { display: flex; gap: 8px; justify-content: center; margin: 16px 0; }
+  .star-pick { font-size: 32px; cursor: pointer; opacity: 0.3; transition: all 0.15s; }
+  .star-pick.on { opacity: 1; transform: scale(1.1); }
+  .star-pick:hover { opacity: 0.8; }
+
+  /* ═══════ NOTIF NAV BADGE ═══════ */
+  .nav-notif-badge {
+    position: absolute; top: 4px; right: 8px;
+    min-width: 16px; height: 16px; padding: 0 4px;
+    background: var(--accent); border-radius: 8px;
+    border: 2px solid var(--bg); color: #fff;
+    font-size: 9px; font-weight: 700; font-family: var(--font-display);
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; opacity: 0; transform: scale(0.5);
+    transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+  }
+  .nav-notif-badge.visible { opacity: 1; transform: scale(1); }
+
+  /* ═══════ FEATURED CATEGORY BG ═══════ */
+  .feat-img-top.cat-it {
+    background: linear-gradient(145deg, #0F0B28 0%, #2D1B6E 45%, #0B1A3D 100%);
+  }
+  .feat-img-top.cat-design {
+    background: linear-gradient(145deg, #1a0828 0%, #6E1B55 45%, #3D0B22 100%);
+  }
+  .feat-img-top.cat-marketing {
+    background: linear-gradient(145deg, #1a1000 0%, #6E4500 45%, #3D2000 100%);
+  }
+  .feat-img-top.cat-finance {
+    background: linear-gradient(145deg, #001a0e 0%, #005E38 45%, #002B18 100%);
+  }
+  .feat-img-top.cat-mgmt {
+    background: linear-gradient(145deg, #001028 0%, #004E8A 45%, #002340 100%);
+  }
+  .feat-img-top.cat-default {
+    background: linear-gradient(145deg, #0F0B28 0%, #2D1B6E 45%, #0B1A3D 100%);
+  }
 </style>
 </head>
 <body>
@@ -1801,7 +1917,7 @@
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-fav-badge" id="favBadge1"></span><span class="nav-label">Избранное</span></button>
       <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
-      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-notif-badge notif-nav-badge-all"></span><span class="nav-label">Профиль</span></button>
     </div>
   </div>
 
@@ -1825,7 +1941,7 @@
       <button class="nav-btn active" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
       <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
-      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-notif-badge notif-nav-badge-all"></span><span class="nav-label">Профиль</span></button>
     </div>
   </div>
 
@@ -1865,6 +1981,15 @@
       <div class="similar-section">
         <div class="similar-title">Похожие вакансии</div>
         <div id="similarJobsList"></div>
+      </div>
+      <!-- Отзывы о компании -->
+      <div class="reviews-section" id="reviewsSection">
+        <div class="reviews-title">
+          <span>Отзывы о компании</span>
+          <button class="add-review-btn" style="width:auto;margin:0;padding:6px 12px;font-size:11px;" onclick="openReviewModal()">⭐ Оставить отзыв</button>
+        </div>
+        <div id="avgRatingBlock"></div>
+        <div id="reviewsList"></div>
       </div>
     </div>
     <!-- No bottom nav on detail — use back button -->
@@ -2112,7 +2237,7 @@
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
       <button class="nav-btn active" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
-      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-notif-badge notif-nav-badge-all"></span><span class="nav-label">Профиль</span></button>
     </div>
   </div>
 
@@ -2134,7 +2259,7 @@
       <button class="nav-btn" onclick="navTo('favScreen', this)"><span class="nav-icon">❤️</span><span class="nav-label">Избранное</span></button>
       <button class="nav-btn" onclick="navTo('createScreen', this)" class-plus="1"><span class="nav-icon">✦</span><span class="nav-label">Разместить</span></button>
       <button class="nav-btn active" onclick="navTo('newsScreen', this)"><span class="nav-icon">📰</span><span class="nav-label">Новости</span></button>
-      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-label">Профиль</span></button>
+      <button class="nav-btn" onclick="navTo('profileScreen', this)"><span class="nav-icon">👤</span><span class="nav-notif-badge notif-nav-badge-all"></span><span class="nav-label">Профиль</span></button>
     </div>
   </div>
 
@@ -2747,6 +2872,24 @@
 
   <!-- ═══════ TOAST ═══════ -->
   <div class="toast" id="toast"></div>
+
+  <!-- MODAL: Review -->
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal-box">
+      <div class="modal-title">⭐ Отзыв о компании</div>
+      <div class="modal-sub" id="reviewModalSub">Оцените работодателя</div>
+      <div class="star-picker" id="starPicker">
+        <span class="star-pick" data-val="1" onclick="pickStar(1)">⭐</span>
+        <span class="star-pick" data-val="2" onclick="pickStar(2)">⭐</span>
+        <span class="star-pick" data-val="3" onclick="pickStar(3)">⭐</span>
+        <span class="star-pick" data-val="4" onclick="pickStar(4)">⭐</span>
+        <span class="star-pick" data-val="5" onclick="pickStar(5)">⭐</span>
+      </div>
+      <textarea class="form-input" id="reviewText" rows="3" placeholder="Расскажите об опыте взаимодействия с компанией (необязательно)" style="resize:none;line-height:1.5;margin-bottom:14px;"></textarea>
+      <button class="modal-btn" onclick="submitReview()">Опубликовать отзыв</button>
+      <button class="modal-btn-cancel" onclick="closeModal('reviewModal')">Отмена</button>
+    </div>
+  </div>
 
   <!-- ═══════ TG AUTH MODAL ═══════ -->
   <div class="modal-overlay" id="tgAuthModal">
@@ -3579,11 +3722,18 @@ function renderFeatured() {
     <div class="sec-label">⭐ Топ вакансии</div>
     <div class="carousel-wrap" id="carouselWrap">
       <div class="carousel-track" id="carouselTrack">
-        ${pinned.map(j => `
+        ${pinned.map(j => {
+          const _catClass = {
+            'IT':'cat-it','Дизайн':'cat-design','Маркетинг':'cat-marketing',
+            'Финансы':'cat-finance','Управление':'cat-mgmt'
+          }[j.category] || 'cat-default';
+          const _isEmoji = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u.test(j.icon||'');
+          const _iconHtml = _isEmoji ? j.icon : (j.company||'?')[0].toUpperCase();
+          return `
           <div class="featured-card" onclick="openJob('${j.id}')">
-            <div class="feat-img-top">
+            <div class="feat-img-top ${_catClass}">
               <div class="feat-img-badge">⭐ ТОП ВАКАНСИЯ</div>
-              <div class="feat-img-icon">${/^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase()}</div>
+              <div class="feat-img-icon">${_iconHtml}</div>
             </div>
             <div class="feat-content">
               <div class="feat-title">${esc(j.title)}</div>
@@ -3595,7 +3745,7 @@ function renderFeatured() {
                 </div>
               </div>
             </div>
-          </div>`).join('')}
+          </div>`; }).join('')}
       </div>
     </div>
     ${pinned.length > 1 ? `<div class="carousel-dots" id="carouselDots">
@@ -3661,6 +3811,7 @@ function toggleWatchCategory(cat) {
   saveWatchedCategories();
   renderNotifCatChips();
   generateNotifications();
+  updateNotifBadge();
 }
 
 function renderNotifCatChips() {
@@ -3706,6 +3857,8 @@ function renderNotifications() {
 
 function markAllRead() {
   NOTIFICATIONS.forEach(n => n.unread = false);
+  try { localStorage.setItem(NOTIF_READ_TS_KEY, String(Date.now())); } catch(e) {}
+  updateNotifBadge();
   renderNotifications();
   showToast('✅ Все прочитаны');
 }
@@ -4280,6 +4433,7 @@ async function init() {
   updateFavBadge();
   renderNotifCatChips();
   generateNotifications();
+  updateNotifBadge();
 
   // Загружаем баланс кошелька в бейдж профиля сразу если авторизованы
   if (isTgAuthorized()) {
@@ -4348,16 +4502,18 @@ function jobCardHTML(j) {
 
   const icon = /^(\p{Emoji})/u.test(j.icon||'') ? j.icon : (j.company||'?')[0].toUpperCase();
 
+  const miniRating = renderMiniRating(j.company||'');
   return `
     <div class="job-card" onclick="openJob('${j.id}')">
       <div class="card-img-wrap" style="background:${imgBg}">
-        <span style="font-size:30px;line-height:1;">${icon}</span>
+        ${getCardLogoHTML(j)}
         ${badgeText ? `<div class="card-img-badge ${badgeCls}">${badgeText}</div>` : ''}
       </div>
       <div class="card-body-wrap">
         <div class="card-top">
           <div class="card-title">${esc(j.title)}</div>
           <div class="card-company">${esc(j.company)} · ${esc(j.city)}</div>
+          ${miniRating}
         </div>
         ${tags.length ? `<div class="card-tags">${tags.map(t => '<div class="tag">' + esc(t) + '</div>').join('')}</div>` : ''}
         <div class="card-footer">
@@ -4564,6 +4720,15 @@ function _renderJobDetail(j) {
   document.getElementById('detailRequirements').innerHTML = reqs.map(r=>`<li>${esc(r)}</li>`).join('') || '<li>—</li>';
   // Рендерим похожие вакансии
   renderSimilarJobs(j);
+  // Рейтинг компании в detail hero
+  const avgRating = getCompanyAvgRating(j.company||'');
+  const reviewsCount = getCompanyReviews(j.company||'').length;
+  if (avgRating > 0) {
+    document.getElementById('detailCompany').innerHTML =
+      `${esc(j.company)} · ${esc(j.city)} &nbsp;<span style="font-size:12px;color:var(--orange);">${_starsHTML(avgRating)}</span><span style="font-size:11px;color:var(--text3);"> ${avgRating.toFixed(1)} (${reviewsCount})</span>`;
+  }
+  // Рендерим отзывы о компании
+  renderCompanyReviews(j);
   // Сбрасываем состояние кнопки отклика
   resetApplyBtn(j.id);
   document.getElementById('detailConditions').innerHTML = conds.map(c=>`<li>${esc(c)}</li>`).join('') || '<li>—</li>';
@@ -4691,21 +4856,30 @@ function onSearchBlur() {
 function shareJob() {
   const j = JOBS.find(x => x.id === currentJobId);
   if (!j) return;
-  const text = `💼 ${j.title} — ${j.company}\n📍 ${j.city} · 💰 ${j.salary} ₽/мес\n\nНайдено в Jobic`;
-  if (navigator.share) {
-    navigator.share({ title: j.title, text }).catch(() => {});
-  } else if (tg?.switchInlineQuery) {
-    tg.switchInlineQuery(text, ['users','groups']);
+  const deeplink = `https://t.me/JOBlK_bot?start=job_${j.id}`;
+  const text = `💼 ${j.title} — ${j.company}\n📍 ${j.city} · 💰 ${j.salary} ₽/мес\n\nНайти работу в Jobic 👇\n${deeplink}`;
+
+  if (tg?.openTelegramLink) {
+    // Нативный шаринг в Telegram
+    const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(deeplink)}&text=${encodeURIComponent(`💼 ${j.title} — ${j.company}\n📍 ${j.city} · 💰 ${j.salary} ₽/мес`)}`;
+    tg.openTelegramLink(shareUrl);
+  } else if (navigator.share) {
+    navigator.share({ title: j.title, text, url: deeplink }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 Скопировано!')).catch(() => _fallbackCopy(text));
   } else {
-    // Копируем в буфер
-    const dummy = document.createElement('textarea');
-    dummy.value = text;
-    document.body.appendChild(dummy);
-    dummy.select();
-    try { document.execCommand('copy'); showToast('📋 Ссылка скопирована'); } catch(e) {}
-    document.body.removeChild(dummy);
+    _fallbackCopy(text);
   }
   if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+}
+
+function _fallbackCopy(text) {
+  const dummy = document.createElement('textarea');
+  dummy.value = text;
+  document.body.appendChild(dummy);
+  dummy.select();
+  try { document.execCommand('copy'); showToast('📋 Ссылка скопирована'); } catch(e) {}
+  document.body.removeChild(dummy);
 }
 
 // ═══════════════════════════════════════════════
@@ -4887,6 +5061,14 @@ async function confirmApply() {
   // Since most Mini Apps use openLink, we just show in-app toast
   showToast(`✅ Отклик отправлен в ${j.company}!`);
   if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  // Предлагаем оставить отзыв через 1.5с
+  setTimeout(() => {
+    const hasReview = getCompanyReviews(j.company||'').some(r => {
+      const u = getTgUser();
+      return u && r.author === (u.first_name || u.username || 'Аноним');
+    });
+    if (!hasReview) openReviewModal();
+  }, 1500);
 
   // If Telegram Web App supports showAlert (for notification feel)
   if (tg?.showAlert) {
@@ -5114,6 +5296,7 @@ async function submitJob() {
         const saved = await insertJob(newJob);
         JOBS.unshift(saved);
         myPosted++;
+        notifyJobSubscribers(saved);
         showToast('🎉 Первая вакансия размещена бесплатно!');
         if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
         clearForm();
@@ -5187,6 +5370,7 @@ async function submitJob() {
     const saved = await insertJob(newJob);
     JOBS.unshift(saved);
     if (!isAdmin) myPosted++;
+    notifyJobSubscribers(saved);
 
     const priceText = isAdmin ? 'бесплатно' : `−${planPrice} ₽`;
     showToast(`🚀 Вакансия размещена! ${priceText}`);
@@ -7551,6 +7735,214 @@ async function walletLoadLastPaymentStatus() {
 
 // ── END WALLET JS ──────────────────────────────────
 
+// ═══════════════════════════════════════════════
+// COMPANY LOGO — Clearbit API + градиентный fallback
+// ═══════════════════════════════════════════════
+const _LOGO_GRADIENTS = [
+  'linear-gradient(135deg,#5B3FFF,#3B8BEB)',
+  'linear-gradient(135deg,#E91E8C,#FF6B6B)',
+  'linear-gradient(135deg,#00B96B,#4DA3FF)',
+  'linear-gradient(135deg,#F57C00,#FFD700)',
+  'linear-gradient(135deg,#7C5CFF,#E91E8C)',
+  'linear-gradient(135deg,#3B8BEB,#00B96B)',
+  'linear-gradient(135deg,#FF6B6B,#F57C00)',
+  'linear-gradient(135deg,#4DA3FF,#7C5CFF)',
+];
+
+function getCompanyGradient(company) {
+  let h = 0;
+  for (let i = 0; i < (company||'').length; i++) h = (h * 31 + company.charCodeAt(i)) & 0xffff;
+  return _LOGO_GRADIENTS[h % _LOGO_GRADIENTS.length];
+}
+
+function guessDomain(company) {
+  return (company||'').toLowerCase()
+    .replace(/\s+/g,'').replace(/[^a-z0-9]/g,'')
+    .replace(/^(ooo|ao|pao|zao|ip|ltd|llc|inc|corp|group|grupo)/,'')
+    .replace(/\./g,'') + '.ru';
+}
+
+function getCardLogoHTML(j) {
+  const isEmoji = /^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u.test(j.icon||'');
+  if (isEmoji) {
+    return `<div class="card-logo-wrap">
+      <span style="font-size:32px;line-height:1;">${j.icon}</span>
+    </div>`;
+  }
+  const letter = (j.company||'?')[0].toUpperCase();
+  const grad = getCompanyGradient(j.company||'');
+  const domain = guessDomain(j.company||'');
+  const uid = 'logo_' + String(j.id).replace(/[^a-z0-9]/gi,'');
+  return `<div class="card-logo-wrap">
+    <img id="${uid}" class="company-logo-img"
+      src="https://logo.clearbit.com/${domain}"
+      loading="lazy"
+      onerror="document.getElementById('${uid}').style.display='none';document.getElementById('${uid}_fb').style.display='flex';"
+      style="display:block;">
+    <div id="${uid}_fb" class="company-logo-fallback"
+      style="display:none;background:${grad};">${letter}</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// COMPANY REVIEWS — localStorage-based
+// ═══════════════════════════════════════════════
+const REVIEWS_KEY = 'jobic_reviews_v1';
+let _currentReviewRating = 0;
+
+function _loadAllReviews() {
+  try { return JSON.parse(localStorage.getItem(REVIEWS_KEY) || '{}'); } catch(e) { return {}; }
+}
+function _saveAllReviews(all) {
+  try { localStorage.setItem(REVIEWS_KEY, JSON.stringify(all)); } catch(e) {}
+}
+
+function getCompanyReviews(company) {
+  return _loadAllReviews()[company] || [];
+}
+
+function addCompanyReview(company, rating, comment) {
+  const all = _loadAllReviews();
+  if (!all[company]) all[company] = [];
+  const u = getTgUser();
+  all[company].push({
+    rating, comment,
+    date: new Date().toLocaleDateString('ru-RU'),
+    author: u ? (u.first_name || u.username || 'Аноним') : 'Аноним',
+    ts: Date.now()
+  });
+  _saveAllReviews(all);
+}
+
+function getCompanyAvgRating(company) {
+  const reviews = getCompanyReviews(company);
+  if (!reviews.length) return 0;
+  return reviews.reduce((s,r) => s + r.rating, 0) / reviews.length;
+}
+
+function _starsHTML(rating, size) {
+  const full = Math.round(rating);
+  return '⭐'.repeat(full) + '☆'.repeat(Math.max(0, 5 - full));
+}
+
+function renderCompanyReviews(j) {
+  const avgEl = document.getElementById('avgRatingBlock');
+  const listEl = document.getElementById('reviewsList');
+  if (!avgEl || !listEl) return;
+  const reviews = getCompanyReviews(j.company||'');
+  if (!reviews.length) {
+    avgEl.innerHTML = '';
+    listEl.innerHTML = `<div style="font-size:13px;color:var(--text3);text-align:center;padding:16px 0;">Отзывов ещё нет. Будьте первым!</div>`;
+    return;
+  }
+  const avg = (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1);
+  avgEl.innerHTML = `
+    <div class="avg-rating-block">
+      <div class="avg-rating-big">${avg}</div>
+      <div class="avg-rating-info">
+        <div class="avg-rating-stars">${_starsHTML(parseFloat(avg))}</div>
+        <div class="avg-rating-count">${reviews.length} ${reviews.length===1?'отзыв':reviews.length<5?'отзыва':'отзывов'}</div>
+      </div>
+    </div>`;
+  listEl.innerHTML = reviews.slice().reverse().slice(0,10).map(r => `
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="review-stars">${_starsHTML(r.rating)}</div>
+        <div class="review-date">${esc(r.date)}</div>
+      </div>
+      ${r.comment ? `<div class="review-text">${esc(r.comment)}</div>` : ''}
+      <div class="review-author">— ${esc(r.author)}</div>
+    </div>`).join('');
+}
+
+function renderMiniRating(company) {
+  const avg = getCompanyAvgRating(company);
+  const reviews = getCompanyReviews(company);
+  if (!reviews.length) return '';
+  const fullStars = Math.round(avg);
+  const stars = '⭐'.repeat(fullStars) + '☆'.repeat(Math.max(0,5-fullStars));
+  return `<div class="company-rating-row">
+    <div class="rating-stars-mini">${[...stars].map(s=>`<span class="star-mini">${s}</span>`).join('')}</div>
+    <span class="company-rating-num">${avg.toFixed(1)}</span>
+  </div>`;
+}
+
+function openReviewModal() {
+  _currentReviewRating = 0;
+  document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('on'));
+  const tf = document.getElementById('reviewText');
+  if (tf) tf.value = '';
+  const j = JOBS.find(x => x.id === currentJobId);
+  const sub = document.getElementById('reviewModalSub');
+  if (sub && j) sub.textContent = `Компания: ${j.company}`;
+  openModal('reviewModal');
+}
+
+function pickStar(val) {
+  _currentReviewRating = val;
+  document.querySelectorAll('.star-pick').forEach(s => {
+    s.classList.toggle('on', parseInt(s.dataset.val) <= val);
+  });
+}
+
+function submitReview() {
+  if (_currentReviewRating === 0) { showToast('⭐ Выберите оценку', true); return; }
+  const j = JOBS.find(x => x.id === currentJobId);
+  if (!j) return;
+  const comment = (document.getElementById('reviewText')?.value || '').trim();
+  addCompanyReview(j.company, _currentReviewRating, comment);
+  closeModal('reviewModal');
+  showToast('✅ Спасибо за отзыв!');
+  if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  renderCompanyReviews(j);
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFICATION BADGE — счётчик непрочитанных
+// ═══════════════════════════════════════════════
+const NOTIF_READ_TS_KEY = 'jobic_notif_read_ts';
+
+function updateNotifBadge() {
+  const relevant = JOBS.filter(j => watchedCategories.includes(j.category));
+  let readTs = 0;
+  try { readTs = parseInt(localStorage.getItem(NOTIF_READ_TS_KEY) || '0'); } catch(e) {}
+  const unread = relevant.filter(j => (j.createdAt||0) > readTs).length;
+  document.querySelectorAll('.notif-nav-badge-all').forEach(el => {
+    el.textContent = unread > 0 ? (unread > 9 ? '9+' : unread) : '';
+    el.classList.toggle('visible', unread > 0);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// NOTIFY SUBSCRIBERS — вызывается при новой вакансии
+// ═══════════════════════════════════════════════
+async function notifyJobSubscribers(job) {
+  if (!job?.id) return;
+  // Локально: добавить новую нотификацию в список
+  if (watchedCategories.includes(job.category)) {
+    NOTIFICATIONS.unshift({
+      id: job.id, icon: '💼',
+      title: `Новая вакансия в ${job.category}`,
+      text: `${job.title} — ${job.company} · ${job.salary} ₽/мес`,
+      time: 'только что', unread: true, jobId: job.id
+    });
+    updateNotifBadge();
+  }
+  // Серверный push через бот (fire-and-forget)
+  try {
+    fetch('https://vznzoismzrtipowpfigu.supabase.co/functions/v1/jobic-bot/notify-new-job', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jobId: job.id, jobTitle: job.title,
+        jobCompany: job.company, jobCity: job.city,
+        jobSalary: job.salary, category: job.category
+      })
+    });
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════
 // Проверяем показывать ли freemium баннер
 function _checkFreemiumBanner() {
   const tgUser = getTgUser();
