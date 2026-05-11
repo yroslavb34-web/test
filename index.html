@@ -2055,23 +2055,34 @@
         <div id="planSection">
           <div class="form-block">
             <label class="form-label">Выберите тарифный план</label>
-            <div class="plan-option sel" data-plan="standard" data-price="299" onclick="selPlan(this)">
+            <div class="plan-option sel" data-plan="standard" data-price="900" onclick="selPlan(this)">
               <div class="plan-icon">⚡</div>
-              <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">7 дней · до 500 просмотров</div></div>
-              <div class="plan-price">299 ₽</div>
+              <div class="plan-info"><div class="plan-name">Старт</div><div class="plan-desc">30 дней · 1 вакансия</div></div>
+              <div class="plan-price">900 ₽</div>
               <div class="radio on"></div>
             </div>
-            <div class="plan-option" data-plan="promo" data-price="799" onclick="selPlan(this)">
+            <div class="plan-option" data-plan="promo" data-price="1500" onclick="selPlan(this)">
               <div class="plan-icon">🚀</div>
-              <div class="plan-info"><div class="plan-name">Продвижение</div><div class="plan-desc">14 дней · топ выдачи · выделение цветом</div></div>
-              <div class="plan-price">799 ₽</div>
+              <div class="plan-info"><div class="plan-name">Стандарт</div><div class="plan-desc">30 дней · 3 вакансии · выделение</div></div>
+              <div class="plan-price">1 500 ₽</div>
               <div class="radio"></div>
             </div>
-            <div class="plan-option" data-plan="premium" data-price="1990" onclick="selPlan(this)">
+            <div class="plan-option" data-plan="premium" data-price="5000" onclick="selPlan(this)">
               <div class="plan-icon">👑</div>
-              <div class="plan-info"><div class="plan-name">Премиум</div><div class="plan-desc">30 дней · Featured блок · максимум откликов</div></div>
-              <div class="plan-price">1 990 ₽</div>
+              <div class="plan-info"><div class="plan-name">Про</div><div class="plan-desc">30 дней · 10 вакансий · топ выдачи</div></div>
+              <div class="plan-price">5 000 ₽</div>
               <div class="radio"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Freemium баннер -->
+        <div id="freemiumBanner" style="display:none;background:var(--green-soft);border:1.5px solid rgba(0,185,107,0.25);border-radius:var(--r-lg);padding:var(--s4);margin-bottom:var(--s3);">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:32px;">🎉</div>
+            <div>
+              <div style="font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--green);letter-spacing:-0.3px;margin-bottom:3px;">Первое размещение бесплатно!</div>
+              <div style="font-size:12px;color:var(--text3);line-height:1.5;">Тестовое размещение — тариф Старт на 30 дней</div>
             </div>
           </div>
         </div>
@@ -3077,7 +3088,17 @@ async function loadJobs(force = false) {
     clearTimeout(timeout);
     if (!rows || !rows.length) { _jobsCache = getDefaultJobs(); _jobsCacheAt = Date.now(); return _jobsCache; }
     const seen = new Set();
-    _jobsCache = rows.map(dbRowToJob).filter(j => { if(seen.has(j.id)) return false; seen.add(j.id); return true; });
+    const now = Date.now();
+    _jobsCache = rows.map(dbRowToJob).filter(j => {
+      if (seen.has(j.id)) return false;
+      seen.add(j.id);
+      // Фильтруем истёкшие вакансии (кроме admin)
+      if (j.expires_at && !j.pinned) {
+        const exp = new Date(j.expires_at).getTime();
+        if (exp < now) return false;
+      }
+      return true;
+    });
     _jobsCacheAt = Date.now();
     return _jobsCache;
   } catch(e) {
@@ -3970,6 +3991,22 @@ async function sendAuthCode() {
     return;
   }
 
+  // Rate limit: не более 3 попыток в 10 минут
+  const RL_KEY = 'jobic_auth_rl';
+  try {
+    const rl = JSON.parse(localStorage.getItem(RL_KEY) || '{"count":0,"ts":0}');
+    const elapsed = Date.now() - rl.ts;
+    if (elapsed < 10 * 60 * 1000 && rl.count >= 3) {
+      const wait = Math.ceil((10 * 60 * 1000 - elapsed) / 60000);
+      errEl.textContent = `Слишком много попыток. Подождите ${wait} мин.`;
+      return;
+    }
+    const newRl = elapsed > 10 * 60 * 1000
+      ? { count: 1, ts: Date.now() }
+      : { count: rl.count + 1, ts: rl.ts };
+    localStorage.setItem(RL_KEY, JSON.stringify(newRl));
+  } catch(e) {}
+
   btn.disabled = true; btn.textContent = '⏳ Отправляем...';
 
   try {
@@ -4179,10 +4216,22 @@ function openTgBot() {
 // INIT
 // ═══════════════════════════════════════════════
 async function init() {
-  restoreSession();      // восстанавливает webTgUser из localStorage
+  restoreSession();
   loadFavsFromSession();
   loadFavTimestamps();
   loadWatchedCategories();
+  // Таймаут 8 сек — если всё зависло показываем ошибку
+  const _initTimeout = setTimeout(() => {
+    const list = document.getElementById('jobList');
+    if (list && list.querySelector('.spinner')) {
+      list.innerHTML = `<div class="empty-state" style="padding:40px 20px;">
+        <div class="e-icon">😕</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;">Не удалось загрузить вакансии</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:20px;">Проверьте подключение к интернету</div>
+        <button onclick="location.reload()" style="padding:12px 24px;border-radius:var(--r-md);background:var(--accent);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--font-display);">↻ Попробовать снова</button>
+      </div>`;
+    }
+  }, 8000);
 
   // ── Telegram данные (приоритет над localStorage) ──
   const tgUser = tg?.initDataUnsafe?.user;
@@ -4207,7 +4256,9 @@ async function init() {
   // Загружаем всё параллельно — не блокируем UI
   try {
     [JOBS, APPLIES] = await Promise.all([loadJobs(), loadApplies()]);
+    clearTimeout(_initTimeout);
   } catch(e) {
+    clearTimeout(_initTimeout);
     console.warn('Jobs/Applies load error:', e);
     JOBS = getDefaultJobs();
     APPLIES = [];
@@ -4926,8 +4977,8 @@ function clearForm() {
 }
 
 // Цены тарифов при размещении вакансии
-const PLAN_PRICES = { standard: 299, promo: 799, premium: 1990 };
-const PLAN_NAMES  = { standard: 'Стандарт', promo: 'Продвижение', premium: 'Премиум' };
+const PLAN_PRICES = { standard: 900, promo: 1500, premium: 5000 };
+const PLAN_NAMES  = { standard: 'Старт', promo: 'Стандарт', premium: 'Про' };
 const PLAN_DAYS   = { standard: 7, promo: 14, premium: 30 };
 
 // Вспомогательная функция: получить текущий баланс пользователя из БД
@@ -5032,6 +5083,44 @@ async function submitJob() {
       const username = tgUser?.username || tgUser?.first_name || 'user';
 
       if (!userId) { openModal('tgAuthModal'); return; }
+
+      // ── FREEMIUM: первое размещение бесплатно ──────────────────────
+      const freeKey = 'jobic_free_used_' + userId;
+      let isFreeSlot = false;
+      try {
+        const usedFree = localStorage.getItem(freeKey);
+        if (!usedFree) {
+          // Также проверяем в БД — сколько вакансий уже разместил
+          const existingJobs = JOBS.filter(j => j.creator_id === userId);
+          if (existingJobs.length === 0) {
+            isFreeSlot = true;
+          }
+        }
+      } catch(e) {}
+
+      if (isFreeSlot) {
+        // Первое размещение — бесплатно!
+        try { localStorage.setItem(freeKey, '1'); } catch(e) {}
+        const newJob = {
+          id: null, title, company, city, salary, salaryNum, category, icon,
+          iconBg: 'rgba(124,92,255,0.15)', accent: 'linear-gradient(90deg,#7c5cff,#4da3ff)', badge: 'new',
+          tags, about: document.getElementById('fDesc').value.trim(), requirements: reqs, conditions: conds,
+          contact: document.getElementById('fContact').value.trim(), pinned: false, createdAt: Date.now(),
+          creator_id: userId,
+          plan: 'standard',
+          expires_at: new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString()
+        };
+        const saved = await insertJob(newJob);
+        JOBS.unshift(saved);
+        myPosted++;
+        showToast('🎉 Первая вакансия размещена бесплатно!');
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        clearForm();
+        renderFeatured(); filterJobs(); updateProfileStats();
+        setTimeout(() => navTo('homeScreen', null), 800);
+        return;
+      }
+      // ─────────────────────────────────────────────────────────────────
 
       // Блокируем кнопку на время операции
       const btn = document.getElementById('submitBtn');
@@ -5647,7 +5736,13 @@ function _onScreenShown(screenId) {
 async function updatePlanAffordability() {
   const tgUser = getTgUser();
   if (!tgUser?.id || isAdmin) return;
-  const balance = await _getUserBalance(String(tgUser.id));
+  const userId = String(tgUser.id);
+  // Проверяем freemium
+  const freeKey = 'jobic_free_used_' + userId;
+  const myJobs = JOBS.filter(j => j.creator_id === userId);
+  const isFree = !localStorage.getItem(freeKey) && myJobs.length === 0;
+  if (isFree) { _checkFreemiumBanner(); return; } // Бесплатно — не нужен баланс
+  const balance = await _getUserBalance(userId);
   // Обновляем или создаём плашку с балансом
   let balanceBanner = document.getElementById('createBalanceBanner');
   if (!balanceBanner) {
@@ -5867,7 +5962,10 @@ function formShowStep(n) {
   }
   _formCurrentStep = n;
   // Обновляем финальный превью на шаге 4
-  if (n === 4) formUpdateFinalPreview();
+  if (n === 4) {
+    formUpdateFinalPreview();
+    _checkFreemiumBanner();
+  }
   // Скролл наверх
   const sa = document.querySelector('#createScreen .scroll-area');
   if (sa) sa.scrollTop = 0;
@@ -7445,6 +7543,28 @@ async function walletLoadLastPaymentStatus() {
 }
 
 // ── END WALLET JS ──────────────────────────────────
+
+// Проверяем показывать ли freemium баннер
+function _checkFreemiumBanner() {
+  const tgUser = getTgUser();
+  if (!tgUser?.id || isAdmin) return;
+  const userId = String(tgUser.id);
+  const freeKey = 'jobic_free_used_' + userId;
+  const banner = document.getElementById('freemiumBanner');
+  const planSection = document.getElementById('planSection');
+  try {
+    const usedFree = localStorage.getItem(freeKey);
+    const myJobs = JOBS.filter(j => j.creator_id === userId);
+    const isFree = !usedFree && myJobs.length === 0;
+    if (banner) banner.style.display = isFree ? 'block' : 'none';
+    // Если бесплатно — скрываем выбор тарифа
+    if (planSection) planSection.style.opacity = isFree ? '0.4' : '1';
+    // Меняем текст кнопки
+    const btn = document.getElementById('submitBtn');
+    if (btn) btn.textContent = isFree ? '🎉 Разместить бесплатно' : `Оплатить и разместить · ${PLAN_PRICES[document.querySelector('.plan-option.sel')?.dataset?.plan||'standard']?.toLocaleString('ru') || 900} ₽`;
+  } catch(e) {}
+}
+
 </script>
 </body>
 </html>
